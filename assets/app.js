@@ -3,8 +3,7 @@
    -------------------------------------------------------------------------
    Today : theme persistence and the header toggle, nothing more.
    Later : the file listing (files/) and the full-page viewer with a back
-           button, exactly as sketched in README.md. The blank state stays
-           in place until real files arrive.
+           button. The blank state stays in place until real files arrive.
    ========================================================================== */
 
 (function () {
