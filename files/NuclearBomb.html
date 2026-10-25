@@ -1,0 +1,958 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f6f5f1">
+<meta name="description" content="Interactive 3D model of the Fat Man implosion-type fission bomb.">
+<title>Fat Man - Nuclear Bomb Model</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cellipse cx='8' cy='9' rx='5.5' ry='6.5' fill='%23c9a657' stroke='%23c8c2ad' stroke-width='1.5'/%3E%3Cpath d='M8 2.5V15' stroke='%23c8c2ad' stroke-width='1'/%3E%3C/svg%3E">
+<script>
+(function () {
+  try {
+    var stored = localStorage.getItem("html-scripts-theme");
+    var theme = stored === "light" || stored === "dark"
+      ? stored
+      : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", theme === "dark" ? "#141311" : "#f6f5f1");
+  } catch (e) {}
+})();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --background: #f5f4ef;
+  --background-wash: #efece4;
+  --surface: #ffffff;
+  --surface-secondary: #faf9f5;
+  --ink: #161616;
+  --ink-soft: #4a4a48;
+  --muted: #86857e;
+  --faint: #b5b3aa;
+  --line: #ece9df;
+  --line-soft: #f3f1e9;
+  --line-strong: #c8c2ad;
+  --accent: #161616;
+  --success: #2f7d4f;
+  --success-fill: #e8f1ea;
+  --success-line: #cfe3d3;
+  --danger: #b3403a;
+  --danger-fill: #f6e9e7;
+  --warning: #9a6b1f;
+  --warning-fill: #f4ecdc;
+  --radius: 12px;
+  --radius-small: 10px;
+  --shadow: 0 1px 2px rgba(28,26,21,.04), 0 12px 36px rgba(28,26,21,.06);
+}
+[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #141311;
+  --background-wash: #1c1a15;
+  --surface: #1d1c19;
+  --surface-secondary: #242320;
+  --ink: #eceae3;
+  --ink-soft: #b6b4ab;
+  --muted: #8b897f;
+  --faint: #5e5c53;
+  --line: #33322c;
+  --line-soft: #2a2924;
+  --line-strong: #4a4840;
+  --accent: #eceae3;
+  --success: #7cbe97;
+  --success-fill: #1f3226;
+  --success-line: #2e4a38;
+  --danger: #e0857c;
+  --danger-fill: #3a2723;
+  --warning: #d3a04f;
+  --warning-fill: #383021;
+  --shadow: 0 1px 2px rgba(0,0,0,.30), 0 12px 36px rgba(0,0,0,.40);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--background);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse 1200px 600px at 50% 0%, var(--background-wash) 0%, transparent 70%);
+  pointer-events: none;
+}
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+* { scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--line); border-radius: 999px; }
+#stage { position: fixed; inset: 0; display: block; width: 100%; height: 100%; }
+.panel {
+  position: absolute;
+  z-index: 2;
+  background: var(--surface);
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.head {
+  top: 28px; left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px 14px 20px;
+  max-width: calc(100vw - 40px);
+}
+.head-titles { min-width: 0; }
+.head-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.head-sub {
+  margin: 2px 0 0;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.icon-button {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-small);
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: background-color .12s ease, color .12s ease, transform .12s ease;
+}
+.icon-button:hover { background: var(--surface-secondary); color: var(--ink); }
+.icon-button:active { transform: translateY(.5px); }
+[data-theme="light"] .icon-sun { display: none; }
+[data-theme="dark"] .icon-moon { display: none; }
+.parts {
+  top: 118px; left: 20px;
+  width: 264px;
+  max-height: calc(100vh - 118px - 96px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.parts-group {
+  padding: 12px 14px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+}
+.parts-group-count { font-variant-numeric: tabular-nums; }
+.parts-list {
+  margin: 0;
+  padding: 6px 8px 8px;
+  list-style: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 11px 14px;
+  border: 0;
+  border-radius: var(--radius-small);
+  background: transparent;
+  font: inherit;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  animation: rise-in .42s cubic-bezier(.21,.8,.35,1) both;
+}
+.row:hover { background: var(--surface-secondary); }
+.row:active { background: var(--line-soft); }
+.row[aria-pressed="true"] { background: var(--success-fill); }
+.row-badge {
+  flex: none;
+  width: 19px;
+  height: 19px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line-strong);
+  background: var(--surface-secondary);
+}
+.row[aria-pressed="true"] .row-badge { background: var(--surface); border-color: var(--success-line); }
+.row-badge i {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--muted);
+}
+.row-badge.tint-success i { background: var(--success); }
+.row-badge.tint-danger i { background: var(--danger); }
+.row-badge.tint-warning i { background: var(--warning); }
+.row-badge.tint-ink i { background: var(--ink); }
+.row-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.row:hover .row-name { color: var(--ink); }
+.row[aria-pressed="true"] .row-name { color: var(--ink); }
+.row-meta {
+  flex: none;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}
+.desc {
+  left: 20px;
+  bottom: 24px;
+  width: 264px;
+  padding: 14px 16px 16px;
+}
+.desc-name {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.desc-meta {
+  margin: 1px 0 0;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  color: var(--muted);
+}
+.desc-text {
+  margin: 8px 0 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+.controls {
+  position: absolute;
+  z-index: 2;
+  bottom: 24px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: var(--surface);
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.tab {
+  padding: 7px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-small);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color .12s ease, color .12s ease;
+}
+.tab:hover { background: var(--surface-secondary); color: var(--ink); }
+.tab[aria-pressed="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--background);
+}
+.button {
+  padding: 6px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-small);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color .12s ease, color .12s ease;
+}
+.button:hover { background: var(--surface-secondary); color: var(--ink); }
+.specs {
+  top: 28px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 18px;
+}
+.spec { display: flex; flex-direction: column; align-items: flex-end; }
+.spec-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.spec-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  color: var(--faint);
+  white-space: nowrap;
+}
+.loading {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  background: var(--surface);
+  border: 1.5px solid var(--line-strong);
+  border-radius: 999px;
+}
+.loading-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--muted);
+  opacity: .25;
+  animation: dot-pulse 1.2s ease-in-out infinite;
+}
+.loading-dot:nth-child(2) { animation-delay: .18s; }
+.loading-dot:nth-child(3) { animation-delay: .36s; }
+.loading-label { font-size: 11.5px; color: var(--muted); }
+.fail {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(440px, calc(100vw - 40px));
+  padding: 24px 24px 20px;
+  text-align: center;
+  display: none;
+}
+.fail-title { margin: 0; font-size: 14.5px; font-weight: 600; color: var(--ink); }
+.fail-text { margin: 6px 0 14px; font-size: 11.5px; color: var(--muted); }
+.fail-link { color: var(--ink); font-size: 12.5px; text-decoration: underline; }
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes dot-pulse {
+  0%, 100% { opacity: .25; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-2px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+@media (max-width: 560px) {
+  .head { top: 16px; left: 14px; padding: 12px 12px 12px 16px; }
+  .parts { top: 100px; left: 14px; width: calc(100vw - 28px); max-height: 38vh; }
+  .desc { display: none; }
+  .specs { top: auto; bottom: 84px; right: 14px; gap: 14px; padding: 8px 14px; }
+  .controls { bottom: 16px; right: 14px; left: 14px; justify-content: center; flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+<canvas id="stage" aria-label="3D model of the Fat Man atomic bomb. Drag to rotate, scroll to zoom."></canvas>
+<header class="panel head">
+  <div class="head-titles">
+    <h1 class="head-title">Fat Man</h1>
+    <p class="head-sub">Implosion-type fission bomb</p>
+  </div>
+  <button class="icon-button" id="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false" title="Switch theme">
+    <svg class="icon-moon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M13.6 9.7A6.1 6.1 0 0 1 6.3 2.4a6.1 6.1 0 1 0 7.3 7.3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    </svg>
+    <svg class="icon-sun" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <circle cx="8" cy="8" r="3.1" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M8 1.3v1.5M8 13.2v1.5M1.3 8h1.5M13.2 8h1.5M3.4 3.4l1 1M11.6 11.6l1 1M12.6 3.4l-1 1M4.4 11.6l-1 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+  </button>
+</header>
+<nav class="panel parts" aria-label="Model components">
+  <div class="parts-group"><span>Components</span><span class="parts-group-count" id="parts-count">0</span></div>
+  <ul class="parts-list" id="parts-list"></ul>
+</nav>
+<section class="panel desc" id="desc" aria-live="polite">
+  <h2 class="desc-name" id="desc-name">Fat Man</h2>
+  <p class="desc-meta" id="desc-meta">Model overview</p>
+  <p class="desc-text" id="desc-text">An implosion-type fission weapon. A subcritical plutonium core was surrounded by explosive lenses and crushed inward to criticality. Explore each component from the list.</p>
+</section>
+<footer class="panel specs">
+  <div class="spec"><span class="spec-value">128</span><span class="spec-label">in length</span></div>
+  <div class="spec"><span class="spec-value">60</span><span class="spec-label">in diameter</span></div>
+  <div class="spec"><span class="spec-value">10,300</span><span class="spec-label">lb weight</span></div>
+  <div class="spec"><span class="spec-value">21</span><span class="spec-label">kt yield</span></div>
+</footer>
+<div class="controls" role="toolbar" aria-label="Viewer controls">
+  <button class="tab" id="rotate-tab" type="button" aria-pressed="true">Rotate</button>
+  <button class="tab" id="wire-tab" type="button" aria-pressed="false">Wireframe</button>
+  <button class="button" id="reset-button" type="button">Reset view</button>
+</div>
+<div class="loading" id="loading">
+  <span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span>
+  <span class="loading-label">Loading model</span>
+</div>
+<div class="panel fail" id="fail">
+  <h2 class="fail-title">Model could not load</h2>
+  <p class="fail-text" id="fail-text">The 3D engine could not be fetched from the CDN.</p>
+  <a class="fail-link" id="fail-link" href="https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js">open engine directly</a>
+</div>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+const themeToggle = document.getElementById("theme-toggle");
+const BROWSER_COLOR = { light: "#f6f5f1", dark: "#141311" };
+function readTheme() {
+  return document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+}
+function paint(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute("content", BROWSER_COLOR[theme]);
+  themeToggle.setAttribute("aria-label", theme === "dark" ? "Switch to light theme" : "Switch to dark theme");
+  themeToggle.setAttribute("aria-pressed", String(theme === "dark"));
+}
+paint(readTheme());
+themeToggle.addEventListener("click", () => {
+  const next = readTheme() === "dark" ? "light" : "dark";
+  paint(next);
+  try { localStorage.setItem("html-scripts-theme", next); } catch (e) {}
+  window.dispatchEvent(new CustomEvent("themechange"));
+});
+
+(async () => {
+const loading = document.getElementById("loading");
+const fail = document.getElementById("fail");
+try {
+const THREE = await import("three");
+const { OrbitControls } = await import("three/addons/controls/OrbitControls.js");
+
+const canvas = document.getElementById("stage");
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 500);
+const HOME_POS = new THREE.Vector3(16, 6, 18.5);
+const HOME_TARGET = new THREE.Vector3(1, 0, 0);
+camera.position.copy(HOME_POS);
+
+const controls = new OrbitControls(camera, canvas);
+controls.target.copy(HOME_TARGET);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.enablePan = false;
+controls.minDistance = 7;
+controls.maxDistance = 80;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.9;
+
+const hemi = new THREE.HemisphereLight(0xfff8ec, 0xb5b3aa, 0.42);
+const key = new THREE.DirectionalLight(0xfffdf7, 0.62);
+key.position.set(40, 60, 30);
+const fill = new THREE.DirectionalLight(0xfff4e0, 0.16);
+fill.position.set(-50, -20, -50);
+scene.add(hemi, key, fill);
+
+const CASING = [
+  [0, 64], [2.5, 63.4], [5, 62], [8.5, 59.6], [12, 56.6], [15.5, 53],
+  [18.5, 49], [21.5, 44.6], [24, 40], [26, 35], [27.5, 29.8], [28.8, 24.6],
+  [29.6, 19.4], [30, 14], [30, 8], [29.7, 2], [29, -4], [27.9, -9.4],
+  [26.4, -14.2], [24.5, -18.4], [22.2, -21.8], [19.5, -23.8], [17.2, -24.4]
+];
+const CONE = [
+  [16.9, -24.4], [15.2, -31], [13.2, -38], [11.6, -45], [10.8, -52]
+];
+
+function vOfY(y) {
+  const p = CASING;
+  for (let i = 0; i < p.length - 1; i++) {
+    const y0 = p[i][1], y1 = p[i + 1][1];
+    if (y <= y0 && y >= y1) return (i + (y0 - y) / ((y0 - y1) || 1)) / (p.length - 1);
+  }
+  return y > p[0][1] ? 0 : 1;
+}
+function rOfY(y) {
+  const p = CASING;
+  for (let i = 0; i < p.length - 1; i++) {
+    const y0 = p[i][1], y1 = p[i + 1][1];
+    if (y <= y0 && y >= y1) {
+      const t = (y0 - y) / ((y0 - y1) || 1);
+      return p[i][0] + (p[i + 1][0] - p[i][0]) * t;
+    }
+  }
+  return y > p[0][1] ? 0 : p[p.length - 1][0];
+}
+
+function makeCasingTexture() {
+  const W = 2048, H = 1024;
+  const c = document.createElement("canvas");
+  c.width = W; c.height = H;
+  const x = c.getContext("2d");
+  x.fillStyle = "#c9a657";
+  x.fillRect(0, 0, W, H);
+  const grad = x.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, "rgba(70,58,30,0.05)");
+  grad.addColorStop(0.35, "rgba(70,58,30,0)");
+  grad.addColorStop(1, "rgba(255,246,220,0.04)");
+  x.fillStyle = grad;
+  x.fillRect(0, 0, W, H);
+  for (let i = 0; i < 420; i++) {
+    x.fillStyle = i % 3 ? "rgba(60,48,24,0.028)" : "rgba(255,248,224,0.03)";
+    x.beginPath();
+    x.arc(Math.random() * W, Math.random() * H, 0.8 + Math.random() * 2.4, 0, 6.2832);
+    x.fill();
+  }
+  const SEAMS = [46, 26, 2, -16];
+  SEAMS.forEach((sy) => {
+    const cy = (1 - vOfY(sy)) * H;
+    x.fillStyle = "rgba(70,58,30,0.30)";
+    x.fillRect(0, cy - 1.5, W, 3);
+    x.fillStyle = "rgba(70,58,30,0.38)";
+    const n = 110;
+    for (let i = 0; i < n; i++) {
+      x.beginPath();
+      x.arc((i + 0.5) * (W / n), cy + 11, 2.1, 0, 6.2832);
+      x.fill();
+    }
+  });
+  function stencil(text, u, y, px, ls) {
+    const cx = u * W, cy = (1 - vOfY(y)) * H;
+    x.save();
+    x.translate(cx, cy);
+    x.rotate(Math.PI / 2);
+    x.font = "700 " + px + "px Arial, sans-serif";
+    if ("letterSpacing" in x) x.letterSpacing = (ls || 0) + "px";
+    x.fillStyle = "#241f14";
+    x.textAlign = "center";
+    x.textBaseline = "middle";
+    x.fillText(text, 0, 0);
+    x.restore();
+  }
+  stencil("U.S. ARMY", 0.25, 18, 64, 12);
+  stencil("U.S. ARMY", 0.75, 18, 64, 12);
+  stencil("SERIAL NO. FM-77", 0.25, -14, 30, 5);
+  stencil("MAX GROSS WT 10,300 LB", 0.75, 34, 24, 3);
+  const ru = 0.75, ry = (1 - vOfY(46)) * H, rr = 95;
+  const rx = ru * W;
+  x.fillStyle = "#241f14";
+  x.beginPath(); x.arc(rx, ry, rr, 0, 6.2832); x.fill();
+  x.strokeStyle = "#f2ead6";
+  x.lineWidth = 6;
+  x.beginPath(); x.arc(rx, ry, rr - 9, 0, 6.2832); x.stroke();
+  x.fillStyle = "#f2ead6";
+  x.beginPath();
+  for (let i = 0; i < 5; i++) {
+    const a = -Math.PI / 2 + (i * 2 * Math.PI) / 5;
+    const b = a + Math.PI / 5;
+    const R = 60, r2 = 25;
+    if (i === 0) x.moveTo(rx + Math.cos(a) * R, ry + Math.sin(a) * R);
+    else x.lineTo(rx + Math.cos(a) * R, ry + Math.sin(a) * R);
+    x.lineTo(rx + Math.cos(b) * r2, ry + Math.sin(b) * r2);
+  }
+  x.closePath();
+  x.fill();
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.wrapS = THREE.RepeatWrapping;
+  tex.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+  return tex;
+}
+
+const casingTex = makeCasingTexture();
+
+const M = {
+  casing: () => new THREE.MeshLambertMaterial({ map: casingTex, side: THREE.DoubleSide }),
+  mustard: () => new THREE.MeshLambertMaterial({ color: 0xc9a657, side: THREE.DoubleSide }),
+  metal: () => new THREE.MeshLambertMaterial({ color: 0x5d574b }),
+  metalLight: () => new THREE.MeshLambertMaterial({ color: 0x8a8375 }),
+  red: () => new THREE.MeshLambertMaterial({ color: 0xb3403a }),
+  green: () => new THREE.MeshLambertMaterial({ color: 0x2f7d4f }),
+  char: () => new THREE.MeshLambertMaterial({ color: 0x2b2926 })
+};
+
+let gCasing, gTail, gFins, gRadar, gXUnit, gConduits, gPlugs, gLugs;
+
+function lathe(points, mat, seg) {
+  const pts = points.map((p) => new THREE.Vector2(p[0], p[1]));
+  return new THREE.Mesh(new THREE.LatheGeometry(pts, seg || 128), mat);
+}
+
+function buildCasing() {
+  gCasing = new THREE.Group();
+  const body = lathe(CASING, M.casing(), 160);
+  gCasing.add(body);
+  const aftRing = new THREE.Mesh(
+    new THREE.RingGeometry(12.6, 17.3, 96),
+    new THREE.MeshLambertMaterial({ color: 0xb5944c, side: THREE.DoubleSide })
+  );
+  aftRing.rotation.x = Math.PI / 2;
+  aftRing.position.y = -24.3;
+  gCasing.add(aftRing);
+  return gCasing;
+}
+
+function buildTail() {
+  gTail = new THREE.Group();
+  const cone = lathe(CONE, M.mustard(), 128);
+  gTail.add(cone);
+  const collar = new THREE.Mesh(
+    new THREE.CylinderGeometry(17.7, 17.7, 2.6, 96, 1, true),
+    new THREE.MeshLambertMaterial({ color: 0x8a8375, side: THREE.DoubleSide })
+  );
+  collar.position.y = -24.4;
+  gTail.add(collar);
+  const plate = new THREE.Mesh(
+    new THREE.CircleGeometry(10.8, 96),
+    new THREE.MeshLambertMaterial({ color: 0x5d574b, side: THREE.DoubleSide })
+  );
+  plate.rotation.x = Math.PI / 2;
+  plate.position.y = -52;
+  gTail.add(plate);
+  const hub = new THREE.Mesh(new THREE.CylinderGeometry(4.2, 4.6, 2.6, 48), M.metalLight());
+  hub.position.y = -53;
+  gTail.add(hub);
+  for (let i = 0; i < 12; i++) {
+    const a = (i / 12) * Math.PI * 2;
+    const bolt = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 1.3, 10), M.metal());
+    bolt.position.set(Math.cos(a) * 9.2, -52.4, Math.sin(a) * 9.2);
+    gTail.add(bolt);
+  }
+  return gTail;
+}
+
+function buildFins() {
+  gFins = new THREE.Group();
+  const shape = new THREE.Shape();
+  shape.moveTo(15.5, -27);
+  shape.lineTo(26, -46);
+  shape.lineTo(26, -61);
+  shape.lineTo(10.5, -50);
+  shape.closePath();
+  const geo = new THREE.ExtrudeGeometry(shape, { depth: 0.7, bevelEnabled: false });
+  const capGeo = new THREE.BoxGeometry(1.4, 15.5, 2.4);
+  for (let i = 0; i < 4; i++) {
+    const a = (i / 4) * Math.PI * 2;
+    const fin = new THREE.Mesh(geo, M.mustard());
+    fin.position.z = -0.35;
+    const holder = new THREE.Group();
+    holder.rotation.y = a;
+    holder.add(fin);
+    const cap = new THREE.Mesh(capGeo, M.mustard());
+    cap.position.set(26.2, -53.5, 0);
+    holder.add(cap);
+    gFins.add(holder);
+  }
+  return gFins;
+}
+
+function buildRadar() {
+  gRadar = new THREE.Group();
+  for (let i = 0; i < 4; i++) {
+    const a = (i / 4) * Math.PI * 2 + Math.PI / 4;
+    const r = rOfY(40) + 0.9;
+    const unit = new THREE.Group();
+    unit.position.set(Math.cos(a) * r, 40, Math.sin(a) * r);
+    unit.lookAt(Math.cos(a) * 100, 40, Math.sin(a) * 100);
+    const box = new THREE.Mesh(new THREE.BoxGeometry(5.4, 3.2, 1.9), M.metal());
+    unit.add(box);
+    const face = new THREE.Mesh(new THREE.CylinderGeometry(1.45, 1.45, 1.5, 24), M.metalLight());
+    face.rotation.x = Math.PI / 2;
+    face.position.z = 1.4;
+    unit.add(face);
+    const antenna = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 2.6, 12), M.metal());
+    antenna.rotation.x = Math.PI / 2;
+    antenna.position.set(1.4, 1.2, 2.6);
+    unit.add(antenna);
+    gRadar.add(unit);
+  }
+  return gRadar;
+}
+
+function buildXUnit() {
+  gXUnit = new THREE.Group();
+  const a = -Math.PI / 2;
+  const r = 16.6;
+  gXUnit.position.set(Math.cos(a) * r, -30, Math.sin(a) * r);
+  gXUnit.lookAt(Math.cos(a) * 100, -30, Math.sin(a) * 100);
+  const box = new THREE.Mesh(new THREE.BoxGeometry(8.6, 4.6, 3.4), M.metal());
+  gXUnit.add(box);
+  const plate = new THREE.Mesh(new THREE.BoxGeometry(6.6, 3, 0.8), M.metalLight());
+  plate.position.z = 1.9;
+  gXUnit.add(plate);
+  for (let i = 0; i < 2; i++) {
+    const cyl = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.7, 1.6, 16), M.char());
+    cyl.rotation.x = Math.PI / 2;
+    cyl.position.set(i ? 2.1 : -2.1, 0.5, 2.4);
+    gXUnit.add(cyl);
+  }
+  return gXUnit;
+}
+
+function buildConduits() {
+  gConduits = new THREE.Group();
+  const a = -Math.PI / 2;
+  for (let k = 0; k < 2; k++) {
+    const off = (k ? 4 : -4) * (Math.PI / 180);
+    const pts = [];
+    [-28, -8, 12, 32, 46, 52].forEach((y) => {
+      const r = rOfY(y) + 0.85;
+      const aa = a + off * (y < 0 ? 0.35 : 1);
+      pts.push(new THREE.Vector3(Math.cos(aa) * r, y, Math.sin(aa) * r));
+    });
+    const curve = new THREE.CatmullRomCurve3(pts);
+    const tube = new THREE.Mesh(new THREE.TubeGeometry(curve, 72, 0.65, 12), M.metalLight());
+    gConduits.add(tube);
+  }
+  [-16, 6, 30].forEach((y) => {
+    const r = rOfY(y) + 0.9;
+    const clamp = new THREE.Mesh(new THREE.BoxGeometry(5.2, 1.3, 1.1), M.metal());
+    clamp.position.set(Math.cos(a) * r, y, Math.sin(a) * r);
+    clamp.lookAt(Math.cos(a) * 100, y, Math.sin(a) * 100);
+    gConduits.add(clamp);
+  });
+  return gConduits;
+}
+
+function buildPlugs() {
+  gPlugs = new THREE.Group();
+  [[-6, M.green()], [6, M.red()]].forEach(([off, mat]) => {
+    const a = Math.PI / 2 + off * (Math.PI / 180);
+    const y = 10;
+    const r = rOfY(y) + 0.5;
+    const plug = new THREE.Group();
+    plug.position.set(Math.cos(a) * r, y, Math.sin(a) * r);
+    plug.lookAt(Math.cos(a) * 100, y, Math.sin(a) * 100);
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(1.55, 1.55, 1.5, 24), mat);
+    body.rotation.x = Math.PI / 2;
+    plug.add(body);
+    const head = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 0.9, 0.7, 16), M.metalLight());
+    head.rotation.x = Math.PI / 2;
+    head.position.z = 1;
+    plug.add(head);
+    gPlugs.add(plug);
+  });
+  return gPlugs;
+}
+
+function buildLugs() {
+  gLugs = new THREE.Group();
+  [24, -4].forEach((y) => {
+    const a = Math.PI;
+    const r = rOfY(y) + 0.35;
+    const lug = new THREE.Group();
+    lug.position.set(Math.cos(a) * r, y, Math.sin(a) * r);
+    lug.lookAt(Math.cos(a) * 100, y, Math.sin(a) * 100);
+    const pad = new THREE.Mesh(new THREE.BoxGeometry(3.2, 0.8, 2.6), M.metal());
+    lug.add(pad);
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(1.55, 0.55, 12, 32), M.metalLight());
+    ring.position.z = 0.8;
+    lug.add(ring);
+    gLugs.add(lug);
+  });
+  return gLugs;
+}
+
+const bombGroup = new THREE.Group();
+bombGroup.rotation.z = -Math.PI / 2;
+bombGroup.scale.setScalar(0.1);
+function buildModel() {
+  bombGroup.add(buildCasing(), buildTail(), buildFins(), buildRadar(), buildXUnit(), buildConduits(), buildPlugs(), buildLugs());
+  scene.add(bombGroup);
+}
+buildModel();
+
+const PARTS = [
+  { id: "casing", name: "Ballistic casing", meta: "60 in", tint: "", group: gCasing,
+    desc: "Steel aerodynamic shell enclosing the implosion assembly. Its egg profile houses the spherical charge while keeping drag low in free fall." },
+  { id: "tail", name: "Tail cone", meta: "27 in", tint: "", group: gTail,
+    desc: "Tapered cone joining the casing to the tail structure, ending in a bolted rear bulkhead and central hub." },
+  { id: "fins", name: "Fin assembly", meta: "4 fins", tint: "", group: gFins,
+    desc: "Box-frame tail stabilizer. Four swept fins lock the weapon into a stable trajectory after release." },
+  { id: "radar", name: "Radar units", meta: "4 Archie", tint: "tint-success", group: gRadar,
+    desc: "Four Archie proximity antennas around the nose. They sensed the planned burst altitude and triggered the detonation." },
+  { id: "xunit", name: "X-Unit", meta: "Firing set", tint: "tint-warning", group: gXUnit,
+    desc: "Firing unit mounted on the tail cone. It timed the simultaneous pulses that fired every explosive lens at once." },
+  { id: "conduits", name: "Conduits", meta: "2 lines", tint: "", group: gConduits,
+    desc: "Shielded cable raceways carrying firing signals from the X-Unit along the casing toward the nose." },
+  { id: "plugs", name: "Arming plugs", meta: "Safe / arm", tint: "tint-danger", group: gPlugs,
+    desc: "Two waist ports: the green safe plug and the red arm plug. Arming in flight meant pulling safe and inserting arm." },
+  { id: "lugs", name: "Lifting lugs", meta: "2 points", tint: "", group: gLugs,
+    desc: "Paired eyebolts along the spine, used to rig the weapon into the bomber's bay." }
+];
+
+const partsList = document.getElementById("parts-list");
+const partsCount = document.getElementById("parts-count");
+const descName = document.getElementById("desc-name");
+const descMeta = document.getElementById("desc-meta");
+const descText = document.getElementById("desc-text");
+const rotateTab = document.getElementById("rotate-tab");
+const wireTab = document.getElementById("wire-tab");
+const resetButton = document.getElementById("reset-button");
+
+const SEL_EMISSIVE = 0x3d5a48;
+const HOV_EMISSIVE = 0x2c3f35;
+let selected = null;
+let hovered = null;
+
+function setEmissive(group, hex) {
+  if (!group) return;
+  group.traverse((o) => {
+    if (o.isMesh && o.material && o.material.emissive) o.material.emissive.setHex(hex);
+  });
+}
+function refreshHighlight() {
+  PARTS.forEach((p) => setEmissive(p.group, 0x000000));
+  if (hovered && hovered !== selected) setEmissive(hovered.group, HOV_EMISSIVE);
+  if (selected) setEmissive(selected.group, SEL_EMISSIVE);
+}
+function selectPart(p) {
+  selected = p;
+  PARTS.forEach((q) => q.row.setAttribute("aria-pressed", String(q === p && p !== null)));
+  if (p) {
+    descName.textContent = p.name;
+    descMeta.textContent = p.meta;
+    descText.textContent = p.desc;
+  } else {
+    descName.textContent = "Fat Man";
+    descMeta.textContent = "Model overview";
+    descText.textContent = "An implosion-type fission weapon. A subcritical plutonium core was surrounded by explosive lenses and crushed inward to criticality. Explore each component from the list.";
+  }
+  refreshHighlight();
+}
+
+PARTS.forEach((p, i) => {
+  const li = document.createElement("li");
+  const btn = document.createElement("button");
+  btn.className = "row";
+  btn.type = "button";
+  btn.setAttribute("aria-pressed", "false");
+  btn.style.animationDelay = (0.05 + i * 0.035).toFixed(3) + "s";
+  const badge = document.createElement("span");
+  badge.className = "row-badge" + (p.tint ? " " + p.tint : "");
+  const dot = document.createElement("i");
+  badge.appendChild(dot);
+  const name = document.createElement("span");
+  name.className = "row-name";
+  name.textContent = p.name;
+  const meta = document.createElement("span");
+  meta.className = "row-meta";
+  meta.textContent = p.meta;
+  btn.append(badge, name, meta);
+  btn.addEventListener("click", () => selectPart(selected === p ? null : p));
+  btn.addEventListener("mouseenter", () => { hovered = p; refreshHighlight(); });
+  btn.addEventListener("mouseleave", () => { hovered = null; refreshHighlight(); });
+  li.appendChild(btn);
+  partsList.appendChild(li);
+  p.row = btn;
+});
+partsCount.textContent = String(PARTS.length);
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") selectPart(null);
+});
+
+rotateTab.addEventListener("click", () => {
+  controls.autoRotate = !controls.autoRotate;
+  rotateTab.setAttribute("aria-pressed", String(controls.autoRotate));
+});
+const wireMat = new THREE.MeshBasicMaterial({ wireframe: true });
+wireTab.addEventListener("click", () => {
+  const on = scene.overrideMaterial === null;
+  scene.overrideMaterial = on ? wireMat : null;
+  wireTab.setAttribute("aria-pressed", String(on));
+});
+resetButton.addEventListener("click", () => {
+  camera.position.copy(HOME_POS);
+  controls.target.copy(HOME_TARGET);
+  controls.autoRotate = true;
+  rotateTab.setAttribute("aria-pressed", "true");
+});
+
+function cssVar(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+function applyThemeToScene() {
+  renderer.setClearColor(new THREE.Color(cssVar("--background")), 1);
+  wireMat.color.set(cssVar("--ink"));
+}
+window.addEventListener("themechange", applyThemeToScene);
+
+function fit() {
+  const w = canvas.clientWidth || window.innerWidth;
+  const h = canvas.clientHeight || window.innerHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener("resize", fit);
+fit();
+applyThemeToScene();
+
+let firstFrame = true;
+function loop() {
+  controls.update();
+  renderer.render(scene, camera);
+  if (firstFrame) {
+    firstFrame = false;
+    loading.remove();
+  }
+  requestAnimationFrame(loop);
+}
+loop();
+} catch (e) {
+  loading.remove();
+  fail.style.display = "block";
+  if (e && e.message) {
+    document.getElementById("fail-text").textContent = "The 3D engine could not be fetched from the CDN. " + e.message;
+  }
+}
+})();
+</script>
+</body>
+</html>
