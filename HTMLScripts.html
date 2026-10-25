@@ -115,6 +115,58 @@ body {
 [data-theme="light"] .icon-sun { display: none; }
 [data-theme="dark"] .icon-moon { display: none; }
 .divider { height: 1px; margin: 0 24px; background: var(--line-soft); }
+.files { padding: 12px 12px 14px; }
+.file-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.file-card {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-small);
+  background: var(--surface);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .12s ease, background-color .12s ease;
+  animation: rise-in .42s cubic-bezier(.21,.8,.35,1) both;
+}
+.file-card:hover { border-color: var(--line-strong); }
+.file-card:active { background: var(--surface-secondary); }
+.file-icon {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-small);
+  background: var(--surface-secondary);
+  color: var(--ink-soft);
+  transition: background-color .12s ease, color .12s ease;
+}
+.file-card:hover .file-icon { background: var(--line-soft); color: var(--ink); }
+.file-titles { flex: 1; min-width: 0; }
+.file-name {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.file-meta { display: block; margin-top: 1px; font-size: 12px; color: var(--muted); }
+.file-chevron { flex: none; color: var(--faint); display: inline-flex; }
 .empty {
   display: flex;
   flex-direction: column;
@@ -122,6 +174,7 @@ body {
   text-align: center;
   padding: 56px 28px;
 }
+.empty[hidden] { display: none; }
 .blank-illustration {
   display: block;
   width: 176px;
@@ -165,9 +218,113 @@ body {
 }
 .count { margin: 0; font-size: 12.5px; color: var(--faint); font-variant-numeric: tabular-nums; }
 .count-number { color: var(--ink); font-weight: 600; }
+.viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  background: var(--background);
+}
+.viewer[hidden] { display: none; }
+.viewer-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border-bottom: 1.5px solid var(--line-strong);
+}
+.back-button {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-small);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color .12s ease, color .12s ease;
+}
+.back-button:hover { background: var(--surface-secondary); color: var(--ink); }
+.viewer-name {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.viewer-stage { position: relative; flex: 1; min-height: 0; }
+#viewer-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  background: var(--background);
+}
+.viewer-loading {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  background: var(--surface);
+  border: 1.5px solid var(--line-strong);
+  border-radius: 999px;
+}
+.viewer-loading[hidden] { display: none; }
+.loading-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--muted);
+  opacity: .25;
+  animation: dot-pulse 1.2s ease-in-out infinite;
+}
+.loading-dot:nth-child(2) { animation-delay: .18s; }
+.loading-dot:nth-child(3) { animation-delay: .36s; }
+.loading-label { font-size: 11.5px; color: var(--muted); }
+.viewer-fail {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(420px, calc(100vw - 40px));
+  padding: 22px 22px 18px;
+  background: var(--surface);
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  text-align: center;
+  display: none;
+}
+.fail-title { margin: 0; font-size: 14.5px; font-weight: 600; color: var(--ink); }
+.fail-text { margin: 6px 0 12px; font-size: 11.5px; color: var(--muted); }
+.fail-links { display: flex; flex-direction: column; gap: 6px; align-items: center; }
+.fail-links a { color: var(--ink); font-size: 12px; text-decoration: underline; word-break: break-all; }
 @keyframes rise-in {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
+}
+@keyframes dot-pulse {
+  0%, 100% { opacity: .25; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-2px); }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -181,8 +338,10 @@ body {
   .container { max-width: none; }
   .header { padding: 20px 20px 16px; }
   .divider { margin: 0 20px; }
+  .files { padding: 10px 10px 12px; }
   .empty { padding: 48px 20px; }
   .footer { padding: 12px 20px 14px; }
+  .viewer-bar { padding: 10px 12px; gap: 10px; }
 }
 </style>
 </head>
@@ -202,7 +361,10 @@ body {
       </button>
     </header>
     <div class="divider" role="presentation"></div>
-    <section class="empty" aria-label="No HTML files yet">
+    <section class="files" aria-label="HTML files">
+      <ul class="file-list" id="file-list"></ul>
+    </section>
+    <section class="empty" id="empty" aria-label="No HTML files yet" hidden>
       <svg class="blank-illustration" width="176" height="132" viewBox="0 0 176 132" role="img" aria-labelledby="blank-label">
         <title id="blank-label">A blank page waiting for content</title>
         <ellipse class="ground" cx="88" cy="118" rx="62" ry="7"/>
@@ -222,38 +384,191 @@ body {
     </section>
     <div class="divider" role="presentation"></div>
     <footer class="footer">
-      <p class="count"><span class="count-number">0</span> files</p>
+      <p class="count"><span class="count-number" id="count-number">0</span> files</p>
     </footer>
   </section>
 </main>
+<section class="viewer" id="viewer" hidden aria-label="Full preview">
+  <header class="viewer-bar">
+    <button class="back-button" id="back-button" type="button">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M10 3.5 5.5 8 10 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Back</span>
+    </button>
+    <h2 class="viewer-name" id="viewer-name"></h2>
+    <button class="icon-button" id="theme-toggle-viewer" type="button" aria-label="Switch to dark theme" aria-pressed="false" title="Switch theme">
+      <svg class="icon-moon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M13.6 9.7A6.1 6.1 0 0 1 6.3 2.4a6.1 6.1 0 1 0 7.3 7.3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+      <svg class="icon-sun" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <circle cx="8" cy="8" r="3.1" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M8 1.3v1.5M8 13.2v1.5M1.3 8h1.5M13.2 8h1.5M3.4 3.4l1 1M11.6 11.6l1 1M12.6 3.4l-1 1M4.4 11.6l-1 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </header>
+  <div class="viewer-stage">
+    <iframe id="viewer-frame" title="File preview"></iframe>
+    <div class="viewer-loading" id="viewer-loading" hidden>
+      <span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span>
+      <span class="loading-label">Loading</span>
+    </div>
+    <div class="viewer-fail" id="viewer-fail">
+      <h3 class="fail-title">File could not load</h3>
+      <p class="fail-text" id="viewer-fail-text">Every mirror timed out. Try a direct link.</p>
+      <div class="fail-links" id="viewer-fail-links"></div>
+    </div>
+  </div>
+</section>
 <script>
 (function () {
   "use strict";
+  var FILES = [
+    { name: "Nuclear Bomb Model", meta: "3D model", file: "files/NuclearBomb.html", pin: "d5d4821" }
+  ];
+  function mirrors(f) {
+    return [
+      "https://cdn.jsdelivr.net/gh/Toluwer/HTML-Scripts@" + f.pin + "/" + f.file,
+      "https://cdn.jsdelivr.net/gh/Toluwer/HTML-Scripts@main/" + f.file,
+      "https://raw.githubusercontent.com/Toluwer/HTML-Scripts/main/" + f.file,
+      "https://fastly.jsdelivr.net/gh/Toluwer/HTML-Scripts@main/" + f.file
+    ];
+  }
+  var BOMB_ICON = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="9.5" rx="6" ry="6.8"/><path d="M8.7 15.6 7 21M15.3 15.6 17 21M12 16.3v4.7"/></svg>';
+  var CHEVRON = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
   var root = document.documentElement;
-  var toggle = document.getElementById("theme-toggle");
-  var BROWSER_COLOR = { light: "#f6f5f1", dark: "#141311" };
+  var toggles = [document.getElementById("theme-toggle"), document.getElementById("theme-toggle-viewer")];
   function readTheme() {
     return root.getAttribute("data-theme") === "dark" ? "dark" : "light";
   }
   function paint(theme) {
     root.setAttribute("data-theme", theme);
-    if (toggle) {
-      toggle.setAttribute("aria-label", theme === "dark" ? "Switch to light theme" : "Switch to dark theme");
-      toggle.setAttribute("aria-pressed", String(theme === "dark"));
-    }
+    toggles.forEach(function (t) {
+      if (!t) return;
+      t.setAttribute("aria-label", theme === "dark" ? "Switch to light theme" : "Switch to dark theme");
+      t.setAttribute("aria-pressed", String(theme === "dark"));
+    });
   }
   paint(readTheme());
-  if (toggle) {
-    toggle.addEventListener("click", function () {
+  toggles.forEach(function (t) {
+    if (t) t.addEventListener("click", function () {
       var next = readTheme() === "dark" ? "light" : "dark";
       paint(next);
       try { localStorage.setItem("html-scripts-theme", next); } catch (e) {}
     });
-  }
+  });
   try {
     var stored = localStorage.getItem("html-scripts-theme");
     if (stored === "light" || stored === "dark") paint(stored);
   } catch (e) {}
+
+  var list = document.getElementById("file-list");
+  var empty = document.getElementById("empty");
+  var countNumber = document.getElementById("count-number");
+  FILES.forEach(function (f, i) {
+    var li = document.createElement("li");
+    var btn = document.createElement("button");
+    btn.className = "file-card";
+    btn.type = "button";
+    btn.style.animationDelay = (0.05 + i * 0.06).toFixed(2) + "s";
+    var icon = document.createElement("span");
+    icon.className = "file-icon";
+    icon.innerHTML = BOMB_ICON;
+    var titles = document.createElement("span");
+    titles.className = "file-titles";
+    var name = document.createElement("span");
+    name.className = "file-name";
+    name.textContent = f.name;
+    var meta = document.createElement("span");
+    meta.className = "file-meta";
+    meta.textContent = f.meta;
+    titles.append(name, meta);
+    var chev = document.createElement("span");
+    chev.className = "file-chevron";
+    chev.innerHTML = CHEVRON;
+    btn.append(icon, titles, chev);
+    btn.addEventListener("click", function () { openViewer(f); });
+    li.appendChild(btn);
+    list.appendChild(li);
+  });
+  if (FILES.length) empty.hidden = true;
+  countNumber.textContent = String(FILES.length);
+
+  var viewer = document.getElementById("viewer");
+  var frame = document.getElementById("viewer-frame");
+  var loading = document.getElementById("viewer-loading");
+  var failCard = document.getElementById("viewer-fail");
+  var failText = document.getElementById("viewer-fail-text");
+  var failLinks = document.getElementById("viewer-fail-links");
+  var viewerName = document.getElementById("viewer-name");
+  var current = null;
+  var token = 0;
+
+  function fetchWithTimeout(url, ms) {
+    var ctrl = new AbortController();
+    var timer = setTimeout(function () { ctrl.abort(); }, ms);
+    return fetch(url, { signal: ctrl.signal }).finally(function () { clearTimeout(timer); });
+  }
+  function showFail(urls) {
+    loading.hidden = true;
+    failCard.style.display = "block";
+    failLinks.innerHTML = "";
+    urls.forEach(function (u) {
+      var a = document.createElement("a");
+      a.href = u;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.textContent = u.replace("https://", "").split("/").slice(0, 3).join("/");
+      failLinks.appendChild(a);
+    });
+  }
+  function resolveFile(f, myToken) {
+    var urls = mirrors(f);
+    var i = 0;
+    function attempt() {
+      if (myToken !== token) return;
+      if (i >= urls.length) { showFail(urls); return; }
+      var url = urls[i++];
+      fetchWithTimeout(url, 8000)
+        .then(function (r) {
+          if (!r.ok) throw new Error("bad status");
+          return r.text();
+        })
+        .then(function (text) {
+          if (myToken !== token) return;
+          if (text.length < 500 || text.toLowerCase().indexOf("<!doctype html") === -1) throw new Error("bad payload");
+          frame.srcdoc = text;
+        })
+        .catch(attempt);
+    }
+    attempt();
+  }
+  function openViewer(f) {
+    current = f;
+    token++;
+    viewerName.textContent = f.name;
+    failCard.style.display = "none";
+    loading.hidden = false;
+    frame.srcdoc = "";
+    viewer.hidden = false;
+    resolveFile(f, token);
+  }
+  function closeViewer() {
+    token++;
+    current = null;
+    viewer.hidden = true;
+    frame.srcdoc = "";
+    loading.hidden = true;
+    failCard.style.display = "none";
+  }
+  frame.addEventListener("load", function () {
+    if (current) loading.hidden = true;
+  });
+  document.getElementById("back-button").addEventListener("click", closeViewer);
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !viewer.hidden) closeViewer();
+  });
 }());
 </script>
 </body>
