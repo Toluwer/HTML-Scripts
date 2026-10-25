@@ -7,15 +7,15 @@
     var USER = "Toluwer", REPO = "HTML-Scripts", APP = "HTMLScripts.html";
     var SOURCES = [
       "https://cdn.jsdelivr.net/gh/" + USER + "/" + REPO + "@main/" + APP,
+      "https://cdn.jsdelivr.net/gh/" + USER + "/" + REPO + "@a0e1ec4/" + APP,
       "https://raw.githubusercontent.com/" + USER + "/" + REPO + "/main/" + APP,
-      "https://fastly.jsdelivr.net/gh/" + USER + "/" + REPO + "@main/" + APP,
-      "https://gcore.jsdelivr.net/gh/" + USER + "/" + REPO + "@main/" + APP
+      "https://fastly.jsdelivr.net/gh/" + USER + "/" + REPO + "@main/" + APP
     ];
     var LINKS = [
       ["open via cdn.jsdelivr.net", SOURCES[0]],
-      ["open via raw.githubusercontent.com", SOURCES[1]],
-      ["open via fastly.jsdelivr.net", SOURCES[2]],
-      ["open via gcore.jsdelivr.net", SOURCES[3]]
+      ["open via cdn.jsdelivr.net (pinned)", SOURCES[1]],
+      ["open via raw.githubusercontent.com", SOURCES[2]],
+      ["open via fastly.jsdelivr.net", SOURCES[3]]
     ];
     var svg = document.documentElement;
     var XSVG = "http://www.w3.org/2000/svg", XH = "http://www.w3.org/1999/xhtml";
