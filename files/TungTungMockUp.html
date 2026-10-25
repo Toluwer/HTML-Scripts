@@ -1,0 +1,3500 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tung Tung</title>
+<script>(function(){try{var t=localStorage.getItem("tungtung-mock-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+<style>
+:root {
+  color-scheme: light;
+  --background: #f5f4ef;
+  --background-wash: #efece4;
+  --surface: #ffffff;
+  --surface-secondary: #faf9f5;
+  --ink: #161616;
+  --ink-soft: #4a4a48;
+  --muted: #86857e;
+  --faint: #b5b3aa;
+  --line: #ece9df;
+  --line-soft: #f3f1e9;
+  --line-strong: #c8c2ad;
+  --accent: #ff8a2b;
+  --accent-strong: #e6771f;
+  --accent-ink: #241304;
+  --accent-soft: #fdeede;
+  --accent-soft-2: #fbddc0;
+  --accent-line: #f0c69a;
+  --radius: 12px;
+  --radius-small: 10px;
+  --shadow: 0 1px 2px rgba(28,26,21,.04), 0 12px 36px rgba(28,26,21,.06);
+  --shadow-deep: 0 1px 2px rgba(28,26,21,.06), 0 12px 34px rgba(28,26,21,.14);
+  --fs: 1;
+}
+[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #141311;
+  --background-wash: #1c1a15;
+  --surface: #1d1c19;
+  --surface-secondary: #242320;
+  --ink: #eceae3;
+  --ink-soft: #b6b4ab;
+  --muted: #8b897f;
+  --faint: #5e5c53;
+  --line: #33322c;
+  --line-soft: #2a2924;
+  --line-strong: #4a4840;
+  --accent: #ff8a2b;
+  --accent-strong: #ffa04d;
+  --accent-ink: #241304;
+  --accent-soft: rgba(255,138,43,.13);
+  --accent-soft-2: rgba(255,138,43,.22);
+  --accent-line: rgba(255,138,43,.38);
+  --shadow: 0 1px 2px rgba(0,0,0,.30), 0 12px 36px rgba(0,0,0,.40);
+  --shadow-deep: 0 1px 2px rgba(0,0,0,.35), 0 12px 34px rgba(0,0,0,.5);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-size: calc(15px * var(--fs));
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--background);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse 1100px 520px at 50% -160px, var(--accent-soft), transparent 70%);
+  pointer-events: none;
+  transition: opacity .45s ease;
+}
+body.bg-none::before { opacity: 0; background: none; }
+body.bg-hive::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle at 50% 50%, transparent 15px, var(--accent-line) 16px, transparent 17px);
+  background-size: 54px 62px;
+  opacity: .35;
+}
+body.bg-grid::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 46px 46px;
+  opacity: .5;
+}
+body.bg-stars::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(1.5px 1.5px at 20px 30px, var(--faint), transparent), radial-gradient(1.5px 1.5px at 120px 80px, var(--faint), transparent), radial-gradient(2px 2px at 60px 150px, var(--muted), transparent), radial-gradient(1px 1px at 175px 45px, var(--faint), transparent);
+  background-size: 200px 200px;
+  opacity: .6;
+}
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+* { scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--line); border-radius: 999px; }
+button { font-family: inherit; }
+.page { position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden; }
+.page[hidden] { display: none; }
+.rise { animation: rise-in .42s cubic-bezier(.21,.8,.35,1) both; }
+@keyframes rise-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes dot-pulse { 0%, 100% { opacity: .25; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-2px); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes splash-pop { 0% { opacity: 0; transform: translateY(4px); } 100% { opacity: 1; transform: translateY(0); } }
+.icon {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  flex: none;
+  vertical-align: -.125em;
+}
+.nav-wrapper {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 100;
+}
+.nav-active-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  border: 1.5px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--accent);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow);
+  transition: background-color .15s ease, border-color .15s ease, transform .15s ease, opacity .2s ease;
+  position: relative;
+}
+.nav-active-btn:hover { background: var(--surface-secondary); border-color: var(--accent-line); }
+.nav-active-btn:active { transform: translateY(.5px); }
+.nav-panel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 8px;
+  opacity: 0;
+  transform: translateY(8px) scale(.98);
+  transform-origin: bottom left;
+  pointer-events: none;
+  transition: opacity .18s ease, transform .18s ease;
+}
+.nav-panel.show { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+.nav-wrapper.nav-open .nav-active-btn { opacity: 0; pointer-events: none; transform: scale(.7); }
+.nav-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 198px;
+  max-height: calc(100vh - 56px);
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius);
+  padding: 8px;
+  box-shadow: var(--shadow-deep);
+}
+.nav-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 11px;
+  margin-bottom: 5px;
+  border: 0;
+  border-bottom: 1px solid var(--line-soft);
+  border-radius: var(--radius-small) var(--radius-small) 0 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color .12s ease, color .12s ease;
+}
+.nav-head:hover { background: var(--surface-secondary); color: var(--accent); }
+.nav-head .icon { color: var(--accent); font-size: 15px; width: 15px; text-align: center; }
+.nav-head span { flex: 1; text-align: left; }
+.nav-list { display: flex; flex-direction: column; gap: 2px; }
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  height: 38px;
+  border-radius: var(--radius-small);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color .12s ease, color .12s ease, border-color .12s ease;
+}
+.nav-btn .icon { width: 16px; font-size: 16px; color: var(--muted); transition: color .12s ease; }
+.nav-btn span { flex: 1; text-align: left; }
+.nav-btn:hover { background: var(--surface-secondary); color: var(--ink); }
+.nav-btn:hover .icon { color: var(--ink-soft); }
+.nav-btn.active { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent); }
+.nav-btn.active .icon { color: var(--accent); }
+.util-column { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.util-btn {
+  width: 50px;
+  height: 50px;
+  padding: 0;
+  border-radius: 999px;
+  border: 1.5px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 17px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+}
+.util-btn:hover { background: var(--surface-secondary); border-color: var(--accent-line); color: var(--accent); }
+.toast {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  color: var(--accent-ink);
+  padding: 9px 16px;
+  border-radius: var(--radius-small);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity .18s ease, transform .18s ease;
+  z-index: 9999;
+  pointer-events: none;
+  background: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+  max-width: min(360px, calc(100vw - 32px));
+}
+.toast.show { opacity: 1; transform: none; }
+.mini-player {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 90;
+  display: none;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 11px;
+  row-gap: 9px;
+  width: 360px;
+  max-width: calc(100vw - 40px);
+  padding: 11px 12px 10px 11px;
+  background: var(--surface);
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-deep);
+}
+.mini-player.show { display: flex; }
+.mini-player.min { width: 56px; height: 56px; padding: 0; border-radius: 999px; justify-content: center; overflow: visible; cursor: pointer; }
+.mini-player.min .mi-info, .mini-player.min .mi-lyrbtn, .mini-player.min .mi-wavebox, .mini-player.min .mi-win { display: none; }
+.mini-player.min .mi-cover { width: 56px; height: 56px; }
+.mi-cover {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  object-fit: cover;
+  background: var(--accent-soft);
+  border: 1px solid var(--line);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.mi-info { flex: 1; min-width: 0; }
+.mi-title {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mi-artist {
+  display: block;
+  margin-top: 1px;
+  font-size: 11.5px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mi-btn {
+  background: none;
+  border: none;
+  color: var(--ink-soft);
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  font-size: 13px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  transition: background-color .12s ease, color .12s ease;
+}
+.mi-btn:hover { color: var(--accent); background: var(--accent-soft); }
+.mi-lyrbtn { width: 30px; height: 30px; font-size: 14px; }
+.mi-lyrbtn.on { color: var(--accent); background: var(--accent-soft); }
+.mi-wavebox {
+  flex-basis: 100%;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--muted);
+  font-size: 10.5px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.mi-ctrls { display: flex; align-items: center; gap: 2px; margin-right: 3px; flex-shrink: 0; }
+.mi-play {
+  width: 34px;
+  height: 34px;
+  font-size: 13px;
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.mi-play:hover { background: var(--accent-strong); color: var(--accent-ink); }
+.mi-wave { position: relative; flex: 1; height: 22px; cursor: pointer; }
+.mi-wl { position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between; pointer-events: none; opacity: .3; }
+.mi-wl i { display: block; flex: 0 0 2px; border-radius: 2px; background: var(--accent); }
+.mi-wl-fill { opacity: 1; clip-path: inset(0 calc(100% - var(--p, 0) * 1%) 0 0); }
+.mi-win {
+  position: absolute;
+  top: -14px;
+  right: 14px;
+  display: flex;
+  gap: 3px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  opacity: 0;
+  transform: translateY(4px);
+  pointer-events: none;
+  transition: opacity .15s ease, transform .15s ease;
+}
+.mini-player:hover .mi-win { opacity: 1; transform: none; pointer-events: auto; }
+.mi-win .mi-btn { width: 24px; height: 24px; font-size: 11px; }
+.mini-player.min::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 999px;
+  pointer-events: none;
+  background: conic-gradient(var(--accent) calc(var(--p, 0) * 1%), var(--line-strong) 0);
+  -webkit-mask: radial-gradient(circle, transparent 0 28px, #000 28.5px);
+  mask: radial-gradient(circle, transparent 0 28px, #000 28.5px);
+}
+.status-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  z-index: 10;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+.status-left, .status-right { display: flex; align-items: center; gap: 8px; }
+.battery { display: flex; align-items: center; gap: 5px; }
+.battery-icon { width: 22px; height: 11px; border: 1.5px solid var(--muted); border-radius: 3px; padding: 1.5px; position: relative; }
+.battery-icon::after { content: ""; position: absolute; right: -4px; top: 2.5px; width: 2px; height: 4px; background: var(--muted); border-radius: 0 1px 1px 0; }
+.battery-fill { height: 100%; width: 100%; background: var(--accent); border-radius: 1px; }
+.home-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  gap: 16px;
+  padding: 40px 20px;
+}
+.tung-img {
+  width: 130px;
+  height: 130px;
+  object-fit: contain;
+  cursor: pointer;
+  user-select: none;
+}
+.wordmark {
+  margin: 0;
+  font-size: calc(64px * var(--fs));
+  font-weight: 300;
+  color: var(--ink);
+  letter-spacing: .22em;
+  text-transform: lowercase;
+  line-height: 1;
+  animation: rise-in .42s cubic-bezier(.21,.8,.35,1) .05s both;
+}
+.wordmark em { font-style: normal; color: var(--accent); }
+.splash {
+  font-size: calc(15px * var(--fs));
+  color: var(--muted);
+  letter-spacing: .04em;
+  min-height: 1.6em;
+  max-width: 500px;
+  cursor: pointer;
+  user-select: none;
+  transition: color .18s ease;
+  animation: rise-in .42s cubic-bezier(.21,.8,.35,1) .12s both;
+}
+.splash:hover { color: var(--accent); }
+.splash.pop { animation: splash-pop .28s ease; }
+.corner-btns {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 5;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.chip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 13px;
+  border-radius: var(--radius-small);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: background-color .12s ease, border-color .12s ease, color .12s ease;
+}
+.chip-btn:hover { background: var(--surface-secondary); border-color: var(--accent-line); color: var(--accent); }
+.chip-btn:active { transform: translateY(.5px); }
+.chip-btn.pill { border-radius: 999px; }
+.chip-btn .icon { font-size: 13px; }
+.primary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: var(--radius-small);
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color .12s ease;
+}
+.primary-btn:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
+.primary-btn:active { transform: translateY(.5px); }
+.primary-btn .icon { font-size: 13px; }
+.page-head { padding: 34px 20px 6px; max-width: 1060px; margin: 0 auto; }
+.page-title { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -.01em; color: var(--ink); }
+.page-count { margin: 2px 0 0; font-size: 12.5px; color: var(--faint); font-variant-numeric: tabular-nums; }
+.page-count b { color: var(--ink); font-weight: 600; }
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px 14px;
+  max-width: 1060px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+}
+.search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 220px;
+  max-width: 420px;
+}
+.search-wrap .lead-icon { position: absolute; left: 12px; color: var(--faint); font-size: 14px; pointer-events: none; }
+.search-input {
+  width: 100%;
+  min-height: 40px;
+  padding: 10px 34px 10px 34px;
+  border-radius: var(--radius-small);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 13.5px;
+  outline: none;
+  transition: border-color .12s ease;
+}
+.search-input::placeholder { color: var(--faint); }
+.search-input:focus { border-color: var(--ink); }
+.cat-dd { position: relative; }
+.cat-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 8px 12px;
+  border-radius: var(--radius-small);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color .12s ease, color .12s ease, border-color .12s ease;
+}
+.cat-trigger:hover { background: var(--surface-secondary); color: var(--ink); }
+.cat-trigger .icon { font-size: 13px; color: var(--muted); }
+.cat-trigger .caret { font-size: 12px; color: var(--faint); transition: transform .18s ease; }
+.cat-dd.open .caret { transform: rotate(180deg); }
+.cat-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 170px;
+  padding: 5px;
+  background: var(--surface);
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-deep);
+  z-index: 40;
+  display: none;
+  animation: menu-in .18s cubic-bezier(.21,.8,.35,1) both;
+  transform-origin: top left;
+}
+.cat-dd.open .cat-menu { display: block; }
+@keyframes menu-in { from { opacity: 0; transform: translateY(4px) scale(.98); } to { opacity: 1; transform: none; } }
+.cat-opt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color .12s ease, color .12s ease;
+}
+.cat-opt:hover { background: var(--surface-secondary); color: var(--ink); }
+.cat-opt.active { background: var(--accent-soft); color: var(--accent); }
+.cat-opt .icon { font-size: 12px; width: 14px; }
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: 14px;
+  padding: 4px 20px 110px;
+  max-width: 1060px;
+  margin: 0 auto;
+}
+.game-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 0;
+  overflow: hidden;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  transition: border-color .12s ease, background-color .12s ease;
+  animation: rise-in .42s cubic-bezier(.21,.8,.35,1) both;
+}
+.game-card:hover { border-color: var(--line-strong); background: var(--surface-secondary); }
+.game-thumb { position: relative; width: 100%; aspect-ratio: 1; background: var(--surface-secondary); }
+.game-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.game-thumb .thumb-fallback {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.game-thumb.zerofallback .thumb-fallback { display: flex; }
+.game-play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(20,19,17,.42);
+  color: #fff;
+  font-size: 22px;
+  opacity: 0;
+  transition: opacity .15s ease;
+}
+.game-card:hover .game-play, .game-card:focus-visible .game-play { opacity: 1; }
+.game-name {
+  padding: 8px 10px 9px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fav-star {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  border: 0;
+  background: var(--surface);
+  color: var(--faint);
+  font-size: 12px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .15s ease, color .15s ease, background-color .15s ease;
+  box-shadow: var(--shadow);
+}
+.game-card:hover .fav-star, .fav-star.faved { opacity: 1; }
+.fav-star:hover { color: var(--accent); }
+.fav-star.faved { color: var(--accent); background: var(--accent-soft); }
+.grid-title {
+  margin: 0;
+  padding: 34px 20px 4px;
+  max-width: 1060px;
+  margin: 0 auto;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  color: var(--ink);
+}
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 14px;
+  padding: 14px 20px 110px;
+  max-width: 1060px;
+  margin: 0 auto;
+}
+.app-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  transition: border-color .12s ease, background-color .12s ease;
+  animation: rise-in .42s cubic-bezier(.21,.8,.35,1) both;
+}
+.app-card:hover { border-color: var(--line-strong); background: var(--surface-secondary); }
+.app-badge {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--accent-line);
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+}
+.app-name { font-size: 13px; font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.app-ov {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--background);
+  display: none;
+}
+.app-ov.show { display: block; }
+.app-ov-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-small);
+  border: 1.5px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow);
+  transition: background-color .12s ease, color .12s ease;
+}
+.app-ov-btn:hover { background: var(--surface-secondary); color: var(--accent); }
+.app-ov-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+}
+.app-ov-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 34px 38px;
+  background: var(--surface);
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  text-align: center;
+  max-width: 360px;
+}
+.app-ov-title { margin: 0; font-size: 16px; font-weight: 600; color: var(--ink); }
+.app-ov-note { margin: 0; font-size: 12.5px; color: var(--muted); }
+.auth-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 20px 90px;
+}
+.auth-card {
+  width: min(380px, 100%);
+  background: var(--surface);
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-deep);
+  padding: 26px 24px 22px;
+  animation: rise-in .42s cubic-bezier(.21,.8,.35,1) both;
+}
+.auth-logo { height: 48px; width: auto; border-radius: 10px; display: block; margin: 0 auto 12px; }
+.auth-sub { margin: 0 0 14px; font-size: 12.5px; color: var(--muted); text-align: center; }
+.auth-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.auth-tab {
+  flex: 1;
+  padding: 7px 12px;
+  border-radius: var(--radius-small);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color .12s ease, color .12s ease, border-color .12s ease;
+}
+.auth-tab:hover { background: var(--surface-secondary); color: var(--ink); }
+.auth-tab.active { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent); }
+.auth-field { position: relative; margin-bottom: 12px; }
+.auth-field label { display: block; margin-bottom: 5px; font-size: 11px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.auth-input {
+  width: 100%;
+  min-height: 40px;
+  padding: 10px 12px;
+  border-radius: var(--radius-small);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 13.5px;
+  outline: none;
+  transition: border-color .12s ease;
+}
+.auth-input::placeholder { color: var(--faint); }
+.auth-input:focus { border-color: var(--ink); }
+.field-icon { position: absolute; right: 12px; bottom: 12px; color: var(--faint); font-size: 14px; pointer-events: none; }
+.toggle-pw {
+  position: absolute;
+  right: 8px;
+  bottom: 6px;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.toggle-pw:hover { color: var(--ink); background: var(--surface-secondary); }
+.auth-btn { width: 100%; margin-top: 4px; }
+.auth-links { display: flex; gap: 16px; justify-content: center; margin-top: 14px; }
+.auth-link {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--line-strong);
+  padding-bottom: 1px;
+  cursor: pointer;
+  background: none;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  font-family: inherit;
+}
+.auth-link:hover { color: var(--accent); border-color: var(--accent-line); }
+.ai-shell { position: absolute; inset: 0; display: flex; overflow: hidden; }
+.ai-side {
+  width: 264px;
+  flex: none;
+  background: var(--surface);
+  border-right: 1.5px solid var(--line-strong);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  z-index: 30;
+}
+.side-top { padding: 16px 14px 10px; }
+.brand { font-size: 15px; font-weight: 600; letter-spacing: -.01em; color: var(--ink); }
+.brand em { font-style: normal; color: var(--accent); }
+.side-acts { display: flex; gap: 6px; margin-top: 12px; }
+.sideact {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 13px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background-color .12s ease, color .12s ease;
+}
+.sideact:hover { background: var(--surface-secondary); color: var(--accent); }
+.chatlist { padding: 4px 10px 16px; }
+.chat-group { padding: 10px 10px 6px; font-size: 11px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.chatitem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-small);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 13px;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color .12s ease, color .12s ease;
+}
+.chatitem .ci-ic { font-size: 13px; color: var(--muted); flex: none; }
+.chatitem .t { flex: 1; min-width: 0; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chatitem:hover { background: var(--surface-secondary); color: var(--ink); }
+.chatitem.active { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent); }
+.chatitem.active .ci-ic { color: var(--accent); }
+.chatitem .more { border: 0; background: none; color: var(--faint); font-size: 13px; cursor: pointer; width: 24px; height: 24px; border-radius: 6px; display: grid; place-items: center; }
+.chatitem .more:hover { color: var(--ink); background: var(--surface-secondary); }
+.ai-scrim { position: fixed; inset: 0; z-index: 25; background: rgba(20,19,17,.4); display: none; }
+.ai-scrim.show { display: block; }
+.ai-main { flex: 1; min-width: 0; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+.ai-menu-btn {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 20;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-small);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 14px;
+  cursor: pointer;
+  display: none;
+  place-items: center;
+}
+.ai-feed { flex: 1; overflow-y: auto; padding: 24px 20px 30px; }
+.ai-empty { height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; }
+.ai-empty h2 { margin: 0; font-size: 26px; font-weight: 600; letter-spacing: -.01em; color: var(--ink); }
+.ai-empty .ew { display: inline-block; animation: rise-in .42s cubic-bezier(.21,.8,.35,1) both; }
+.ai-thread { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+.bubble-row { display: flex; }
+.bubble-row.user { justify-content: flex-end; }
+.bubble-row.bot { justify-content: flex-start; }
+.bubble {
+  max-width: 78%;
+  padding: 9px 13px;
+  border-radius: var(--radius);
+  font-size: 13.5px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  animation: rise-in .42s cubic-bezier(.21,.8,.35,1) both;
+}
+.bubble-row.user .bubble { background: var(--accent-soft); border: 1px solid var(--accent-line); border-top-right-radius: 4px; }
+.bubble-row.bot .bubble { background: var(--surface-secondary); border: 1px solid var(--line); border-top-left-radius: 4px; }
+.typing { display: inline-flex; gap: 4px; align-items: center; height: 1.1em; }
+.typing i { width: 5px; height: 5px; border-radius: 999px; background: currentColor; animation: dot-pulse 1.2s ease-in-out infinite; }
+.typing i:nth-child(2) { animation-delay: .15s; }
+.typing i:nth-child(3) { animation-delay: .3s; }
+.ai-bar { flex: none; padding: 10px 20px 18px; display: flex; justify-content: center; }
+.ai-composer {
+  width: min(720px, 100%);
+  background: var(--surface);
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 10px 12px 8px;
+}
+.ai-composer textarea {
+  width: 100%;
+  border: 0;
+  outline: none;
+  resize: none;
+  background: transparent;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 13.5px;
+  line-height: 1.45;
+  min-height: 22px;
+  max-height: 110px;
+  padding: 2px 2px 6px;
+}
+.ai-composer textarea::placeholder { color: var(--faint); }
+.composer-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+.composer-tools { display: flex; align-items: center; gap: 4px; }
+.attach {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 14px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background-color .12s ease, color .12s ease;
+}
+.attach:hover { color: var(--ink); background: var(--surface-secondary); }
+.mode { position: relative; }
+.mode-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: var(--radius-small);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color .12s ease, color .12s ease;
+}
+.mode-btn:hover { background: var(--surface-secondary); color: var(--ink); }
+.mode-btn .icon { font-size: 11px; }
+.mode-menu, .mpick-menu {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  min-width: 150px;
+  padding: 5px;
+  background: var(--surface);
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-deep);
+  display: none;
+  z-index: 40;
+  animation: menu-in .18s cubic-bezier(.21,.8,.35,1) both;
+  transform-origin: bottom left;
+}
+.mode.open .mode-menu, .mpick.open .mpick-menu { display: block; }
+.mode-item, .mpick-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color .12s ease, color .12s ease;
+}
+.mode-item:hover, .mpick-item:hover { background: var(--surface-secondary); color: var(--ink); }
+.mode-item.active, .mpick-item.active { background: var(--accent-soft); color: var(--accent); }
+.mode-item .icon, .mpick-item .icon { font-size: 11px; width: 14px; }
+.composer-right { display: flex; align-items: center; gap: 8px; }
+.mpick { position: relative; }
+.mpick-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: var(--radius-small);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color .12s ease, color .12s ease;
+}
+.mpick-btn:hover { background: var(--surface-secondary); color: var(--ink); }
+.mpick-btn .icon { font-size: 10px; }
+.send {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 14px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background-color .12s ease;
+}
+.send:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(20,19,17,.44);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal.show { display: flex; animation: fade-in .2s ease both; }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+.modal-box {
+  width: min(440px, 100%);
+  max-height: min(86vh, 720px);
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-deep);
+  overflow: hidden;
+  animation: rise-in .22s ease both;
+}
+.modal-box.wide { width: min(560px, 100%); }
+.modal-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.modal-body { padding: 14px 16px 16px; overflow-y: auto; }
+.modal-foot { display: flex; align-items: center; justify-content: flex-end; gap: 8px; padding: 12px 16px 14px; border-top: 1px solid var(--line-soft); }
+.modal-count { margin-right: auto; font-size: 11px; color: var(--faint); }
+.cmdk-top { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--line-soft); }
+.cmdk-top .icon { color: var(--faint); font-size: 14px; }
+.cmdk-top input {
+  flex: 1;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 13.5px;
+  min-height: 30px;
+}
+.cmdk-top input::placeholder { color: var(--faint); }
+.cmdk-esc {
+  flex: none;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--muted);
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  padding: 2px 7px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.cmdk-list { padding: 8px; max-height: 300px; overflow-y: auto; }
+.cmdk-empty { padding: 22px 12px; text-align: center; font-size: 12.5px; color: var(--muted); }
+.note-input {
+  width: 100%;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-small);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 10px 12px;
+  resize: vertical;
+  min-height: 120px;
+  max-height: 200px;
+  outline: none;
+}
+.note-input:focus { border-color: var(--ink); }
+.note-input::placeholder { color: var(--faint); }
+.deck-empty { padding: 30px 12px; text-align: center; }
+.deck-disc {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface-secondary);
+  color: var(--faint);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px;
+}
+.deck-empty p { margin: 0; font-size: 13px; color: var(--muted); }
+.ls-shell { position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden; }
+.ls-body { flex: 1; display: flex; min-height: 0; }
+.ls-side {
+  width: 232px;
+  flex: none;
+  background: var(--surface);
+  border-right: 1.5px solid var(--line-strong);
+  overflow-y: auto;
+  padding: 16px 12px;
+  z-index: 30;
+}
+.ls-nav { display: flex; flex-direction: column; gap: 2px; margin-top: 10px; }
+.nv {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 8px 11px;
+  border-radius: var(--radius-small);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color .12s ease, color .12s ease;
+}
+.nv .lu { width: 16px; height: 16px; flex: none; color: var(--muted); }
+.nv span { text-align: left; }
+.nv:hover { background: var(--surface-secondary); color: var(--ink); }
+.nv.on { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent); }
+.nv.on .lu { color: var(--accent); }
+.side-lbl {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 16px 4px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.lbl-add {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.lbl-add:hover { color: var(--accent); background: var(--accent-soft); }
+.lbl-add .lu { width: 12px; height: 12px; }
+.pls-empty { padding: 10px 4px; font-size: 12px; color: var(--faint); }
+.ls-main { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+.ls-head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 22px;
+}
+.ls-menu-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-small);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 13px;
+  cursor: pointer;
+  display: none;
+  place-items: center;
+}
+.mtitle { flex: 1; min-width: 0; font-size: 17px; font-weight: 600; letter-spacing: -.01em; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ls-actions { display: flex; align-items: center; gap: 8px; }
+.hbtn {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-small);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 14px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background-color .12s ease, color .12s ease;
+}
+.hbtn:hover { background: var(--surface-secondary); color: var(--accent); }
+.party-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 13px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color .12s ease, color .12s ease, border-color .12s ease;
+}
+.party-pill .icon { font-size: 12px; color: var(--accent); }
+.party-pill:hover { background: var(--surface-secondary); color: var(--ink); border-color: var(--accent-line); }
+.ls-content { flex: 1; overflow-y: auto; padding: 6px 22px 30px; }
+.shelf { margin-bottom: 26px; }
+.shelf-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.shelf-head h3 { margin: 0; font-size: 15px; font-weight: 600; letter-spacing: -.01em; color: var(--ink); }
+.shelf-nav { display: flex; gap: 4px; }
+.sh-arrow {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 11px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background-color .12s ease, color .12s ease, opacity .12s ease;
+}
+.sh-arrow:hover:not(:disabled) { background: var(--surface-secondary); color: var(--accent); }
+.sh-arrow:disabled { opacity: .35; cursor: default; }
+.cards {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  padding: 2px 2px 8px;
+}
+.card {
+  flex: none;
+  width: 152px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  scroll-snap-align: start;
+  animation: rise-in .42s cubic-bezier(.21,.8,.35,1) both;
+}
+.card-art { position: relative; width: 152px; height: 152px; border-radius: var(--radius-small); overflow: hidden; border: 1px solid var(--line); background: var(--surface-secondary); }
+.card-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.card-art .art-fallback { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; color: var(--accent); font-size: 30px; background: var(--accent-soft); }
+.card-art.zerofallback .art-fallback { display: flex; }
+.card-play {
+  position: absolute;
+  right: 9px;
+  bottom: 9px;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 13px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity .15s ease, transform .15s ease, background-color .12s ease;
+}
+.card:hover .card-play, .card-play:focus-visible { opacity: 1; transform: none; }
+.card-play:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
+.card-t { margin-top: 8px; font-size: 13px; font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-a { margin-top: 1px; font-size: 11.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ls-dock {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border-top: 1.5px solid var(--line-strong);
+}
+.dock-progress { display: flex; align-items: center; gap: 10px; padding: 10px 22px 0; }
+.dock-time { font-size: 10.5px; color: var(--faint); font-variant-numeric: tabular-nums; flex: none; }
+.dock-track { flex: 1; height: 2px; border-radius: 999px; background: var(--line-soft); position: relative; cursor: pointer; }
+.dock-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: 999px; background: var(--accent); transition: width .35s cubic-bezier(.4,0,.2,1); }
+.dock-row { display: flex; align-items: center; gap: 16px; padding: 10px 22px 14px; }
+.dock-info { display: flex; align-items: center; gap: 12px; width: 240px; flex: none; min-width: 0; }
+.dock-cover {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--surface-secondary);
+  color: var(--faint);
+  font-size: 16px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  flex: none;
+}
+.dock-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.dock-meta { min-width: 0; }
+.dock-title { font-size: 13px; font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dock-title.idle { font-weight: 400; color: var(--ink-soft); }
+.dock-artist { margin-top: 1px; font-size: 11.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dock-center { flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px; }
+.dock-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: 0;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 13px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background-color .12s ease, color .12s ease;
+}
+.dock-btn:hover { color: var(--ink); background: var(--surface-secondary); }
+.dock-btn.on { color: var(--accent); background: var(--accent-soft); }
+.dock-play {
+  width: 36px;
+  height: 36px;
+  margin: 0 5px;
+  border-radius: 999px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 14px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background-color .12s ease;
+}
+.dock-play:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
+.dock-right { display: flex; align-items: center; gap: 8px; width: 150px; flex: none; justify-content: flex-end; }
+.vol-track { width: 84px; height: 2px; border-radius: 999px; background: var(--line-soft); position: relative; cursor: pointer; }
+.vol-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 70%; border-radius: 999px; background: var(--ink); }
+.wt-shell { position: absolute; inset: 0; display: flex; overflow: hidden; }
+.watch-tabs {
+  width: 84px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 18px 8px;
+  background: var(--surface);
+  border-right: 1.5px solid var(--line-strong);
+  overflow-y: auto;
+  z-index: 30;
+}
+.watch-tab {
+  width: 100%;
+  padding: 10px 4px 8px;
+  border-radius: var(--radius-small);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  font-size: 10.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  transition: background-color .12s ease, color .12s ease;
+}
+.watch-tab .icon { font-size: 18px; }
+.watch-tab span { letter-spacing: .02em; }
+.watch-tab:hover { background: var(--surface-secondary); color: var(--ink); }
+.watch-tab.active { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent); }
+.watch-view { flex: 1; min-width: 0; overflow-y: auto; position: relative; }
+.watch-view[hidden] { display: none; }
+.flm-shell { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.flm-load { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
+.flm-load .icon { font-size: 16px; color: var(--accent); animation: spin 1.1s linear infinite; }
+.mv-topbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 18px 22px 12px;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+.mv-topbar .search-wrap { max-width: 340px; }
+.mv-topbar-right { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.anime-sorts { display: flex; align-items: center; gap: 4px; }
+.anime-sort {
+  padding: 6px 11px;
+  border-radius: var(--radius-small);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color .12s ease, color .12s ease, border-color .12s ease;
+}
+.anime-sort:hover { background: var(--surface-secondary); color: var(--ink); }
+.anime-sort.active { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent); }
+.mv-spotlight {
+  position: relative;
+  max-width: 1120px;
+  margin: 0 22px 20px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  min-height: 300px;
+  display: flex;
+  align-items: flex-end;
+}
+.mv-spot-bg { position: absolute; inset: 0; background: linear-gradient(135deg, var(--accent-soft), var(--surface-secondary) 70%); }
+.mv-spot-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 30%, var(--background) 98%); }
+.mv-spot-body { position: relative; padding: 22px 24px; max-width: 560px; }
+.mv-spot-title { margin: 0; font-size: 26px; font-weight: 600; letter-spacing: -.01em; color: var(--ink); }
+.mv-spot-meta { margin: 4px 0 8px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.mv-spot-overview { margin: 0 0 14px; font-size: 13px; line-height: 1.5; color: var(--ink-soft); }
+.mv-spot-actions { display: flex; gap: 8px; }
+.ghost-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border-radius: var(--radius-small);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color .12s ease, color .12s ease;
+}
+.ghost-btn:hover { background: var(--surface-secondary); color: var(--ink); }
+.ghost-btn .icon { font-size: 12px; }
+.mv-grid-panel { max-width: 1120px; margin: 0 auto; padding: 0 22px 110px; }
+.anime-count { margin: 0 0 10px; font-size: 12px; color: var(--faint); font-variant-numeric: tabular-nums; }
+.anime-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(138px, 1fr));
+  gap: 14px;
+}
+.poster {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-small);
+  overflow: hidden;
+  cursor: pointer;
+  padding: 0;
+  background: var(--surface-secondary);
+  font: inherit;
+  text-align: left;
+  transition: border-color .12s ease;
+  animation: rise-in .42s cubic-bezier(.21,.8,.35,1) both;
+}
+.poster:hover { border-color: var(--line-strong); }
+.poster-art { position: relative; width: 100%; aspect-ratio: 2/3; display: flex; align-items: flex-end; padding: 12px; }
+.poster-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+.poster-play {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(.9);
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 15px;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transition: opacity .15s ease, transform .15s ease;
+}
+.poster:hover .poster-play { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+.poster-title { font-size: 13px; font-weight: 600; color: var(--ink); line-height: 1.3; }
+.poster-sub { margin-top: 2px; font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.poster-cap { padding: 9px 11px 10px; background: var(--surface); border-top: 1px solid var(--line-soft); }
+.mv-more {
+  display: block;
+  margin: 16px auto 0;
+  padding: 8px 18px;
+  border-radius: var(--radius-small);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color .12s ease, color .12s ease;
+}
+.mv-more:hover { background: var(--surface-secondary); color: var(--ink); }
+.yt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; max-width: 1120px; margin: 0 auto; padding: 4px 22px 110px; }
+.yt-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+  cursor: pointer;
+  padding: 0;
+  font: inherit;
+  text-align: left;
+  transition: border-color .12s ease;
+  animation: rise-in .42s cubic-bezier(.21,.8,.35,1) both;
+}
+.yt-card:hover { border-color: var(--line-strong); }
+.yt-thumb { position: relative; width: 100%; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 26px; }
+.yt-dur {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+.yt-cap { padding: 10px 12px 11px; }
+.yt-title { font-size: 13px; font-weight: 600; color: var(--ink); line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.yt-channel { margin-top: 3px; font-size: 11.5px; color: var(--muted); }
+.mv-srcmenu-backdrop { position: fixed; inset: 0; z-index: 340; background: rgba(20,19,17,.4); display: none; }
+.mv-srcmenu-backdrop.show { display: block; }
+.mv-srcmenu {
+  position: fixed;
+  right: 20px;
+  bottom: 88px;
+  z-index: 350;
+  width: 240px;
+  padding: 8px;
+  background: var(--surface);
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-deep);
+  display: none;
+  animation: menu-in .18s cubic-bezier(.21,.8,.35,1) both;
+  transform-origin: bottom right;
+}
+.mv-srcmenu.show { display: block; }
+.mv-srcmenu-label { padding: 6px 10px 8px; font-size: 11px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.mv-source-opt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color .12s ease, color .12s ease;
+}
+.mv-source-opt:hover { background: var(--surface-secondary); color: var(--ink); }
+.mv-source-dot { width: 8px; height: 8px; flex: none; border-radius: 999px; border: 1.5px solid var(--line-strong); }
+.mv-source-opt.active { background: var(--accent-soft); color: var(--accent); }
+.mv-source-opt.active .mv-source-dot { background: var(--accent); border-color: var(--accent); }
+.mv-source-name { display: block; font-weight: 600; color: var(--ink); }
+.mv-source-opt.active .mv-source-name { color: var(--accent); }
+.mv-source-desc { display: block; font-size: 10.5px; color: var(--muted); }
+.player-ov {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  background: var(--background);
+  display: none;
+}
+.player-ov.show { display: block; }
+.player-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+}
+.player-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 36px 42px;
+  background: var(--surface);
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-deep);
+  text-align: center;
+  max-width: 380px;
+}
+.player-disc {
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  border: 1px solid var(--accent-line);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.player-title { margin: 0; font-size: 17px; font-weight: 600; color: var(--ink); }
+.player-note { margin: 0; font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+.player-btns { position: absolute; top: 16px; right: 16px; z-index: 2; display: flex; gap: 8px; }
+.loader-ov {
+  position: fixed;
+  inset: 0;
+  z-index: 420;
+  background: var(--background);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.loader-ov.show { display: flex; }
+.loader-content { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
+.loader-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  border: 1px solid var(--accent-line);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: rise-in .42s cubic-bezier(.21,.8,.35,1) both;
+}
+.loader-title { margin: 8px 0 0; font-size: 20px; font-weight: 300; letter-spacing: .18em; text-transform: lowercase; color: var(--ink); }
+.loader-title em { font-style: normal; color: var(--accent); }
+.loader-text { margin: 0; font-size: 12.5px; color: var(--muted); }
+.loader-progress { width: 200px; height: 2px; border-radius: 999px; background: var(--line-soft); margin-top: 10px; overflow: hidden; }
+.loader-progress .bar { height: 100%; width: 0; background: var(--accent); transition: width .3s cubic-bezier(.4,0,.2,1); }
+.st-shell { position: absolute; inset: 0; display: flex; overflow: hidden; }
+.st-side {
+  width: 218px;
+  flex: none;
+  background: var(--surface);
+  border-right: 1.5px solid var(--line-strong);
+  padding: 16px 12px;
+  overflow-y: auto;
+  z-index: 30;
+}
+.st-title { padding: 0 10px 12px; font-size: 15px; font-weight: 600; letter-spacing: -.01em; color: var(--ink); }
+.st-nav { display: flex; flex-direction: column; gap: 2px; }
+.st-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-small);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: background-color .12s ease, color .12s ease;
+}
+.st-item .icon { font-size: 14px; width: 16px; color: var(--muted); }
+.st-item span { flex: 1; }
+.st-item:hover { background: var(--surface-secondary); color: var(--ink); }
+.st-item.active { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent); }
+.st-item.active .icon { color: var(--accent); }
+.st-main { flex: 1; min-width: 0; overflow-y: auto; padding: 22px 22px 110px; position: relative; }
+.st-menu-btn {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  width: 34px;
+  height: 34px;
+  margin-bottom: 10px;
+  border-radius: var(--radius-small);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 13px;
+  cursor: pointer;
+  display: none;
+  place-items: center;
+}
+.st-panel { max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+.st-panel[hidden] { display: none; }
+.st-card {
+  background: var(--surface);
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px 18px;
+  animation: rise-in .42s cubic-bezier(.21,.8,.35,1) both;
+}
+.card-h { display: flex; align-items: center; gap: 9px; margin: 0 0 4px; font-size: 14px; font-weight: 600; color: var(--ink); }
+.card-h .icon { font-size: 14px; color: var(--muted); }
+.card-sub { margin: 0 0 14px; font-size: 12px; color: var(--muted); }
+.mode-row { display: flex; gap: 8px; }
+.mode-opt {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border-radius: var(--radius-small);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color .12s ease, color .12s ease, border-color .12s ease;
+}
+.mode-opt .icon { font-size: 13px; }
+.mode-opt:hover { background: var(--surface-secondary); color: var(--ink); }
+.mode-opt.active { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent); }
+.theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); gap: 10px; }
+.theme-opt {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  text-align: center;
+  position: relative;
+}
+.theme-prev {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/3;
+  border-radius: 8px;
+  border: 1px solid var(--line-strong);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color .12s ease, box-shadow .12s ease;
+}
+.theme-opt:hover .theme-prev { border-color: var(--accent-line); }
+.theme-dot { width: 14px; height: 14px; border-radius: 999px; border: 1.5px solid rgba(255,255,255,.35); }
+.theme-nm {
+  margin-top: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.theme-opt.active .theme-nm { color: var(--accent); }
+.theme-nm .chk { display: none; font-size: 10px; }
+.theme-opt.active .theme-nm .chk { display: inline-block; }
+.theme-opt.active .theme-prev { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+.range-row { display: flex; align-items: center; gap: 12px; }
+.range-row input[type="range"] { flex: 1; accent-color: var(--accent); cursor: pointer; }
+.range-val { flex: none; min-width: 42px; text-align: right; font-size: 12px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.range-preview { margin: 12px 0 0; font-size: 13px; color: var(--ink-soft); }
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+.setting-row:last-child { border-bottom: 0; padding-bottom: 2px; }
+.setting-label { font-size: 13px; font-weight: 600; color: var(--ink); }
+.setting-note { margin: 1px 0 0; font-size: 11.5px; color: var(--muted); }
+.switch { position: relative; flex: none; width: 36px; height: 21px; }
+.switch input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.switch-track {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: var(--surface-secondary);
+  border: 1px solid var(--line-strong);
+  transition: background-color .15s ease, border-color .15s ease;
+  pointer-events: none;
+}
+.switch-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 13px;
+  height: 13px;
+  border-radius: 999px;
+  background: var(--muted);
+  transition: transform .15s ease, background-color .15s ease;
+  pointer-events: none;
+}
+.switch input:checked ~ .switch-track { background: var(--accent-soft); border-color: var(--accent-line); }
+.switch input:checked ~ .switch-thumb { transform: translateX(15px); background: var(--accent); }
+.switch input:focus-visible ~ .switch-track { outline: 2px solid var(--ink); outline-offset: 2px; }
+.info-rows { display: flex; flex-direction: column; }
+.info-row { display: flex; justify-content: space-between; gap: 14px; padding: 9px 0; border-bottom: 1px solid var(--line-soft); font-size: 12.5px; }
+.info-row:last-child { border-bottom: 0; }
+.info-key { color: var(--muted); }
+.info-val { color: var(--ink); font-weight: 500; text-align: right; }
+.pm-body { padding: 20px 22px 0; }
+.pm-perks { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 9px; }
+.pm-perks li { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--ink-soft); }
+.pm-perks li .icon { width: 16px; flex: none; text-align: center; font-size: 12px; color: var(--accent); }
+.pm-perks b { color: var(--ink); font-weight: 600; }
+.pm-sites { padding: 16px 22px 0; }
+.pm-sites-pill {
+  display: inline-flex;
+  align-items: stretch;
+  max-width: 100%;
+  border: 1px solid var(--accent-line);
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--accent-soft);
+  font-size: 12px;
+  color: var(--ink);
+}
+.pm-sites-pill .icon { display: flex; align-items: center; padding: 0 10px; font-size: 12px; color: var(--accent); }
+.pm-sites-pill span { display: flex; align-items: center; padding: 5px 12px; border-left: 1px solid var(--accent-line); white-space: nowrap; }
+.pm-foot { margin-top: auto; padding: 16px 22px 20px; }
+.pm-price { text-align: center; font-size: 19px; font-weight: 600; color: var(--accent); font-variant-numeric: tabular-nums; }
+.pm-buy { width: 100%; margin-top: 10px; }
+@media (max-width: 760px) {
+  .ai-side, .ls-side, .st-side, .watch-tabs { position: fixed; top: 0; bottom: 0; left: 0; transform: translateX(-105%); transition: transform .45s cubic-bezier(.21,.8,.35,1); box-shadow: var(--shadow-deep); }
+  .ai-side.open, .ls-side.open, .st-side.open, .watch-tabs.open { transform: translateX(0); }
+  .ai-menu-btn, .ls-menu-btn { display: grid; }
+  .watch-tabs { width: 84px; }
+  .wt-tabs-btn { display: grid; }
+  .dock-info { width: auto; min-width: 0; flex: 1; }
+  .dock-right { display: none; }
+}
+.wt-tabs-btn {
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 20;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-small);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 14px;
+  cursor: pointer;
+  display: none;
+  place-items: center;
+}
+@media (max-width: 560px) {
+  .nav-wrapper { bottom: 14px; left: 14px; }
+  .nav-active-btn { width: 38px; height: 38px; border-radius: 12px; font-size: 15px; }
+  .nav-main { min-width: 168px; }
+  .nav-btn { height: 34px; font-size: 12.5px; }
+  .util-btn { width: 40px; height: 40px; font-size: 14px; }
+  .mini-player { right: 14px; bottom: 14px; width: calc(100vw - 28px); }
+  .tung-img { width: 100px; height: 100px; }
+  .wordmark { font-size: calc(46px * var(--fs)); letter-spacing: .16em; }
+  .splash { font-size: calc(13px * var(--fs)); }
+  .corner-btns { right: 12px; bottom: 68px; }
+  .chip-btn { padding: 6px 10px; font-size: 11.5px; }
+  .page-head, .filter-row, .game-grid, .app-grid, .grid-title { padding-left: 14px; padding-right: 14px; }
+  .game-grid, .app-grid { grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 10px; }
+  .ai-bar, .ls-content, .mv-topbar, .st-main { padding-left: 14px; padding-right: 14px; }
+  .mv-spotlight { margin-left: 14px; margin-right: 14px; }
+  .mv-grid-panel, .yt-grid { padding-left: 14px; padding-right: 14px; }
+  .ls-head { padding: 12px 14px; }
+  .dock-row, .dock-progress { padding-left: 14px; padding-right: 14px; }
+  .card { width: 128px; }
+  .card-art { width: 128px; height: 128px; }
+  .auth-wrap { padding: 20px 14px 84px; }
+  .ai-feed { padding: 56px 14px 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+<symbol id="i-house" viewBox="0 0 24 24"><path d="M3.5 10.5 12 3.5l8.5 7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M5.5 9.3V20a.8.8 0 0 0 .8.8h11.4a.8.8 0 0 0 .8-.8V9.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M9.8 20.8v-5.6h4.4v5.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-gamepad" viewBox="0 0 24 24"><path d="M7.6 7h8.8a5.6 5.6 0 0 1 5.6 5.6v2a4.6 4.6 0 0 1-8.3 2.8l-.7-1h-2l-.7 1A4.6 4.6 0 0 1 2 14.6v-2A5.6 5.6 0 0 1 7.6 7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" fill="none"/><path d="M7.5 11h3M9 9.5v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/><path d="M15.2 10.7h.01M17.4 12.9h.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-grid" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.8" stroke="currentColor" stroke-width="1.7" fill="none"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.8" stroke="currentColor" stroke-width="1.7" fill="none"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.8" stroke="currentColor" stroke-width="1.7" fill="none"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.8" stroke="currentColor" stroke-width="1.7" fill="none"/></symbol>
+<symbol id="i-comments" viewBox="0 0 24 24"><path d="M4.5 5.5h15a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 1-1.5 1.5h-7L7.5 20.6v-4.1h-3A1.5 1.5 0 0 1 3 15V7a1.5 1.5 0 0 1 1.5-1.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" fill="none"/><path d="M8 9.2h8M8 12.4h5.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-robot" viewBox="0 0 24 24"><rect x="4.5" y="8" width="15" height="11" rx="2.5" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M12 8V5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/><circle cx="12" cy="3.8" r="1.3" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M9.2 12.4h.01M14.8 12.4h.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/><path d="M9.5 15.6h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-headphones" viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/><rect x="3" y="13.5" width="4.5" height="7" rx="1.8" stroke="currentColor" stroke-width="1.7" fill="none"/><rect x="16.5" y="13.5" width="4.5" height="7" rx="1.8" stroke="currentColor" stroke-width="1.7" fill="none"/></symbol>
+<symbol id="i-film" viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="16" rx="2.2" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M8 4v16M16 4v16M3.5 9h4.5M3.5 15h4.5M16 9h4.5M16 15h4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.8" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M3.2 12h17.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/><path d="M12 3.2c2.6 2.6 4.1 5.6 4.1 8.8s-1.5 6.2-4.1 8.8c-2.6-2.6-4.1-5.6-4.1-8.8s1.5-6.2 4.1-8.8Z" stroke="currentColor" stroke-width="1.7" fill="none"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7.5 3v5.2c0 5-3.2 8.6-7.5 10.3-4.3-1.7-7.5-5.3-7.5-10.3V6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" fill="none"/><path d="M8.8 12l2.3 2.3 4.1-4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M12 2.5v2.6M12 18.9v2.6M4.8 4.8l1.9 1.9M17.3 17.3l1.9 1.9M2.5 12h2.6M18.9 12h2.6M4.8 19.2l1.9-1.9M17.3 6.7l1.9-1.9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M4.5 20.5c.8-3.7 3.8-5.8 7.5-5.8s6.7 2.1 7.5 5.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-gem" viewBox="0 0 24 24"><path d="M7 4h10l4.5 6L12 21 2.5 10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" fill="none"/><path d="M2.5 10h19M12 21 8.5 10 12 4l3.5 6L12 21" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-discord" viewBox="0 0 24 24"><path fill="currentColor" d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></symbol>
+<symbol id="i-youtube" viewBox="0 0 24 24"><path fill="currentColor" d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.8-4.5 4.3 1.1 6-5.4-2.9-5.4 2.9 1.1-6L3.2 9.4l6.1-.8Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="m16.5 16.5 4.5 4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" d="M8.2 5.4v13.2L19 12Z"/></symbol>
+<symbol id="i-pause" viewBox="0 0 24 24"><path fill="currentColor" d="M7 5h3.4v14H7zM13.6 5H17v14h-3.4z"/></symbol>
+<symbol id="i-back" viewBox="0 0 24 24"><path fill="currentColor" d="M5.4 4.8h2.2v14.4H5.4z"/><path fill="currentColor" d="M19 5.8v12.4L9.4 12Z"/></symbol>
+<symbol id="i-fwd" viewBox="0 0 24 24"><path fill="currentColor" d="M16.4 4.8h2.2v14.4h-2.2z"/><path fill="currentColor" d="M5 5.8v12.4L14.6 12Z"/></symbol>
+<symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-chl" viewBox="0 0 24 24"><path d="M14.5 6 9 12l5.5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-chr" viewBox="0 0 24 24"><path d="M9.5 6 15 12l-5.5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-chd" viewBox="0 0 24 24"><path d="m6 9.5 6 5.5 6-5.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-arl" viewBox="0 0 24 24"><path d="M20 12H4M10 6l-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-aru" viewBox="0 0 24 24"><path d="M12 20V4M6 10l6-6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a7 7 0 0 0 11 11Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M19.4 4.6l-1.8 1.8M6.4 17.6l-1.8 1.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.6 0 2.2-1 2.2-2s-.9-2-2.2-2a2 2 0 0 1 0-4h5.3A3.7 3.7 0 0 0 21 9.3C21 5.9 17 3 12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" fill="none"/><path d="M7.6 8.4h.01M7.6 11.4h.01M11 6.4h.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6.5h16M4 12h16M4 17.5h16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/><circle cx="15" cy="6.5" r="2.2" stroke="currentColor" stroke-width="1.7" fill="none"/><circle cx="8" cy="12" r="2.2" stroke="currentColor" stroke-width="1.7" fill="none"/><circle cx="17" cy="17.5" r="2.2" stroke="currentColor" stroke-width="1.7" fill="none"/></symbol>
+<symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 3.2 3 8.2l9 5 9-5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" fill="none"/><path d="m3.6 12.6 8.4 4.7 8.4-4.7M3.6 16.6l8.4 4.7 8.4-4.7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-ellipsis" viewBox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-bars" viewBox="0 0 24 24"><path d="M4 6.5h16M4 12h16M4 17.5h16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-paperclip" viewBox="0 0 24 24"><path d="m20.5 11.5-8.6 8.6a5.6 5.6 0 0 1-8-8l8.6-8.6a3.8 3.8 0 0 1 5.4 5.4l-8.6 8.6a1.9 1.9 0 0 1-2.7-2.7l7.7-7.7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-display" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M9 20h6M12 16.5V20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-comment" viewBox="0 0 24 24"><path d="M20 15.2a2 2 0 0 1-2 2H9.4L4.5 20.8v-3.6H6a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 3.5 14H10l-1 8 9.5-12H13l1-8Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="m4.5 12.5 5 5 10-11" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.8" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M12 8h.01M12 11.5V16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="9.5" rx="2" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M8.2 10.5V8a3.8 3.8 0 0 1 7.6 0v2.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.8" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-list" viewBox="0 0 24 24"><path d="M4 6h12M4 11h12M4 16h7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/><circle cx="16.5" cy="17" r="2.3" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M18.8 17V9.5l2.7.9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 3s5.5 4.6 5.5 9.6a5.5 5.5 0 0 1-11 0c0-2 .9-3.9 2.2-5.4.4 1.6 1.3 2.4 2.4 2.4 0-2.8.4-5 0.9-6.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.8" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="m15.5 8.5-2 5-5 2 2-5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M3 7h4c1.9 0 3.3.8 4.4 2.2l4.2 5.6c1.1 1.4 2.5 2.2 4.4 2.2h1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/><path d="m18 14 3 3-3 3M3 17h4c1.3 0 2.4-.5 3.3-1.3M13.4 10.7c1-1.1 2.3-1.7 3.9-1.7h3.7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="m18 4 3 3-3 3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-repeat" viewBox="0 0 24 24"><path d="M4 12V9a4 4 0 0 1 4-4h12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/><path d="m17 2 3 3-3 3M20 12v3a4 4 0 0 1-4 4H4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="m7 22-3-3 3-3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-volume" viewBox="0 0 24 24"><path d="M4 9.5v5h3.5L12 19V5L7.5 9.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" fill="none"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-tv" viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="12.5" rx="2" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="m17 2.5-5 4.5-5-4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-wand" viewBox="0 0 24 24"><path d="M6 20.5 17.5 9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/><path d="m18 2.5.7 1.9 1.9.7-1.9.7-.7 1.9-.7-1.9-1.9-.7 1.9-.7Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" fill="none"/><path d="m13.5 4.5.4 1.1 1.1.4-1.1.4-.4 1.1-.4-1.1-1.1-.4 1.1-.4Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-music" viewBox="0 0 24 24"><path d="M9.2 18.2V6.4L19 4.2v11.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="6.7" cy="18.2" r="2.5" stroke="currentColor" stroke-width="1.7" fill="none"/><circle cx="16.5" cy="15.6" r="2.5" stroke="currentColor" stroke-width="1.7" fill="none"/></symbol>
+<symbol id="i-pencil" viewBox="0 0 24 24"><path d="m4 20 1-4L16.5 4.5a2.12 2.12 0 0 1 3 3L8 19l-4 1Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" fill="none"/><path d="m14.5 6.5 3 3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-type" viewBox="0 0 24 24"><path d="M4 7V4h16v3M9.5 20h5M12 4v16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-dice" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M8.3 8.3h.01M15.7 8.3h.01M12 12h.01M8.3 15.7h.01M15.7 15.7h.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-coins" viewBox="0 0 24 24"><circle cx="9" cy="9" r="5.8" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M14.5 11.5a5.8 5.8 0 1 1-6.4 6.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.8" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="m5.8 5.8 12.4 12.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-trend" viewBox="0 0 24 24"><path d="m3.5 17 6-6 4 4 8-8.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M15.5 6.5h6v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-image" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2.2" stroke="currentColor" stroke-width="1.7" fill="none"/><circle cx="8.7" cy="9.5" r="1.5" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="m3.5 16.5 5-4.5 4 3.5 3.5-2.5 4.5 3.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-bullhorn" viewBox="0 0 24 24"><path d="m3 11 17.5-6v14L3 13v-2Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" fill="none"/><path d="M11.5 16.7a3 3 0 1 1-5.8-1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" fill="none"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7" fill="none"/></symbol>
+<symbol id="i-infinity" viewBox="0 0 24 24"><path d="M12 12c-2-2.7-4-4-6-4a4 4 0 0 0 0 8c2 0 4-1.3 6-4Zm0 0c2 2.7 4 4 6 4a4 4 0 0 0 0-8c-2 0-4 1.3-6 4Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+</svg>
+<div class="nav-wrapper" id="navWrapper">
+  <button class="nav-active-btn" id="activePageBtn" type="button" aria-label="Open menu">
+    <svg class="icon"><use href="#i-house"/></svg>
+  </button>
+  <div class="nav-panel" id="navPanel">
+    <div class="nav-main">
+      <button class="nav-head" data-src="home" type="button">
+        <svg class="icon"><use href="#i-house"/></svg>
+        <span>Home</span>
+      </button>
+      <div class="nav-list">
+        <button class="nav-btn" data-src="play" type="button"><svg class="icon"><use href="#i-gamepad"/></svg><span>Play</span></button>
+        <button class="nav-btn" data-src="apps" type="button"><svg class="icon"><use href="#i-grid"/></svg><span>Apps</span></button>
+        <button class="nav-btn" data-src="chat" type="button"><svg class="icon"><use href="#i-comments"/></svg><span>Chat</span></button>
+        <button class="nav-btn" data-src="ai" type="button"><svg class="icon"><use href="#i-robot"/></svg><span>AI</span></button>
+        <button class="nav-btn" data-src="listen" type="button"><svg class="icon"><use href="#i-headphones"/></svg><span>Listen</span></button>
+        <button class="nav-btn" data-src="watch" type="button"><svg class="icon"><use href="#i-film"/></svg><span>Watch</span></button>
+        <button class="nav-btn" data-src="browse" type="button"><svg class="icon"><use href="#i-globe"/></svg><span>Browse</span></button>
+      </div>
+    </div>
+    <div class="util-column">
+      <button class="util-btn" id="skinBtn" type="button" title="Skin" aria-label="Skin">
+        <svg class="icon"><use href="#i-shield"/></svg>
+      </button>
+      <button class="util-btn" id="settingsBtn" type="button" title="Settings" aria-label="Settings">
+        <svg class="icon"><use href="#i-gear"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<div class="mini-player" id="miniPlayer">
+  <img id="miCover" class="mi-cover" alt="" width="44" height="44">
+  <div class="mi-info">
+    <span class="mi-title" id="miTitle"></span>
+    <span class="mi-artist" id="miArtist"></span>
+  </div>
+  <button class="mi-btn mi-lyrbtn" id="miLyrBtn" type="button" aria-label="Lyrics">
+    <svg class="icon"><use href="#i-mic"/></svg>
+  </button>
+  <div class="mi-wavebox">
+    <div class="mi-ctrls">
+      <button class="mi-btn" id="miPrev" type="button" aria-label="Previous"><svg class="icon"><use href="#i-back"/></svg></button>
+      <button class="mi-btn mi-play" id="miPlay" type="button" aria-label="Play or pause"><svg class="icon" id="miPlayIc"><use href="#i-play"/></svg></button>
+      <button class="mi-btn" id="miNext" type="button" aria-label="Next"><svg class="icon"><use href="#i-fwd"/></svg></button>
+    </div>
+    <span id="miCur">0:00</span>
+    <div class="mi-wave" id="miProgress">
+      <div class="mi-wl" id="miWave"></div>
+      <div class="mi-wl mi-wl-fill" id="miWaveFill"></div>
+    </div>
+    <span id="miDur">0:00</span>
+  </div>
+  <div class="mi-win">
+    <button class="mi-btn" id="miMin" type="button" aria-label="Minimize"><svg class="icon"><use href="#i-minus"/></svg></button>
+    <button class="mi-btn" id="miClose" type="button" aria-label="Close"><svg class="icon"><use href="#i-x"/></svg></button>
+  </div>
+</div>
+<main id="app">
+<section class="page" id="page-home">
+  <div class="status-bar">
+    <div class="status-left"><span id="clock">12:00:00 AM</span></div>
+    <div class="status-right">
+      <div class="battery">
+        <div class="battery-icon"><div class="battery-fill" id="batteryFill"></div></div>
+        <span id="batteryText">100%</span>
+      </div>
+    </div>
+  </div>
+  <div class="home-wrap">
+    <img src="https://cdn.jsdelivr.net/gh/paperpine/assets@deb56965fcb7fd42d67be7cfb4a52a988a3ff700/t/334f9c5b988a.png" alt="tung tung" class="tung-img" id="tungImg" width="130" height="130">
+    <h1 class="wordmark">tung <em>tung</em></h1>
+    <p class="splash" id="splashText">100% legit, 0% chill</p>
+  </div>
+  <div class="corner-btns">
+    <button class="chip-btn pill signed-out" id="accChip" type="button">
+      <svg class="icon"><use href="#i-user"/></svg>
+      <span id="accChipName">Sign in</span>
+    </button>
+    <button class="chip-btn" id="premiumBtn" type="button">
+      <svg class="icon"><use href="#i-gem"/></svg>
+      <span>Premium</span>
+    </button>
+    <a class="chip-btn" href="https://discord.gg/ZTZ7hkxDnY" target="_blank" rel="noopener">
+      <svg class="icon"><use href="#i-discord"/></svg>
+      <span>Discord</span>
+    </a>
+  </div>
+</section>
+<section class="page" id="page-play" hidden>
+  <header class="page-head">
+    <h2 class="page-title">games</h2>
+    <p class="page-count"><b id="gameCount">0</b> games</p>
+  </header>
+  <div class="filter-row">
+    <div class="search-wrap">
+      <svg class="icon lead-icon"><use href="#i-search"/></svg>
+      <input class="search-input" id="gameSearch" type="text" placeholder="search games..." autocomplete="off">
+    </div>
+    <div class="cat-dd" id="gameCat">
+      <button class="cat-trigger" id="gameCatTrigger" type="button" aria-haspopup="true" aria-expanded="false">
+        <svg class="icon"><use href="#i-layers"/></svg>
+        <span id="gameCatLabel">All</span>
+        <svg class="icon caret"><use href="#i-chd"/></svg>
+      </button>
+      <div class="cat-menu" id="gameCatMenu" role="menu">
+        <button class="cat-opt active" data-cat="all" type="button" role="menuitem"><svg class="icon"><use href="#i-layers"/></svg>All</button>
+        <button class="cat-opt" data-cat="favorites" type="button" role="menuitem"><svg class="icon"><use href="#i-star"/></svg>Favorites</button>
+        <button class="cat-opt" data-cat="recent" type="button" role="menuitem"><svg class="icon"><use href="#i-clock"/></svg>Recent</button>
+      </div>
+    </div>
+  </div>
+  <div class="game-grid" id="gameGrid"></div>
+</section>
+<section class="page" id="page-apps" hidden>
+  <h2 class="grid-title">apps</h2>
+  <div class="filter-row">
+    <div class="search-wrap">
+      <svg class="icon lead-icon"><use href="#i-search"/></svg>
+      <input class="search-input" id="appSearch" type="text" placeholder="find apps..." autocomplete="off">
+    </div>
+  </div>
+  <div class="app-grid" id="appGrid"></div>
+</section>
+<section class="page" id="page-chat" hidden>
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <img class="auth-logo" src="https://cdn.jsdelivr.net/gh/paperpine/assets@deb56965fcb7fd42d67be7cfb4a52a988a3ff700/t/334f9c5b988a.png" alt="logo" width="48" height="48">
+      <p class="auth-sub">Log In or Register to Continue</p>
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin" type="button">log in</button>
+        <button class="auth-tab" id="tabRegister" type="button">register</button>
+      </div>
+      <form id="formLogin">
+        <div class="auth-field">
+          <label for="loginUser">Username or email</label>
+          <input class="auth-input" id="loginUser" type="text" placeholder="username or email" autocomplete="username" spellcheck="false" maxlength="254">
+          <svg class="icon field-icon"><use href="#i-user"/></svg>
+        </div>
+        <div class="auth-field">
+          <label for="loginPass">Password</label>
+          <input class="auth-input" id="loginPass" type="password" placeholder="your password" autocomplete="current-password">
+          <button class="toggle-pw" type="button" data-pw="loginPass" tabindex="-1" aria-label="Show password"><svg class="icon"><use href="#i-eye"/></svg></button>
+        </div>
+        <button class="primary-btn auth-btn" type="submit"><span>log in</span></button>
+        <div class="auth-links">
+          <button class="auth-link" type="button" id="forgotLink">Forgot password?</button>
+          <button class="auth-link" type="button" id="magicLink">Email me a code</button>
+        </div>
+      </form>
+      <form id="formRegister" hidden>
+        <div class="auth-field">
+          <label for="regUser">Username</label>
+          <input class="auth-input" id="regUser" type="text" placeholder="pick a username" autocomplete="username" spellcheck="false" maxlength="254">
+          <svg class="icon field-icon"><use href="#i-user"/></svg>
+        </div>
+        <div class="auth-field">
+          <label for="regEmail">Email</label>
+          <input class="auth-input" id="regEmail" type="email" placeholder="me@example.com" autocomplete="email" spellcheck="false" maxlength="254">
+          <svg class="icon field-icon"><use href="#i-comment"/></svg>
+        </div>
+        <div class="auth-field">
+          <label for="regPass">Password</label>
+          <input class="auth-input" id="regPass" type="password" placeholder="choose a password" autocomplete="new-password">
+          <button class="toggle-pw" type="button" data-pw="regPass" tabindex="-1" aria-label="Show password"><svg class="icon"><use href="#i-eye"/></svg></button>
+        </div>
+        <button class="primary-btn auth-btn" type="submit"><span>register</span></button>
+      </form>
+    </div>
+  </div>
+</section>
+<section class="page" id="page-ai" hidden>
+  <div class="ai-shell">
+    <aside class="ai-side" id="aiSide">
+      <div class="side-top">
+        <div class="brand">tung <em>ai</em></div>
+        <div class="side-acts">
+          <button class="sideact" id="decksBtn" type="button" title="Flashcards" aria-label="Flashcards"><svg class="icon"><use href="#i-layers"/></svg></button>
+          <button class="sideact" id="noteBtn" type="button" title="Custom instructions" aria-label="Custom instructions"><svg class="icon"><use href="#i-sliders"/></svg></button>
+          <button class="sideact" id="searchBtn" type="button" title="Search chats" aria-label="Search chats"><svg class="icon"><use href="#i-search"/></svg></button>
+          <button class="sideact" id="newChat" type="button" title="New chat" aria-label="New chat"><svg class="icon"><use href="#i-plus"/></svg></button>
+        </div>
+      </div>
+      <div class="chatlist" id="aiChatList">
+        <div class="chat-group">Today</div>
+        <div class="chatitem active" data-id="c1">
+          <svg class="icon ci-ic"><use href="#i-comment"/></svg>
+          <span class="t">New chat</span>
+          <button class="more" type="button" title="More" aria-label="More"><svg class="icon"><use href="#i-ellipsis"/></svg></button>
+        </div>
+      </div>
+    </aside>
+    <div class="ai-scrim" id="aiScrim"></div>
+    <div class="ai-main">
+      <button class="ai-menu-btn" id="aiMenuBtn" type="button" aria-label="Chats"><svg class="icon"><use href="#i-bars"/></svg></button>
+      <div class="ai-feed" id="aiFeed">
+        <div class="ai-empty" id="aiEmpty">
+          <h2 id="aiHello"></h2>
+        </div>
+      </div>
+      <div class="ai-bar">
+        <div class="ai-composer">
+          <textarea id="aiInput" rows="1" placeholder="Message Tung AI" maxlength="4000"></textarea>
+          <div class="composer-row">
+            <div class="composer-tools">
+              <button class="attach" id="attachBtn" type="button" title="Attach" aria-label="Attach"><svg class="icon"><use href="#i-paperclip"/></svg></button>
+              <button class="attach" id="shotBtn" type="button" title="Share screen" aria-label="Share screen"><svg class="icon"><use href="#i-display"/></svg></button>
+              <button class="attach" id="micBtn" type="button" title="Speak" aria-label="Speak"><svg class="icon"><use href="#i-mic"/></svg></button>
+            </div>
+            <div class="composer-right">
+              <div class="mode" id="modeWrap">
+                <button class="mode-btn" id="modeBtn" type="button" title="Mode">
+                  <svg class="icon" id="modeIc"><use href="#i-comment"/></svg>
+                  <span id="modeLabel">Chat</span>
+                  <svg class="icon"><use href="#i-chd"/></svg>
+                </button>
+                <div class="mode-menu" id="modeMenu">
+                  <button class="mode-item active" data-mode="Chat" type="button"><svg class="icon"><use href="#i-comment"/></svg>Chat</button>
+                  <button class="mode-item" data-mode="Image" type="button"><svg class="icon"><use href="#i-image"/></svg>Image</button>
+                </div>
+              </div>
+              <div class="mpick" id="mpickWrap">
+                <button class="mpick-btn" id="mpickBtn" type="button" title="Model">
+                  <span id="mpickLabel">Default</span>
+                  <svg class="icon"><use href="#i-chd"/></svg>
+                </button>
+                <div class="mpick-menu" id="mpickMenu">
+                  <button class="mpick-item active" data-model="Default" type="button"><svg class="icon"><use href="#i-bolt"/></svg>Default</button>
+                  <button class="mpick-item" data-model="Fast" type="button"><svg class="icon"><use href="#i-bolt"/></svg>Fast</button>
+                  <button class="mpick-item" data-model="Creative" type="button"><svg class="icon"><use href="#i-wand"/></svg>Creative</button>
+                </div>
+              </div>
+              <button class="send" id="aiSend" type="button" title="Send" aria-label="Send"><svg class="icon"><use href="#i-aru"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="page" id="page-listen" hidden>
+  <div class="ls-shell">
+    <div class="ls-body">
+      <aside class="ls-side" id="lsSide">
+        <div class="brand">music</div>
+        <nav class="ls-nav" aria-label="Music navigation">
+          <button class="nv on" data-view="browse" type="button"><svg class="lu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s5.5 4.6 5.5 9.6a5.5 5.5 0 0 1-11 0c0-2 .9-3.9 2.2-5.4.4 1.6 1.3 2.4 2.4 2.4 0-2.8.4-5 .9-6.6Z"/></svg><span>Browse</span></button>
+          <button class="nv" data-view="search" type="button"><svg class="lu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4.5 4.5"/></svg><span>Search</span></button>
+          <button class="nv" data-view="discover" type="button"><svg class="lu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.8"/><path d="m15.5 8.5-2 5-5 2 2-5Z"/></svg><span>Discover</span></button>
+        </nav>
+        <div class="side-lbl"><span>Your Library</span></div>
+        <nav class="ls-nav" aria-label="Library">
+          <button class="nv" data-view="fav" type="button"><svg class="lu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/></svg><span>Favourites</span></button>
+          <button class="nv" data-view="recent" type="button"><svg class="lu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.8"/><path d="M12 7v5l3.5 2"/></svg><span>Recent</span></button>
+          <button class="nv" data-view="queue" type="button"><svg class="lu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M4 6h12M4 11h12M4 16h7"/><circle cx="16.5" cy="17" r="2.3"/><path d="M18.8 17V9.5l2.7.9"/></svg><span>Queue</span></button>
+        </nav>
+        <div class="side-lbl"><span>Playlists</span>
+          <button class="lbl-add" id="newPlBtn" type="button" title="New playlist" aria-label="New playlist">
+            <svg class="lu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5v14"/></svg>
+          </button>
+        </div>
+        <div class="pls" id="pls"><div class="pls-empty">No playlists yet</div></div>
+      </aside>
+      <div class="ai-scrim" id="lsScrim"></div>
+      <div class="ls-main">
+        <header class="ls-head">
+          <button class="ls-menu-btn" id="lsMenuBtn" type="button" aria-label="Menu"><svg class="icon"><use href="#i-bars"/></svg></button>
+          <div class="mtitle" id="mtitle">Browse</div>
+          <div class="ls-actions">
+            <button class="party-pill" id="partyBtn" type="button">
+              <svg class="icon"><use href="#i-headphones"/></svg>
+              <span>Listen Party</span>
+            </button>
+            <button class="hbtn" id="eqBtn" type="button" title="Equaliser" aria-label="Equaliser"><svg class="icon"><use href="#i-sliders"/></svg></button>
+          </div>
+        </header>
+        <div class="ls-content" id="lsContent"></div>
+        <footer class="ls-dock">
+          <div class="dock-progress">
+            <span class="dock-time" id="dockCur">0:00</span>
+            <div class="dock-track" id="dockTrack"><div class="dock-fill" id="dockFill"></div></div>
+            <span class="dock-time" id="dockDur">0:00</span>
+          </div>
+          <div class="dock-row">
+            <div class="dock-info">
+              <div class="dock-cover" id="dockCover"><svg class="icon"><use href="#i-music"/></svg></div>
+              <div class="dock-meta">
+                <div class="dock-title idle" id="dockTitle">Nothing playing</div>
+                <div class="dock-artist" id="dockArtist">Pick something to play</div>
+              </div>
+            </div>
+            <div class="dock-center">
+              <button class="dock-btn" id="dockShuffle" type="button" aria-label="Shuffle"><svg class="icon"><use href="#i-shuffle"/></svg></button>
+              <button class="dock-btn" id="dockPrev" type="button" aria-label="Previous"><svg class="icon"><use href="#i-back"/></svg></button>
+              <button class="dock-play" id="dockPlay" type="button" aria-label="Play or pause"><svg class="icon" id="dockPlayIc"><use href="#i-play"/></svg></button>
+              <button class="dock-btn" id="dockNext" type="button" aria-label="Next"><svg class="icon"><use href="#i-fwd"/></svg></button>
+              <button class="dock-btn" id="dockRepeat" type="button" aria-label="Repeat"><svg class="icon"><use href="#i-repeat"/></svg></button>
+            </div>
+            <div class="dock-right">
+              <svg class="icon" style="font-size:14px;color:var(--muted)"><use href="#i-volume"/></svg>
+              <div class="vol-track" id="volTrack"><div class="vol-fill" id="volFill"></div></div>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="page" id="page-watch" hidden>
+  <div class="wt-shell">
+    <nav class="watch-tabs" id="watchTabs" aria-label="Watch tabs">
+      <button class="watch-tab active" data-view="films" type="button" aria-label="Movy"><svg class="icon"><use href="#i-film"/></svg><span>Movy</span></button>
+      <button class="watch-tab" data-view="movies" type="button" aria-label="Movies"><svg class="icon"><use href="#i-tv"/></svg><span>Movies</span></button>
+      <button class="watch-tab" data-view="anime" type="button" aria-label="Anime"><svg class="icon"><use href="#i-wand"/></svg><span>Anime</span></button>
+      <button class="watch-tab" data-view="youtube" type="button" aria-label="YouTube"><svg class="icon"><use href="#i-youtube"/></svg><span>YouTube</span></button>
+    </nav>
+    <button class="wt-tabs-btn" id="wtTabsBtn" type="button" aria-label="Tabs"><svg class="icon"><use href="#i-bars"/></svg></button>
+    <div class="watch-view" id="view-films">
+      <div class="flm-shell">
+        <div class="flm-load"><svg class="icon"><use href="#i-film"/></svg><span>loading...</span></div>
+      </div>
+    </div>
+    <div class="watch-view" id="view-movies" hidden>
+      <div class="mv-topbar">
+        <div class="search-wrap">
+          <svg class="icon lead-icon"><use href="#i-search"/></svg>
+          <input class="search-input" id="mvSearch" type="search" placeholder="search movies and shows..." autocomplete="off">
+        </div>
+        <div class="mv-topbar-right">
+          <div class="anime-sorts" id="mvNav">
+            <button class="anime-sort active" data-nav="browse" type="button">browse</button>
+            <button class="anime-sort" data-nav="saved" type="button">saved</button>
+            <button class="anime-sort" data-nav="recent" type="button">recent</button>
+          </div>
+          <button class="hbtn" id="mvSettingsBtn" type="button" title="Playback source" aria-label="Playback source"><svg class="icon"><use href="#i-gear"/></svg></button>
+        </div>
+      </div>
+      <div class="mv-spotlight">
+        <div class="mv-spot-bg"></div>
+        <div class="mv-spot-body">
+          <h2 class="mv-spot-title">Dune: Part Two</h2>
+          <p class="mv-spot-meta">2024 <span>sci-fi</span> <span>2h 46m</span> <span>8.5 rating</span></p>
+          <p class="mv-spot-overview">Paul Atreides unites with the Fremen while on a warpath of revenge against the conspirators who destroyed his family. Facing a choice between the love of his life and the fate of the universe, he must prevent a terrible future only he can foresee.</p>
+          <div class="mv-spot-actions">
+            <button class="primary-btn" id="spotPlay" type="button"><svg class="icon"><use href="#i-play"/></svg>Watch</button>
+            <button class="ghost-btn" id="spotInfo" type="button"><svg class="icon"><use href="#i-info"/></svg>More info</button>
+          </div>
+        </div>
+      </div>
+      <div class="mv-grid-panel">
+        <p class="anime-count" id="mvCount">14 titles</p>
+        <div class="anime-grid" id="mvGrid"></div>
+        <button class="mv-more" id="mvMore" type="button">Load more</button>
+      </div>
+    </div>
+    <div class="watch-view" id="view-anime" hidden>
+      <div class="mv-topbar">
+        <div class="search-wrap">
+          <svg class="icon lead-icon"><use href="#i-search"/></svg>
+          <input class="search-input" id="animeSearch" type="search" placeholder="search anime..." autocomplete="off">
+        </div>
+        <div class="mv-topbar-right">
+          <div class="anime-sorts" id="animeSorts">
+            <button class="anime-sort active" data-sort="trending" type="button">trending</button>
+            <button class="anime-sort" data-sort="popular" type="button">popular</button>
+            <button class="anime-sort" data-sort="top" type="button">top rated</button>
+            <button class="anime-sort" data-sort="favorites" type="button">favorites</button>
+            <button class="anime-sort" data-sort="continue" type="button">continue</button>
+          </div>
+        </div>
+      </div>
+      <p class="anime-count" id="animeCount">12 titles</p>
+      <div class="mv-grid-panel" style="padding-top:0">
+        <div class="anime-grid" id="animeGrid"></div>
+        <button class="mv-more" id="animeMore" type="button">Load more</button>
+      </div>
+    </div>
+    <div class="watch-view" id="view-youtube" hidden>
+      <div class="mv-topbar">
+        <div class="search-wrap">
+          <svg class="icon lead-icon"><use href="#i-search"/></svg>
+          <input class="search-input" id="ytSearch" type="search" placeholder="search videos..." autocomplete="off">
+        </div>
+      </div>
+      <div class="yt-grid" id="ytGrid"></div>
+    </div>
+  </div>
+</section>
+<section class="page" id="page-settings" hidden>
+  <div class="st-shell">
+    <aside class="st-side" id="stSide">
+      <div class="st-title">settings</div>
+      <nav class="st-nav" aria-label="Settings sections">
+        <button class="st-item active" data-panel="appearance" type="button"><svg class="icon"><use href="#i-palette"/></svg><span>Appearance</span></button>
+        <button class="st-item" data-panel="privacy" type="button"><svg class="icon"><use href="#i-lock"/></svg><span>Privacy</span></button>
+        <button class="st-item" data-panel="chat" type="button"><svg class="icon"><use href="#i-comment"/></svg><span>Chat</span></button>
+        <button class="st-item" data-panel="browse" type="button"><svg class="icon"><use href="#i-globe"/></svg><span>Browse</span></button>
+        <button class="st-item" data-panel="information" type="button"><svg class="icon"><use href="#i-info"/></svg><span>Information</span></button>
+      </nav>
+    </aside>
+    <div class="ai-scrim" id="stScrim"></div>
+    <main class="st-main">
+      <button class="st-menu-btn" id="stMenuBtn" type="button" aria-label="Sections"><svg class="icon"><use href="#i-bars"/></svg></button>
+      <div class="st-panel" id="sp-appearance">
+        <div class="st-card">
+          <h3 class="card-h"><svg class="icon"><use href="#i-moon"/></svg>Mode</h3>
+          <div class="mode-row" id="modeRow">
+            <button class="mode-opt active" data-m="dark" type="button"><svg class="icon"><use href="#i-moon"/></svg>Dark</button>
+            <button class="mode-opt" data-m="light" type="button"><svg class="icon"><use href="#i-sun"/></svg>Light</button>
+          </div>
+        </div>
+        <div class="st-card">
+          <h3 class="card-h"><svg class="icon"><use href="#i-palette"/></svg>Themes</h3>
+          <p class="card-sub">Pick a color theme. The mockup keeps the original orange.</p>
+          <div class="theme-grid" id="themeGrid">
+            <button class="theme-opt" data-k="amber" type="button"><div class="theme-prev" style="background:linear-gradient(160deg,#fdeede,#f5f4ef)"><span class="theme-dot" style="background:#f59e0b"></span></div><div class="theme-nm">Amber<svg class="icon chk"><use href="#i-check"/></svg></div></button>
+            <button class="theme-opt" data-k="cyan" type="button"><div class="theme-prev" style="background:linear-gradient(160deg,#e8f4fb,#f5f4ef)"><span class="theme-dot" style="background:#38bdf8"></span></div><div class="theme-nm">Cyan<svg class="icon chk"><use href="#i-check"/></svg></div></button>
+            <button class="theme-opt" data-k="emerald" type="button"><div class="theme-prev" style="background:linear-gradient(160deg,#e7f4ec,#f5f4ef)"><span class="theme-dot" style="background:#34d399"></span></div><div class="theme-nm">Emerald<svg class="icon chk"><use href="#i-check"/></svg></div></button>
+            <button class="theme-opt" data-k="rose" type="button"><div class="theme-prev" style="background:linear-gradient(160deg,#fcebef,#f5f4ef)"><span class="theme-dot" style="background:#fb7185"></span></div><div class="theme-nm">Rose<svg class="icon chk"><use href="#i-check"/></svg></div></button>
+            <button class="theme-opt" data-k="slate" type="button"><div class="theme-prev" style="background:linear-gradient(160deg,#eef0f2,#f5f4ef)"><span class="theme-dot" style="background:#94a3b8"></span></div><div class="theme-nm">Slate<svg class="icon chk"><use href="#i-check"/></svg></div></button>
+            <button class="theme-opt active" data-k="pumpkin" type="button"><div class="theme-prev" style="background:linear-gradient(160deg,var(--accent-soft),var(--surface-secondary))"><span class="theme-dot" style="background:#ff8a2b"></span></div><div class="theme-nm">Pumpkin<svg class="icon chk"><use href="#i-check"/></svg></div></button>
+            <button class="theme-opt" data-k="bloodmoon" type="button"><div class="theme-prev" style="background:linear-gradient(160deg,#f8e7e7,#f5f4ef)"><span class="theme-dot" style="background:#ef4444"></span></div><div class="theme-nm">Blood Moon<svg class="icon chk"><use href="#i-check"/></svg></div></button>
+            <button class="theme-opt" data-k="custom" type="button"><div class="theme-prev" style="background:linear-gradient(160deg,var(--surface-secondary),var(--surface))"><span class="theme-dot" style="background:var(--accent)"></span></div><div class="theme-nm">Custom<svg class="icon chk"><use href="#i-check"/></svg></div></button>
+          </div>
+        </div>
+        <div class="st-card">
+          <h3 class="card-h"><svg class="icon"><use href="#i-image"/></svg>Background</h3>
+          <p class="card-sub">Pick a background. Designs stay warm and quiet.</p>
+          <div class="theme-grid" id="bgGrid">
+            <button class="theme-opt active" data-bg="wash" type="button"><div class="theme-prev" style="background:radial-gradient(circle at 50% 20%,var(--accent-soft),var(--background))"></div><div class="theme-nm">Soft wash<svg class="icon chk"><use href="#i-check"/></svg></div></button>
+            <button class="theme-opt" data-bg="hive" type="button"><div class="theme-prev" style="background:var(--background);background-image:radial-gradient(circle at 50% 50%,transparent 3px,var(--accent-line) 4px,transparent 5px);background-size:9px 10px"></div><div class="theme-nm">Hive<svg class="icon chk"><use href="#i-check"/></svg></div></button>
+            <button class="theme-opt" data-bg="grid" type="button"><div class="theme-prev" style="background:var(--background);background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:7px 7px"></div><div class="theme-nm">Grid<svg class="icon chk"><use href="#i-check"/></svg></div></button>
+            <button class="theme-opt" data-bg="stars" type="button"><div class="theme-prev" style="background:var(--background);background-image:radial-gradient(1px 1px at 20% 30%,var(--faint),transparent),radial-gradient(1px 1px at 70% 60%,var(--faint),transparent),radial-gradient(1px 1px at 40% 80%,var(--faint),transparent)"></div><div class="theme-nm">Stars<svg class="icon chk"><use href="#i-check"/></svg></div></button>
+            <button class="theme-opt" data-bg="none" type="button"><div class="theme-prev" style="background:var(--background)"></div><div class="theme-nm">None<svg class="icon chk"><use href="#i-check"/></svg></div></button>
+          </div>
+        </div>
+        <div class="st-card">
+          <h3 class="card-h"><svg class="icon"><use href="#i-type"/></svg>Text size</h3>
+          <div class="range-row">
+            <input type="range" id="fsRange" min="85" max="125" value="100" step="5" aria-label="Text size">
+            <span class="range-val" id="fsVal">100%</span>
+          </div>
+          <p class="range-preview">The quick brown fox jumps over the lazy dog.</p>
+        </div>
+      </div>
+      <div class="st-panel" id="sp-privacy" hidden>
+        <div class="st-card">
+          <h3 class="card-h"><svg class="icon"><use href="#i-lock"/></svg>Privacy</h3>
+          <div class="setting-row">
+            <div><div class="setting-label">Show online status</div><p class="setting-note">Others see a dot next to your name.</p></div>
+            <label class="switch"><input type="checkbox" checked><span class="switch-track"></span><span class="switch-thumb"></span></label>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Allow direct messages</div><p class="setting-note">Everyone, friends only, or off.</p></div>
+            <label class="switch"><input type="checkbox" checked><span class="switch-track"></span><span class="switch-thumb"></span></label>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Discoverable by email</div><p class="setting-note">Friends can find you through your email.</p></div>
+            <label class="switch"><input type="checkbox"><span class="switch-track"></span><span class="switch-thumb"></span></label>
+          </div>
+        </div>
+      </div>
+      <div class="st-panel" id="sp-chat" hidden>
+        <div class="st-card">
+          <h3 class="card-h"><svg class="icon"><use href="#i-comment"/></svg>Chat</h3>
+          <div class="setting-row">
+            <div><div class="setting-label">Enter to send</div><p class="setting-note">Pressing Enter sends the message.</p></div>
+            <label class="switch"><input type="checkbox" checked><span class="switch-track"></span><span class="switch-thumb"></span></label>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Sound alerts</div><p class="setting-note">Play a soft tone for new messages.</p></div>
+            <label class="switch"><input type="checkbox" checked><span class="switch-track"></span><span class="switch-thumb"></span></label>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Compact mode</div><p class="setting-note">Tighter rows in the message list.</p></div>
+            <label class="switch"><input type="checkbox"><span class="switch-track"></span><span class="switch-thumb"></span></label>
+          </div>
+        </div>
+      </div>
+      <div class="st-panel" id="sp-browse" hidden>
+        <div class="st-card">
+          <h3 class="card-h"><svg class="icon"><use href="#i-globe"/></svg>Browse</h3>
+          <div class="setting-row">
+            <div><div class="setting-label">Open links in a new tab</div><p class="setting-note">External links leave the site alone.</p></div>
+            <label class="switch"><input type="checkbox" checked><span class="switch-track"></span><span class="switch-thumb"></span></label>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Confirm before closing</div><p class="setting-note">Ask before closing a page that is playing.</p></div>
+            <label class="switch"><input type="checkbox"><span class="switch-track"></span><span class="switch-thumb"></span></label>
+          </div>
+        </div>
+      </div>
+      <div class="st-panel" id="sp-information" hidden>
+        <div class="st-card">
+          <h3 class="card-h"><svg class="icon"><use href="#i-info"/></svg>Information</h3>
+          <div class="info-rows">
+            <div class="info-row"><span class="info-key">Name</span><span class="info-val">Tung Tung Mockup</span></div>
+            <div class="info-row"><span class="info-key">System</span><span class="info-val">Warm Minimal v1.0</span></div>
+            <div class="info-row"><span class="info-key">Accent</span><span class="info-val">#ff8a2b</span></div>
+            <div class="info-row"><span class="info-key">Themes</span><span class="info-val">Light, Dark</span></div>
+            <div class="info-row"><span class="info-key">File</span><span class="info-val">Single HTML, no build</span></div>
+            <div class="info-row"><span class="info-key">Version</span><span class="info-val">1.0.0</span></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</section>
+</main>
+<div class="modal" id="premiumModal" aria-label="Premium">
+  <div class="modal-box">
+    <div class="pm-body">
+      <div style="padding-top:2px">
+        <h3 style="margin:0;font-size:19px;font-weight:600;letter-spacing:-.01em;color:var(--ink)">Tung Tung Premium</h3>
+        <p style="margin:4px 0 0;font-size:12.5px;color:var(--muted)">Everything, on every site.</p>
+      </div>
+      <ul class="pm-perks">
+        <li><svg class="icon"><use href="#i-ban"/></svg><b>No ads</b></li>
+        <li><svg class="icon"><use href="#i-coins"/></svg><b>2,000 coins a day</b></li>
+        <li><svg class="icon"><use href="#i-trend"/></svg><b>2x coins</b></li>
+        <li><svg class="icon"><use href="#i-gem"/></svg><b>Diamond badge</b></li>
+        <li><svg class="icon"><use href="#i-type"/></svg><b>Name fonts and colours</b></li>
+        <li><svg class="icon"><use href="#i-wand"/></svg><b>Profile effects and banner</b></li>
+        <li><svg class="icon"><use href="#i-image"/></svg><b>Send images</b></li>
+        <li><svg class="icon"><use href="#i-infinity"/></svg><b>No chat limits</b></li>
+        <li><svg class="icon"><use href="#i-bullhorn"/></svg><b>Join announcement</b></li>
+      </ul>
+      <div class="pm-sites">
+        <div class="pm-sites-pill" title="Works on Tung Tung, StudyHub and Strawberri">
+          <svg class="icon"><use href="#i-check"/></svg>
+          <span>Tung Tung</span><span>StudyHub</span><span>Strawberri</span>
+        </div>
+      </div>
+    </div>
+    <div class="pm-foot">
+      <div class="pm-price">$4.99 / month</div>
+      <button class="primary-btn pm-buy" id="pmBuy" type="button">Get Premium</button>
+    </div>
+    <button class="app-ov-btn" id="pmClose" type="button" title="Close" aria-label="Close" style="top:10px;right:10px"><svg class="icon"><use href="#i-x"/></svg></button>
+  </div>
+</div>
+<div class="modal" id="noteModal" aria-label="Custom instructions">
+  <div class="modal-box">
+    <div class="modal-top">
+      <span>Custom instructions</span>
+      <button class="sideact" data-close type="button" title="Close" aria-label="Close"><svg class="icon"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <textarea class="note-input" id="noteInput" maxlength="600" rows="6" placeholder="e.g. I'm in 9th grade. Explain simply and use examples."></textarea>
+    </div>
+    <div class="modal-foot">
+      <span class="modal-count" id="noteCount">0 / 600</span>
+      <button class="primary-btn" id="noteSave" type="button" style="padding:7px 16px">Save</button>
+    </div>
+  </div>
+</div>
+<div class="modal" id="decksModal" aria-label="Flashcards">
+  <div class="modal-box wide">
+    <div class="modal-top">
+      <span>Flashcards</span>
+      <button class="sideact" data-close type="button" title="Close" aria-label="Close"><svg class="icon"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="deck-empty">
+        <div class="deck-disc"><svg class="icon"><use href="#i-layers"/></svg></div>
+        <p>No decks yet</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal" id="cmdk" aria-label="Search chats">
+  <div class="modal-box">
+    <div class="cmdk-top">
+      <svg class="icon"><use href="#i-search"/></svg>
+      <input id="chatSearch" placeholder="Search chats" autocomplete="off" spellcheck="false">
+      <span class="cmdk-esc">esc</span>
+    </div>
+    <div class="cmdk-list" id="cmdkList">
+      <div class="cmdk-empty">No other chats yet</div>
+    </div>
+  </div>
+</div>
+<div class="app-ov" id="appOverlay">
+  <button class="app-ov-btn" id="appOvClose" type="button" title="Close" aria-label="Close"><svg class="icon"><use href="#i-x"/></svg></button>
+  <div class="app-ov-stage">
+    <div class="app-ov-card">
+      <div class="deck-disc"><svg class="icon" id="appOvIc"><use href="#i-gamepad"/></svg></div>
+      <h3 class="app-ov-title" id="appOvTitle"></h3>
+      <p class="app-ov-note">This opens fullscreen in the live site.</p>
+      <button class="ghost-btn" id="appOvBack" type="button"><svg class="icon"><use href="#i-arl"/></svg>Back</button>
+    </div>
+  </div>
+</div>
+<div class="mv-srcmenu-backdrop" id="mvSettingsBackdrop"></div>
+<div class="mv-srcmenu" id="mvSettings">
+  <div class="mv-srcmenu-label">source</div>
+  <div class="mv-source-options" id="mvSourceOptions">
+    <button class="mv-source-opt active" data-source="quasar" type="button">
+      <span class="mv-source-dot"></span>
+      <span class="mv-source-txt"><span class="mv-source-name">Quasar</span><span class="mv-source-desc">Fastest, 1080p</span></span>
+    </button>
+    <button class="mv-source-opt" data-source="astro" type="button">
+      <span class="mv-source-dot"></span>
+      <span class="mv-source-txt"><span class="mv-source-name">Astro</span><span class="mv-source-desc">Backup</span></span>
+    </button>
+    <button class="mv-source-opt" data-source="pulse" type="button">
+      <span class="mv-source-dot"></span>
+      <span class="mv-source-txt"><span class="mv-source-name">Pulse</span><span class="mv-source-desc">Backup, slower</span></span>
+    </button>
+  </div>
+</div>
+<div class="loader-ov" id="loader">
+  <div class="loader-content">
+    <div class="loader-icon"><svg class="icon"><use href="#i-film"/></svg></div>
+    <h2 class="loader-title">tung <em>tung</em></h2>
+    <p class="loader-text" id="loaderText">Loading stream...</p>
+    <div class="loader-progress"><div class="bar" id="progressBar"></div></div>
+  </div>
+</div>
+<div class="player-ov" id="playerOv">
+  <div class="player-btns">
+    <button class="app-ov-btn" id="playerSrc" type="button" title="Source" aria-label="Source"><svg class="icon"><use href="#i-layers"/></svg></button>
+    <button class="app-ov-btn" id="playerClose" type="button" title="Close" aria-label="Close"><svg class="icon"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="player-stage">
+    <div class="player-card">
+      <div class="player-disc"><svg class="icon"><use href="#i-play"/></svg></div>
+      <h3 class="player-title" id="playerTitle"></h3>
+      <p class="player-note">The stream loads in an embedded player on the live site.</p>
+      <button class="ghost-btn" id="playerBack" type="button"><svg class="icon"><use href="#i-arl"/></svg>Back</button>
+    </div>
+  </div>
+</div>
+<script>
+var SHELVES=["Top Hits", "K-Pop", "Pop", "Hip-Hop", "Indie", "Rock", "R&B", "Latin", "Electronic", "Chill"];
+var TRACKS={"Top Hits": [["Seminole Wind", "John Anderson", "https://is1-ssl.mzstatic.com/image/thumb/Features/19/ca/3e/dj.efdqofep.jpg/300x300bb.png"], ["Choosin' Texas", "Ella Langley", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/e2/91/4d/e2914d0a-7f1d-f04c-fbf4-c50b38548838/196873638690.jpg/300x300bb.png"], ["Tom and Jerry", "John Mayer", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/6c/ac/34/6cac34de-b0cd-d637-fcd7-c6b297dde7b3/26UM1IM34215.rgb.jpg/300x300bb.png"], ["May God Bless America", "Jason Bellard, Steve Gruber and the Freedom Project & Real America's Music", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/6a/1b/75/6a1b7593-564d-a442-3ef0-60101f56b9f7/cover_4062851365116.jpg/300x300bb.png"], ["Butterfly", "Zac Brown Band & Dolly Parton", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/f5/2b/b0/f52bb06f-1fd2-67e8-15dc-1a946629776b/659459663962.jpg/300x300bb.png"], ["Straight Tequila Night", "John Anderson", "https://is1-ssl.mzstatic.com/image/thumb/Features/19/ca/3e/dj.efdqofep.jpg/300x300bb.png"], ["Patient Zero", "Taylor Swift", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/a0/dd/fd/a0ddfd72-ee9e-f046-6466-a5dbefc696fa/26UM1IM21436.rgb.jpg/300x300bb.png"], ["Lies (feat. Lana Del Rey)", "Zach Bryan & Lana Del Rey", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/ea/98/f2/ea98f2b8-5131-29ae-2064-997234ef13bc/093624812647.jpg/300x300bb.png"], ["Swingin'", "John Anderson", "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/ca/a7/6d/caa76d8b-67e7-a4be-4fb1-f1bc3e447168/mzi.fhgrpnqy.jpg/300x300bb.png"], ["Housewife", "Tate McRae", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/2b/96/2b/2b962b77-3a04-5650-aefd-37ecfce04b03/196874840146.jpg/300x300bb.png"], ["Thriller", "Michael Jackson", "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/32/4f/fd/324ffda2-9e51-8f6a-0c2d-c6fd2b41ac55/074643811224.jpg/300x300bb.png"], ["Bad Times (Extended Version)", "Imael Angel", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/08/03/7f/08037f7d-6173-9348-991d-5966f0686539/artwork.jpg/300x300bb.png"], ["My Years With You", "RUSTIC DRIFTER", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/cd/92/3f/cd923fbb-21e8-3a9f-fa0f-3c2e47ad4ad1/artwork.jpg/300x300bb.png"], ["In My Soul", "Bob Dominator", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/c2/5a/9d/c25a9da9-18be-d367-6570-56307fcbc1f7/612891165418.jpg/300x300bb.png"]], "K-Pop": [["Boston", "STELLA LEFTY", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/7c/de/5e/7cde5e7a-612d-9714-d34c-1eb234c85ebb/810129961546.jpg/300x300bb.png"], ["Drip", "ATEEZ", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/c3/c5/84/c3c5844d-602e-e7b7-1efa-2b6bdddc9141/196874851814.jpg/300x300bb.png"], ["Mama, Don't Close Your Eyes", "Bjorn Bonebreaker", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/05/71/cf/0571cf88-b7fc-b762-d646-8a4b3a598953/artwork.jpg/300x300bb.png"], ["Taking our power back", "Peacefuldan", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/37/4b/85/374b8585-0bea-a97b-0951-968527aea48e/artwork.jpg/300x300bb.png"], ["Monster Mash", "Bobby \"Boris\" Pickett & The Crypt-Kickers", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/96/4e/2e/964e2e34-975a-f9da-ea23-326fdce09941/07UMGIM07880.rgb.jpg/300x300bb.png"], ["Babydoll", "Jamie Miller", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/e6/15/d2/e615d28f-70b5-e43a-b3c8-460dca39c9e5/26UMGIM97516.rgb.jpg/300x300bb.png"], ["Golden", "HUNTR/X, EJAE, AUDREY NUNA, REI AMI & KPop Demon Hunters Cast", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/e1/15/42/e1154273-8ecd-5702-e6e6-597f28001681/25UMGIM82363.rgb.jpg/300x300bb.png"], ["FIRESTARTER (feat. Sophie Powers, MIYEON & SOYEON)", "K/DA, League of Legends Music, i-dle & Mimi Webb", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/93/14/66/9314660a-8ec2-2e26-652b-62c82b14fb80/823375358930_Cover.jpg/300x300bb.png"], ["DESERVE", "BABYMONSTER", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/e5/57/b5/e557b507-2668-752b-4260-34af04ea0d7b/8809519881528_cover.jpg/300x300bb.png"], ["Lost", "BTS", "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/71/43/02/714302d0-a9d6-5d03-4967-c3c2c23df962/8804775073618_Cover.jpg/300x300bb.png"], ["BTS Cypher 4", "BTS", "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/71/43/02/714302d0-a9d6-5d03-4967-c3c2c23df962/8804775073618_Cover.jpg/300x300bb.png"], ["APT.", "ROSÃ & Bruno Mars", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/2d/1a/7d/2d1a7d91-587e-0ceb-d434-327bd66d9e86/075679628312.jpg/300x300bb.png"], ["NEON", "A2O & A2O LITE", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/47/9c/af/479caf36-9941-3b8e-51f5-98e761463502/888272190403_Cover.jpg/300x300bb.png"], ["Gabriela", "KATSEYE", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/ad/92/ca/ad92ca90-90f5-eb46-7a56-e7b6b88584f7/25UMGIM37394.rgb.jpg/300x300bb.png"]], "Pop": [["Takedown", "HUNTR/X, EJAE, AUDREY NUNA, REI AMI & KPop Demon Hunters Cast", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/e1/15/42/e1154273-8ecd-5702-e6e6-597f28001681/25UMGIM82363.rgb.jpg/300x300bb.png"], ["What It Sounds Like", "HUNTR/X, EJAE, AUDREY NUNA, REI AMI & KPop Demon Hunters Cast", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/e1/15/42/e1154273-8ecd-5702-e6e6-597f28001681/25UMGIM82363.rgb.jpg/300x300bb.png"], ["WATCH ME", "K/DA, League of Legends Music, Mimi Webb & Sophie Powers", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/9b/7a/b4/9b7ab480-ae42-e28b-0253-b0d6caef607a/823375358978_Cover.jpg/300x300bb.png"], ["Dynamite", "BTS", "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/22/f3/8f/22f38fb9-1690-326a-d891-7aa946c2b06f/195497623273_Cover.jpg/300x300bb.png"], ["This & That", "Stray Kids", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/c0/05/aa/c005aa79-a3a7-6e28-48e2-4c5e72eff603/8809928957357_Cover.jpg/300x300bb.png"], ["Free", "Rumi, JINU, EJAE, Andrew Choi & KPop Demon Hunters Cast", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/e1/15/42/e1154273-8ecd-5702-e6e6-597f28001681/25UMGIM82363.rgb.jpg/300x300bb.png"], ["Soda Pop", "Saja Boys, Andrew Choi, Neckwav, Danny Chung, KEVIN WOO, samUIL Lee & KPop Demon Hunters Cast", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/e1/15/42/e1154273-8ecd-5702-e6e6-597f28001681/25UMGIM82363.rgb.jpg/300x300bb.png"], ["How Itâs Done", "HUNTR/X, EJAE, AUDREY NUNA, REI AMI & KPop Demon Hunters Cast", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/e1/15/42/e1154273-8ecd-5702-e6e6-597f28001681/25UMGIM82363.rgb.jpg/300x300bb.png"], ["Your Idol", "Saja Boys, Andrew Choi, Neckwav, Danny Chung, KEVIN WOO, samUIL Lee & KPop Demon Hunters Cast", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/e1/15/42/e1154273-8ecd-5702-e6e6-597f28001681/25UMGIM82363.rgb.jpg/300x300bb.png"], ["SWIM", "BTS", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/e0/a2/b4/e0a2b443-7969-b57a-a591-cb6172c10aa7/198704943959_Cover.jpg/300x300bb.png"], ["Body to Body", "BTS", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/e0/a2/b4/e0a2b443-7969-b57a-a591-cb6172c10aa7/198704943959_Cover.jpg/300x300bb.png"], ["expectations", "Olivia Rodrigo & Chappell Roan", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/d2/3c/b2/d23cb283-5f3e-7433-bc41-86c7d77c4503/26UM1IM29619.rgb.jpg/300x300bb.png"], ["Housewife (Live from The Victoria's Secret Fashion Show 2026)", "Tate McRae", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/3e/d8/6e/3ed86e20-f3b1-58b3-6058-e21bb985eed9/196874922804.jpg/300x300bb.png"], ["Stop The Wedding!", "Ashe", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/b7/55/7a/b7557aef-bb0a-cc57-25bf-979eee194f16/075679571403.jpg/300x300bb.png"]], "Hip-Hop": [["Tarantino", "LISA", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/1d/de/67/1dde6726-f217-b447-46cd-94d5f9621797/196874712696.jpg/300x300bb.png"], ["You", "Miley Cyrus", "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/8c/67/ff/8c67ff91-31c3-3fef-1884-ce3ec89f3af4/196589946874.jpg/300x300bb.png"], ["Man I Need", "Olivia Dean", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/08/e2/21/08e22164-7c0b-1522-818f-e0e74f62dc49/25UMGIM69703.rgb.jpg/300x300bb.png"], ["UNETHICAL", "Faouzia", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/0e/1e/a3/0e1ea38e-d4fb-7cc0-3a0a-ce53c2cd6184/193436435017_IMG.jpg/300x300bb.png"], ["Sign of the Times", "Harry Styles", "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/3d/5e/aa/3d5eaaa3-9a86-c264-5cd5-7fac83f99a59/886446451978.jpg/300x300bb.png"], ["You (Demo - from Netflix Series \"Nobody Wants This\" Season 3)", "Miley Cyrus", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/13/31/6d/13316d3e-f9b6-2a19-a6da-e8857d3fa4f7/196874888339.jpg/300x300bb.png"], ["Animal", "KATSEYE", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/35/0e/32/350e32e1-7bfc-6d96-174a-0d11309365ef/26UMGIM84288.rgb.jpg/300x300bb.png"], ["Mr. Know It All", "Teddy Swims", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/7e/fb/0b/7efb0b1b-8e34-5bd0-99ee-eafc83b8d5c7/054391217349.jpg/300x300bb.png"], ["Ordinary", "Alex Warren", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/46/78/fb/4678fb84-d19e-f11b-93ff-4dc17660bff8/075679619075.jpg/300x300bb.png"], ["What America Is", "Tom MacDonald", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/58/d9/ef/58d9ef66-be21-954f-8881-44e7cef8cdf4/712132232067_cover.jpg/300x300bb.png"], ["Jump Around", "House of Pain", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/c5/b7/2f/c5b72ff4-d593-ed4c-f7ed-080fb4d224aa/081227911560.png/300x300bb.png"], ["Sunflower (Spider-Man: Into the Spider-Verse)", "Post Malone & Swae Lee", "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/4b/30/2c/4b302cb6-7a14-5464-4e97-0577e9d0be49/18UMGIM82277.rgb.jpg/300x300bb.png"], ["Low (feat. T-Pain)", "Flo Rida", "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/14/42/a0/1442a084-36ea-09a0-ff87-d5aea0cc19f8/mzi.ktgesuhn.jpg/300x300bb.png"], ["Gangsta's Paradise (feat. L.V.)", "Coolio", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/92/f7/88/92f7884b-d115-5d5f-1eb5-85128af2d58f/081227882365.png/300x300bb.png"]], "Indie": [["Can't Hold Us (feat. Ray Dalton)", "Macklemore & Ryan Lewis", "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/91/c1/b5/91c1b5cc-d4f1-da61-d3dc-2dd93e6b0a7d/707541525299.jpg/300x300bb.png"], ["Crank That (Soulja Boy)", "Soulja Boy Tell 'Em", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/ec/4e/2f/ec4e2f2a-d74c-8d6d-3ec1-b8fe83eb8053/07UMGIM13400.rgb.jpg/300x300bb.png"], ["Hell At Night", "BigXthaPlug & Ella Langley", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/7b/70/30/7b703033-db96-0d23-ae7b-1731398fd59d/IHYH_Dissolve.PNG-copy-08d188b5.png/300x300bb.png"], ["All I Do Is Win (feat. T-Pain, Ludacris, Snoop Dogg & Rick Ross)", "DJ Khaled", "https://is1-ssl.mzstatic.com/image/thumb/Music/73/13/d1/mzi.cxtvatin.jpg/300x300bb.png"], ["Big Poppa", "The Notorious B.I.G.", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/f8/6a/3d/f86a3db0-d518-cd49-c0c9-25e767ae0a6d/075679456861.jpg/300x300bb.png"], ["Hey Ya!", "Outkast", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/71/ae/6a/71ae6a46-99a6-e9d8-d7f3-41c0f2df45c4/196872579123.jpg/300x300bb.png"], ["I'd Die Without You", "P.M. Dawn", "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a3/61/2b/a3612b90-4cca-5d8b-2320-b32bc58c2536/mzi.bkcplgyc.jpg/300x300bb.png"], ["See You Again (feat. Charlie Puth)", "Wiz Khalifa", "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/e6/8a/68/e68a688e-129e-cb9d-938f-bc3ee37059ae/075679930910.jpg/300x300bb.png"], ["Wobble", "V.I.C.", "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/db/7a/72/db7a720f-cca9-e964-391b-2108e06c7e77/mzi.yimzroqg.jpg/300x300bb.png"], ["Too Slick (Remix) [feat. Method Man]", "Pete & Bas", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/fc/9d/d0/fc9dd019-e8fd-456c-d547-03f44da97434/5064090696357_cover.jpg/300x300bb.png"], ["Remember the Name (feat. Styles of Beyond)", "Fort Minor", "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/8a/ba/1f/8aba1ff3-c0e1-c7e0-0991-689826e88f36/093624906964.jpg/300x300bb.png"], ["This Is How We Do It", "Montell Jordan", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/e7/94/47/e7944769-34bb-1ee3-e1d9-b819e3497caa/06UMGIM03760.rgb.jpg/300x300bb.png"], ["My House", "Flo Rida", "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a9/aa/d0/a9aad0bb-e8a3-768f-8555-4b644a17553e/075679930903.jpg/300x300bb.png"], ["Ice Ice Baby", "Vanilla Ice", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/a1/6f/fb/a16ffb26-747f-5509-1233-2e472c293a89/13UABIM50850.rgb.jpg/300x300bb.png"]], "Rock": [["Flower In A Hurricane [from GTAVI]", "Justice, Tame Impala, SZA & King Gizzard & The Lizard Wizard", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/af/23/54/af235448-23b3-a3bf-0738-87f6c44a4bbc/5056556187486_cover.jpg/300x300bb.png"], ["VALHALLA CALLING", "Ragal Ironbull", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/3c/f5/ce/3cf5ce7f-0eb7-ab67-d641-924cb9f96aef/7300349535632_cover.jpg/300x300bb.png"], ["The Greatest Show On Earth", "U2", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/26/db/1f/26db1f9b-840b-0d25-66a3-1dfa0b6f06d7/26UMGIM93067.rgb.jpg/300x300bb.png"], ["Street Of Dreams", "U2", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/26/db/1f/26db1f9b-840b-0d25-66a3-1dfa0b6f06d7/26UMGIM93067.rgb.jpg/300x300bb.png"], ["You Wouldn't Know", "Stephen Day", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/75/d9/dc/75d9dc73-fbe8-ba62-5cb0-adbbdbd8baa8/820233976039.jpg/300x300bb.png"], ["DOOMSDAY HOLIDAY", "NOT A TOY", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/8d/7a/1d/8d7a1dad-a520-3020-ab42-5805c5586310/663918457825.jpg/300x300bb.png"], ["Orbiter", "Noah Kahan", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/f9/aa/69/f9aa6992-40ca-a756-85ca-b27c48f7c720/26UMGIM02802.rgb.jpg/300x300bb.png"], ["VALHALLA CALLING (Valhalla Viking)", "Northveil", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/68/2e/6a/682e6ae6-2d22-e5bc-5ec2-9db888b7b280/cover.jpg/300x300bb.png"], ["Blood Runs Wild", "Bob Dominator", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/df/02/d1/df02d1f3-cef4-cb89-eb0a-4cf463f601db/612891146042.jpg/300x300bb.png"], ["Psycho Killer", "Talking Heads", "https://is1-ssl.mzstatic.com/image/thumb/Music/y2004/m08/d17/h21/s06.xwrnkppg.jpg/300x300bb.png"], ["Trigger", "Mississippi Twilight", "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/7c/74/fe/7c74fed2-465e-202c-34d4-804c296c7297/859763450474_cover.jpg/300x300bb.png"], ["Dog Days Are Over", "Florence + the Machine", "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/46/45/58/46455821-202f-5fac-ee42-87853cb9fa03/09UMGIM14223.rgb.jpg/300x300bb.png"], ["Shy Girl", "Haute & Freddy", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/8c/a0/d1/8ca0d1a5-1eba-c003-c0b6-0ec409deddcd/075679613288.jpg/300x300bb.png"], ["Someone You Loved", "Lewis Capaldi", "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/05/f7/af/05f7af37-526e-5e6e-e4cd-9e4bc3da0756/18UMGIM52528.rgb.jpg/300x300bb.png"]], "R&B": [["Draw You Out", "Noah Kahan & The Hunger Games", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/de/a0/db/dea0db01-b9a7-173e-ccb2-c07c31f634bb/26UM1IM10359.rgb.jpg/300x300bb.png"], ["The Night We Met", "Lord Huron", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/55/41/4a/55414a18-861a-79d1-e575-5bf8cf205dbe/886445056839_Cover.jpg/300x300bb.png"], ["Welcome to the Black Parade", "My Chemical Romance", "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/7e/ac/69/7eac6998-7fa4-f1ab-9601-e8b791c736fa/mzi.fbpszunc.jpg/300x300bb.png"], ["Wonderwall", "Oasis", "https://is1-ssl.mzstatic.com/image/thumb/Music113/v4/04/92/e0/0492e08b-cbcc-9969-9ad6-8f5a0888068c/5051961007107.jpg/300x300bb.png"], ["Make Me Love You", "Nickelback", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/07/bb/84/07bb846c-eaea-b26a-aebd-ba911351a35b/00823375244738_Cover.jpg/300x300bb.png"], ["Enter Sandman", "Metallica", "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2e/94/95/2e9495d7-dfe3-ddc8-87ef-6ef797a60218/850007452056.png/300x300bb.png"], ["In the Air Tonight", "Phil Collins", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/29/3f/e0/293fe00f-f9ac-859f-bbe5-f3c2de3d83fc/603497880249.jpg/300x300bb.png"], ["Iris", "The Goo Goo Dolls", "https://is1-ssl.mzstatic.com/image/thumb/Music/b4/0c/98/mzi.vhowcacb.jpg/300x300bb.png"], ["Thunderstruck", "AC/DC", "https://is1-ssl.mzstatic.com/image/thumb/Features125/v4/bb/a2/f0/bba2f0d7-4d9e-c617-d49e-3ae02fd5d440/dj.xbkfgllk.jpg/300x300bb.png"], ["Zombie", "The Cranberries", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/b6/c8/85/b6c885de-fde6-d40d-c95a-d89ede4270ae/06UMGIM09433.rgb.jpg/300x300bb.png"], ["Time", "Pink Floyd", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/3e/76/b0/3e76b0e3-762b-2286-a019-8afb19cee541/886445635829.jpg/300x300bb.png"], ["Mr. Brightside", "The Killers", "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/11/64/9c/11649c80-2066-dba8-77a9-df7eecae26c1/17UM1IM06937.rgb.jpg/300x300bb.png"], ["What's Up?", "4 Non Blondes", "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/d2/aa/44/d2aa4418-7e74-7e6d-4247-9b9c1cba9e64/06UMGIM01654.rgb.jpg/300x300bb.png"], ["Ghosts", "Staind", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/d4/72/40/d4724078-b182-de3a-49f6-9c69f646fbf0/4099964296587.jpg/300x300bb.png"]], "Latin": [["Bring Me to Life", "Evanescence", "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/10/4c/21/104c21e6-9ef0-4d3a-d1bd-d47167f121e5/00601501406300.rgb.jpg/300x300bb.png"], ["(Don't Fear) The Reaper", "Blue Ãyster Cult", "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/53/68/f3/5368f34c-7e41-3e4c-d2c5-0f0447c23f07/dj.diysopyd.jpg/300x300bb.png"], ["Money for Nothing", "Dire Straits", "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/c3/91/ff/c391ff50-caba-db8a-2387-6c906d2ca65c/mzi.gyijrdqr.jpg/300x300bb.png"], ["Leave Me Behind", "Nickelback", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/07/bb/84/07bb846c-eaea-b26a-aebd-ba911351a35b/00823375244738_Cover.jpg/300x300bb.png"], ["Stairway to Heaven", "Led Zeppelin", "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/5c/15/9b/5c159b27-95ca-b9a7-84e3-28e795fffd39/dj.kvkrpptq.jpg/300x300bb.png"], ["You Can Do Magic", "America", "https://is1-ssl.mzstatic.com/image/thumb/Music4/v4/9a/cf/03/9acf0303-24fb-5d5b-70cb-079d76388197/00724381849750.jpg/300x300bb.png"], ["Bones For The Crows", "Nickelback", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/07/bb/84/07bb846c-eaea-b26a-aebd-ba911351a35b/00823375244738_Cover.jpg/300x300bb.png"], ["Don't Stop Believin' (2024 Remaster)", "Journey", "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/71/2d/61/712d617d-f4a4-5904-1b11-d4b4b45c47c5/828768588925.jpg/300x300bb.png"], ["Rattle The Cage (feat. John 5)", "Nickelback", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/07/bb/84/07bb846c-eaea-b26a-aebd-ba911351a35b/00823375244738_Cover.jpg/300x300bb.png"], ["Somebody's Watching Me", "Rockwell", "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/7e/77/db/7e77db79-4a06-ddbd-af27-4f5901a6149e/20UMGIM76318.rgb.jpg/300x300bb.png"], ["September", "Earth, Wind & Fire", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/5d/66/3b/5d663b1f-dcc9-030d-0cf1-fc5d344d391d/886447618448.jpg/300x300bb.png"], ["Superstition", "Stevie Wonder", "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/62/61/61/626161c0-f4d7-e6ff-8586-768340ef278f/00602537002382.rgb.jpg/300x300bb.png"], ["Disturbia", "Rihanna", "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/2b/c0/81/2bc081c8-25f0-ba43-d451-587a54613778/16UMGIM59202.rgb.jpg/300x300bb.png"], ["By Your Side", "Sade", "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/85/d9/05/85d9053a-565b-723d-0823-c0c2a0dbff87/mzi.ifrkjjuc.jpg/300x300bb.png"]], "Electronic": [["Bodies On The Floor", "John Legend & Clipse", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/df/1b/c6/df1bc6c4-c2a7-66e9-afc0-46c9ae49516a/26UM1IM12676.rgb.jpg/300x300bb.png"], ["Yeah! (feat. Lil Jon & Ludacris)", "USHER", "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/02/c6/e1/02c6e1cd-8d57-97b4-6ef1-77d2be004509/mzi.sjrqsmrq.jpg/300x300bb.png"], ["Why Can't We Live Together", "Timmy Thomas", "https://is1-ssl.mzstatic.com/image/thumb/Music/y2005/m09/d07/h16/mzi.wlzuaojg.jpg/300x300bb.png"], ["No Scrubs", "TLC", "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2d/19/0c/2d190ce6-a157-6364-b5b4-e9b00265d313/mzi.ucefobwj.jpg/300x300bb.png"], ["Somebody's Watching Me (Single Version)", "Rockwell", "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/ba/5f/a0/ba5fa061-10cc-2c73-a019-77d38402b84b/06UMGIM09723.rgb.jpg/300x300bb.png"], ["Best Part (feat. Daniel Caesar)", "H.E.R.", "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/27/40/34/274034b3-42d9-ba59-b22c-dc4f57672ee0/886446799513.jpg/300x300bb.png"], ["Blinding Lights", "The Weeknd", "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/6f/bc/e6/6fbce6c4-c38c-72d8-4fd0-66cfff32f679/20UMGIM12176.rgb.jpg/300x300bb.png"], ["Ain't Nobody", "Chaka Khan", "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/13/55/fb/1355fbb0-60f1-d15e-12cb-ad0008b99524/mzi.zqdpvvdq.jpg/300x300bb.png"], ["You Dropped a Bomb on Me", "The Gap Band", "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/fa/ea/dd/faeadd17-1a37-54a0-caff-5a7e2c71c789/06UMGIM06524.rgb.jpg/300x300bb.png"], ["As", "Stevie Wonder", "https://is1-ssl.mzstatic.com/image/thumb/Music118/v4/eb/1f/12/eb1f12ec-474c-63aa-43af-09282f423b9d/00602537004737.rgb.jpg/300x300bb.png"], ["Let's Groove", "Earth, Wind & Fire", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/5d/66/3b/5d663b1f-dcc9-030d-0cf1-fc5d344d391d/886447618448.jpg/300x300bb.png"], ["Stand By Me", "Ben E. King", "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/46/75/80/467580f9-1f8d-5c80-ac48-34e0f1a56816/081227297060.jpg/300x300bb.png"], ["Let's Stay Together", "Al Green", "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/c0/90/63/c0906357-b17c-bfcc-30c8-0532c52d8d0d/886446283692.jpg/300x300bb.png"], ["I Wanna Dance with Somebody (Who Loves Me)", "Whitney Houston", "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/86/b5/25/86b525b1-bff1-4bf6-6112-531251b3d672/dj.hthdmusj.jpg/300x300bb.png"]], "Chill": [["Gimme My Grandbabies", "Chel-C-Rae", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/de/53/d4/de53d41a-d6a1-c483-4765-69254f0b464a/artwork.jpg/300x300bb.png"], ["BbY WOW", "KAROL G, Judeline & rusowsky", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/2b/66/b2/2b66b26c-ab23-faa1-c4ee-06fa2cce8f76/26UM1IM00558.rgb.jpg/300x300bb.png"], ["Mi Tesoro", "Kacey Musgraves", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/06/70/5a/06705a59-c9ec-ee4c-0b4f-d29108151b36/26UM1IM30839.rgb.jpg/300x300bb.png"], ["Bonito, Bonito", "Thiago Navarro Music", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/77/47/fc/7747fc1e-8167-5de6-b8e7-cf9b1038aea3/882436183713_cover.jpg/300x300bb.png"], ["Dame Hombro", "Bulin 47 & Kevin Wai", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/25/2a/28/252a28ba-d75d-84c5-2f81-0514213b3b0c/708208172962_cover.jpg/300x300bb.png"], ["Gasolina", "Daddy Yankee", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/2f/66/f0/2f66f0f1-c3c2-9dc0-8391-04804cabc8cf/24CRGIM46808.rgb.jpg/300x300bb.png"], ["Danza Kuduro (feat. Lucenzo)", "Don Omar", "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/be/9d/22/be9d22c2-99b2-9e26-11dd-d1a043779b8d/10UMGIM27798.rgb.jpg/300x300bb.png"], ["El DueÃ±o De Tu Amor", "Rolandos Show, Los Yes Yes, Sonido Los Jrs Oficial & Los JR's", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/b1/b8/3a/b1b83ab8-3ff8-0e56-b571-6944f45736b4/39842.jpg/300x300bb.png"], ["La Llorona", "Carmen Goett", "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/49/0e/82/490e8243-a0c7-f156-dece-409b8cc7663d/7316215049448.jpg/300x300bb.png"], ["La Chona", "Los Tucanes de Tijuana", "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/fc/0b/00/fc0b0020-aaac-4804-e556-d10f73e7f905/018736747175_cover.jpg/300x300bb.png"], ["Macarena (Bayside Boys Remix)", "Los del RÃ­o", "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/a1/2d/6a/a12d6a7b-6173-ed2e-9682-a30d245ed7fe/mzi.ndplymif.jpg/300x300bb.png"], ["Amor", "Emmanuel Cortes", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/b1/b3/7d/b1b37d1d-bf5b-bfa8-2991-7d3d67f6db86/197953846561.jpg/300x300bb.png"], ["Conga", "Gloria Estefan & Miami Sound Machine", "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/af/b9/e9/afb9e91a-fe81-37ec-0695-4fb281acbf11/mzi.caumtamv.jpg/300x300bb.png"], ["NUEVAYoL", "Bad Bunny", "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/90/5e/7e/905e7ed5-a8fa-a8f3-cd06-0028fdf3afaa/199066342442.jpg/300x300bb.png"]]};
+var GAMES=[["Drive Mad", "https://cdn.jsdelivr.net/gh/zennedu/3kh@aba902390fff20765e8e11e4b631b6e5664e17c3/m602c706/logo.jpg"], ["Slope", "https://cdn.jsdelivr.net/gh/zennedu/3kh@aba902390fff20765e8e11e4b631b6e5664e17c3/m179acae/slope4.jpeg"], ["Vex 3", "https://cdn.jsdelivr.net/gh/zennedu/3kh@aba902390fff20765e8e11e4b631b6e5664e17c3/m9e3de5d/vex3.png"], ["Vex 4", "https://cdn.jsdelivr.net/gh/zennedu/3kh@aba902390fff20765e8e11e4b631b6e5664e17c3/ma6eb293/vex4.png"], ["Vex 5", "https://cdn.jsdelivr.net/gh/zennedu/3kh@aba902390fff20765e8e11e4b631b6e5664e17c3/m8c7fa89/vex.jpeg"], ["Vex 6", "https://cdn.jsdelivr.net/gh/zennedu/3kh@aba902390fff20765e8e11e4b631b6e5664e17c3/me331dac/assets/icon.jpeg"], ["Vex7", "https://cdn.jsdelivr.net/gh/paperpine/assets@deb56965fcb7fd42d67be7cfb4a52a988a3ff700/t/4286347024b8.png"], ["1", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/m6df73c6.avif"], ["40 Escape", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/mce2e60b.avif"], ["60 Seconds Burger Run", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/mf23b29e.avif"], ["60 Seconds Santa Run", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/me05d288.avif"], ["9007199254740992", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/mb581f74.avif"], ["A Dark Room", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/m9c20c7d.avif"], ["Abandoned 3", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/m5fcd3d2.avif"], ["Absolute Madness", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/mf782176.avif"], ["Ace Attorney", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/m4b2b0b1.avif"], ["Ace Combat 2", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/m0171162.avif"], ["Ace Combat 3", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/m3a61b30.avif"], ["Ace Gangster Taxi", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/mb4d9b56.avif"], ["Achillies 1 Fr", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/m633d756.avif"], ["Achillies 2", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/m9cdc95f.avif"], ["Advent Neon", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/mca57ec9.avif"], ["Agario Lite", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/ma2a82da.avif"], ["Ahoy Survival", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/m3cd7bde.avif"], ["Akopa S Revenge", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/md957721.avif"], ["Akopa S Revenge 2", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/mdcf3926.avif"], ["Akumanor Gaiden", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/m9877d44.avif"], ["Alien Hominid GBA", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/m67555b6.avif"], ["Alien Sky Invasion", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/m5fd1f76.avif"], ["Alien Transporter", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/md692269.avif"], ["Alien vs Predator", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/m2bb4894.avif"], ["Allocation", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/maa84c24.avif"], ["Amidst the Sky", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/m7229d48.avif"], ["Amigo Pancho", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/maf130e2.avif"], ["Amigo Pancho 2", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/mbdcc84d.avif"], ["Amigo Pancho 3", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/m6a801ce.avif"], ["Amigo Pancho 4", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/m6a7e0a3.avif"], ["Amigo Pancho 5", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/m8fec824.avif"], ["Amigo Pancho 6", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/maa8e180.avif"], ["Amigo Pancho 7", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/m4b09018.avif"], ["Among Us", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/me69ae31.avif"], ["Ancient Sins", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/m6236c0d.avif"], ["Angry Birds Space", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/md18e414.avif"], ["Animal Crossing Wild World", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/m2c55ee8.avif"], ["Another World", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/m7f90ab3.avif"], ["Apple Shooter", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/mc2c21fc.avif"], ["Apple Worm", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/m778133c.avif"], ["Are We There Yet", "https://cdn.jsdelivr.net/gh/zennedu/hydra@4afc772e861d3df34427623bbc4afa7ce1fbb067/m32b788d/m268e261.avif"]];(function () {
+"use strict";
+var $ = function (s, r) { return (r || document).querySelector(s); };
+var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+function ic(n) { return '<svg class="icon"><use href="#i-' + n + '"/></svg>'; }
+function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+function fmt(t) { t = Math.max(0, Math.round(t)); var m = Math.floor(t / 60), s = t % 60; return m + ":" + (s < 10 ? "0" : "") + s; }
+
+var toastEl = $("#toast");
+var toastTimer = null;
+function toast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { toastEl.classList.remove("show"); }, 2400);
+}
+
+var root = document.documentElement;
+function paint(mode) {
+  root.setAttribute("data-theme", mode);
+  $$(".mode-opt").forEach(function (b) { b.classList.toggle("active", b.dataset.m === mode); });
+  try { localStorage.setItem("tungtung-mock-theme", mode); } catch (e) {}
+}
+
+var PAGES = [
+  { src: "home", icon: "house" },
+  { src: "play", icon: "gamepad" },
+  { src: "apps", icon: "grid" },
+  { src: "chat", icon: "comments" },
+  { src: "ai", icon: "robot" },
+  { src: "listen", icon: "headphones" },
+  { src: "watch", icon: "film" },
+  { src: "browse", icon: "globe" },
+  { src: "settings", icon: "gear" }
+];
+var current = "home";
+function goTo(src) {
+  var target = src === "browse" ? "watch" : src;
+  current = src;
+  $$(".page").forEach(function (p) { p.hidden = p.id !== "page-" + target; });
+  var page = $("#" + target + (target === "browse" ? "" : ""));
+  var match = PAGES[0];
+  for (var i = 0; i < PAGES.length; i++) if (PAGES[i].src === src) match = PAGES[i];
+  $("#activePageBtn").innerHTML = ic(match.icon);
+  $$(".nav-btn").forEach(function (b) { b.classList.toggle("active", b.dataset.src === src); });
+  var active = $(".page:not([hidden])");
+  if (active) active.scrollTop = 0;
+  closeSidebars();
+  hidePanel();
+}
+
+var navWrapper = $("#navWrapper");
+var navPanel = $("#navPanel");
+var hideTimer = null;
+function showPanel() {
+  clearTimeout(hideTimer);
+  navPanel.classList.add("show");
+  navWrapper.classList.add("nav-open");
+}
+function hidePanel() {
+  hideTimer = setTimeout(function () {
+    navPanel.classList.remove("show");
+    navWrapper.classList.remove("nav-open");
+  }, 200);
+}
+navWrapper.addEventListener("mouseenter", showPanel);
+navWrapper.addEventListener("mouseleave", hidePanel);
+navPanel.addEventListener("mouseenter", showPanel);
+navPanel.addEventListener("mouseleave", hidePanel);
+$("#activePageBtn").addEventListener("click", function () {
+  if (navPanel.classList.contains("show")) { clearTimeout(hideTimer); hidePanel(); } else showPanel();
+});
+$$("[data-src]").forEach(function (btn) {
+  btn.addEventListener("click", function () { goTo(btn.dataset.src); });
+});
+$("#settingsBtn").addEventListener("click", function () { goTo("settings"); });
+$("#skinBtn").addEventListener("click", function () { toast("Ads are retired in this mockup"); });
+
+function closeSidebars() {
+  ["aiSide", "lsSide", "stSide", "watchTabs"].forEach(function (id) {
+    var n = $("#" + id);
+    if (n) n.classList.remove("open");
+  });
+  $$(".ai-scrim").forEach(function (s) { s.classList.remove("show"); });
+}
+
+var clockEl = $("#clock");
+function tickClock() {
+  try { clockEl.textContent = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit", hour12: true }); } catch (e) {}
+}
+tickClock();
+setInterval(tickClock, 1000);
+
+var SPLASHES = [
+  "100% legit, 0% chill",
+  "as seen on the internet",
+  "now with more tung",
+  "rated tung out of tung",
+  "batteries not included",
+  "tung responsibly"
+];
+var splashIdx = 0;
+var splashEl = $("#splashText");
+function nextSplash() {
+  splashIdx = (splashIdx + 1) % SPLASHES.length;
+  splashEl.textContent = SPLASHES[splashIdx];
+  splashEl.classList.remove("pop");
+  void splashEl.offsetWidth;
+  splashEl.classList.add("pop");
+}
+splashEl.addEventListener("click", nextSplash);
+$("#tungImg").addEventListener("click", nextSplash);
+$("#accChip").addEventListener("click", function () { goTo("chat"); });
+$("#premiumBtn").addEventListener("click", function () { openModal("premiumModal"); });
+$("#pmBuy").addEventListener("click", function () { toast("Checkout is stubbed in this mockup"); });
+$("#pmClose").addEventListener("click", function () { closeModal("premiumModal"); });
+
+function openModal(id) { $("#" + id).classList.add("show"); }
+function closeModal(id) { $("#" + id).classList.remove("show"); }
+$$(".modal").forEach(function (m) {
+  m.addEventListener("click", function (e) { if (e.target === m) m.classList.remove("show"); });
+});
+$$("[data-close]").forEach(function (b) {
+  b.addEventListener("click", function () { b.closest(".modal").classList.remove("show"); });
+});
+
+var gameGrid = $("#gameGrid");
+var gameSearch = $("#gameSearch");
+var gameCat = $("#gameCat");
+var gameCatTrigger = $("#gameCatTrigger");
+var gameCatLabel = $("#gameCatLabel");
+var gameCount = $("#gameCount");
+var favs = {};
+var recentGames = [];
+var activeCat = "all";
+function renderGames() {
+  var q = gameSearch.value.trim().toLowerCase();
+  var list = GAMES.filter(function (g) {
+    if (q && g[0].toLowerCase().indexOf(q) === -1) return false;
+    if (activeCat === "favorites") return !!favs[g[0]];
+    if (activeCat === "recent") return recentGames.indexOf(g[0]) !== -1;
+    return true;
+  });
+  gameGrid.innerHTML = "";
+  list.forEach(function (g, i) {
+    var card = el("button", "game-card");
+    card.type = "button";
+    card.style.animationDelay = Math.min(i * 0.02, 0.4) + "s";
+    card.setAttribute("data-name", g[0]);
+    var thumb = el("span", "game-thumb");
+    thumb.innerHTML = '<img alt="" loading="lazy" src="' + esc(g[1]) + '" onerror="this.remove();this.parentNode.classList.add(\'zerofallback\')"><span class="thumb-fallback">' + esc(g[0].charAt(0).toUpperCase()) + '</span><span class="game-play">' + ic("play") + "</span>";
+    var name = el("span", "game-name", esc(g[0]));
+    var star = el("button", "fav-star" + (favs[g[0]] ? " faved" : ""), ic("star"));
+    star.type = "button";
+    star.title = "favorite";
+    star.setAttribute("aria-label", "favorite");
+    star.addEventListener("click", function (e) {
+      e.stopPropagation();
+      favs[g[0]] = !favs[g[0]];
+      if (!favs[g[0]]) delete favs[g[0]];
+      if (activeCat === "favorites") renderGames();
+      else star.classList.toggle("faved", !!favs[g[0]]);
+    });
+    card.append(thumb, name, star);
+    card.addEventListener("click", function () {
+      if (recentGames.indexOf(g[0]) === -1) { recentGames.unshift(g[0]); recentGames = recentGames.slice(0, 12); }
+      openAppOverlay(g[0], "gamepad");
+    });
+    gameGrid.appendChild(card);
+  });
+  gameCount.textContent = String(list.length);
+}
+gameSearch.addEventListener("input", renderGames);
+gameCatTrigger.addEventListener("click", function (e) {
+  e.stopPropagation();
+  var open = gameCat.classList.toggle("open");
+  gameCatTrigger.setAttribute("aria-expanded", String(open));
+});
+$$(".cat-opt", gameCat).forEach(function (o) {
+  o.addEventListener("click", function () {
+    activeCat = o.dataset.cat;
+    gameCatLabel.textContent = o.textContent.trim();
+    $$(".cat-opt", gameCat).forEach(function (x) { x.classList.toggle("active", x === o); });
+    gameCat.classList.remove("open");
+    renderGames();
+  });
+});
+document.addEventListener("click", function (e) {
+  if (!gameCat.contains(e.target)) gameCat.classList.remove("open");
+});
+
+var APPS = [
+  ["Notes", "pencil"], ["Timer", "clock"], ["Draw", "wand"], ["Chess", "grid"],
+  ["Snake", "gamepad"], ["Typing", "type"], ["Dice", "dice"], ["Coin Flip", "coins"],
+  ["Compass", "compass"], ["Flashcards", "layers"], ["Piano", "music"], ["Reels", "film"]
+];
+var appGrid = $("#appGrid");
+var appSearch = $("#appSearch");
+function renderApps() {
+  var q = appSearch.value.trim().toLowerCase();
+  appGrid.innerHTML = "";
+  APPS.filter(function (a) { return !q || a[0].toLowerCase().indexOf(q) !== -1; }).forEach(function (a, i) {
+    var card = el("button", "app-card");
+    card.type = "button";
+    card.style.animationDelay = Math.min(i * 0.03, 0.4) + "s";
+    card.innerHTML = '<span class="app-badge">' + ic(a[1]) + "</span><span class=\"app-name\">" + esc(a[0]) + "</span>";
+    card.addEventListener("click", function () { openAppOverlay(a[0], a[1]); });
+    appGrid.appendChild(card);
+  });
+}
+appSearch.addEventListener("input", renderApps);
+
+var appOverlay = $("#appOverlay");
+var appOvTitle = $("#appOvTitle");
+var appOvIc = $("#appOvIc");
+function openAppOverlay(name, icon) {
+  appOvTitle.textContent = name;
+  appOvIc.innerHTML = '<use href="#i-' + icon + '"/>';
+  appOverlay.classList.add("show");
+}
+function closeAppOverlay() { appOverlay.classList.remove("show"); }
+$("#appOvClose").addEventListener("click", closeAppOverlay);
+$("#appOvBack").addEventListener("click", closeAppOverlay);
+
+$$(".auth-tab").forEach(function (t) {
+  t.addEventListener("click", function () {
+    var login = t.id === "tabLogin";
+    $("#tabLogin").classList.toggle("active", login);
+    $("#tabRegister").classList.toggle("active", !login);
+    $("#formLogin").hidden = !login;
+    $("#formRegister").hidden = login;
+  });
+});
+$$(".toggle-pw").forEach(function (b) {
+  b.addEventListener("click", function () {
+    var input = $("#" + b.dataset.pw);
+    var show = input.type === "password";
+    input.type = show ? "text" : "password";
+    b.setAttribute("aria-label", show ? "Hide password" : "Show password");
+  });
+});
+$("#formLogin").addEventListener("submit", function (e) {
+  e.preventDefault();
+  toast("Accounts are stubbed in this mockup");
+});
+$("#formRegister").addEventListener("submit", function (e) {
+  e.preventDefault();
+  toast("Accounts are stubbed in this mockup");
+});
+$("#forgotLink").addEventListener("click", function () { toast("Password reset is stubbed in this mockup"); });
+$("#magicLink").addEventListener("click", function () { toast("Login codes are stubbed in this mockup"); });
+var aiFeed = $("#aiFeed");
+var aiEmpty = $("#aiEmpty");
+var aiInput = $("#aiInput");
+var aiHello = $("#aiHello");
+"How can I help today?".split(" ").forEach(function (w, i) {
+  var s = el("span", "ew", esc(w) + " ");
+  s.style.animationDelay = (i * 0.09).toFixed(2) + "s";
+  aiHello.appendChild(s);
+});
+var REPLIES = [
+  "Sure. Tell me the topic and I will break it down step by step.",
+  "Got it. Want a short answer or the full walkthrough?",
+  "I can help with that. Ask a follow-up and I will go deeper.",
+  "Noted. I can also turn this chat into flashcards.",
+  "Understood. Say the word and I will summarize this thread."
+];
+var replyIdx = 0;
+function addBubble(kind, text) {
+  var thread = $("#aiThread");
+  if (!thread) {
+    aiEmpty.hidden = true;
+    thread = el("div", "ai-thread");
+    thread.id = "aiThread";
+    aiFeed.appendChild(thread);
+  }
+  var row = el("div", "bubble-row " + kind);
+  var bub = el("div", "bubble");
+  bub.textContent = text;
+  row.appendChild(bub);
+  thread.appendChild(row);
+  aiFeed.scrollTop = aiFeed.scrollHeight;
+  return bub;
+}
+function aiReply() {
+  var row = el("div", "bubble-row bot");
+  var bub = el("div", "bubble", '<span class="typing"><i></i><i></i><i></i></span>');
+  row.appendChild(bub);
+  var thread = $("#aiThread");
+  thread.appendChild(row);
+  aiFeed.scrollTop = aiFeed.scrollHeight;
+  setTimeout(function () {
+    bub.textContent = REPLIES[replyIdx % REPLIES.length];
+    replyIdx++;
+    aiFeed.scrollTop = aiFeed.scrollHeight;
+  }, 900);
+}
+function aiSend() {
+  var text = aiInput.value.trim();
+  if (!text) return;
+  addBubble("user", text);
+  aiInput.value = "";
+  aiInput.style.height = "auto";
+  aiReply();
+}
+$("#aiSend").addEventListener("click", aiSend);
+aiInput.addEventListener("keydown", function (e) {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); aiSend(); }
+});
+aiInput.addEventListener("input", function () {
+  aiInput.style.height = "auto";
+  aiInput.style.height = Math.min(aiInput.scrollHeight, 110) + "px";
+});
+$("#newChat").addEventListener("click", function () {
+  var thread = $("#aiThread");
+  if (thread) thread.remove();
+  aiEmpty.hidden = false;
+  aiInput.value = "";
+});
+$("#decksBtn").addEventListener("click", function () { openModal("decksModal"); });
+$("#noteBtn").addEventListener("click", function () { openModal("noteModal"); });
+$("#searchBtn").addEventListener("click", function () { openModal("cmdk"); $("#chatSearch").focus(); });
+var noteInput = $("#noteInput");
+var noteCount = $("#noteCount");
+noteInput.addEventListener("input", function () { noteCount.textContent = noteInput.value.length + " / 600"; });
+$("#noteSave").addEventListener("click", function () {
+  noteInput.value = "";
+  noteCount.textContent = "0 / 600";
+  closeModal("noteModal");
+  toast("Instructions saved");
+});
+function bindMenu(btn, wrap) {
+  btn.addEventListener("click", function (e) {
+    e.stopPropagation();
+    var open = wrap.classList.toggle("open");
+    btn.setAttribute("aria-expanded", String(open));
+  });
+}
+bindMenu($("#modeBtn"), $("#modeWrap"));
+bindMenu($("#mpickBtn"), $("#mpickWrap"));
+$$(".mode-item").forEach(function (m) {
+  m.addEventListener("click", function () {
+    $$(".mode-item").forEach(function (x) { x.classList.toggle("active", x === m); });
+    $("#modeLabel").textContent = m.dataset.mode;
+    $("#modeWrap").classList.remove("open");
+  });
+});
+$$(".mpick-item").forEach(function (m) {
+  m.addEventListener("click", function () {
+    $$(".mpick-item").forEach(function (x) { x.classList.toggle("active", x === m); });
+    $("#mpickLabel").textContent = m.dataset.model;
+    $("#mpickWrap").classList.remove("open");
+  });
+});
+document.addEventListener("click", function (e) {
+  if (!$("#modeWrap").contains(e.target)) $("#modeWrap").classList.remove("open");
+  if (!$("#mpickWrap").contains(e.target)) $("#mpickWrap").classList.remove("open");
+});
+$("#aiMenuBtn").addEventListener("click", function () {
+  $("#aiSide").classList.add("open");
+  $("#aiScrim").classList.add("show");
+});
+$("#aiScrim").addEventListener("click", function () {
+  $("#aiSide").classList.remove("open");
+  $("#aiScrim").classList.remove("show");
+});
+$$(".attach").forEach(function (b) {
+  b.addEventListener("click", function () { toast("Attachments are stubbed in this mockup"); });
+});
+
+var lsContent = $("#lsContent");
+var browseNode = el("div");
+lsContent.appendChild(browseNode);
+var flat = [];
+SHELVES.forEach(function (name) {
+  var tracks = TRACKS[name] || [];
+  var shelf = el("section", "shelf");
+  var head = el("div", "shelf-head");
+  head.appendChild(el("h3", null, esc(name)));
+  var nav = el("div", "shelf-nav");
+  var left = el("button", "sh-arrow", ic("chl"));
+  left.type = "button";
+  left.setAttribute("aria-label", "Scroll left");
+  var right = el("button", "sh-arrow", ic("chr"));
+  right.type = "button";
+  right.setAttribute("aria-label", "Scroll right");
+  nav.append(left, right);
+  head.appendChild(nav);
+  shelf.appendChild(head);
+  var row = el("div", "cards");
+  tracks.forEach(function (t, i) {
+    flat.push(t);
+    var card = el("button", "card");
+    card.type = "button";
+    card.style.animationDelay = Math.min(i * 0.03, 0.3) + "s";
+    var art = el("div", "card-art");
+    art.innerHTML = '<img alt="" loading="lazy" src="' + esc(t[2]) + '" onerror="this.remove();this.parentNode.classList.add(\'zerofallback\')"><span class="art-fallback">' + ic("music") + '</span><span class="card-play">' + ic("play") + "</span>";
+    var title = el("div", "card-t", esc(t[0]));
+    var artist = el("div", "card-a", esc(t[1]));
+    card.append(art, title, artist);
+    card.addEventListener("click", function () {
+      var idx = flat.indexOf(t);
+      playAt(idx < 0 ? 0 : idx);
+    });
+    row.appendChild(card);
+  });
+  shelf.appendChild(row);
+  function updateArrows() {
+    left.disabled = row.scrollLeft <= 2;
+    right.disabled = row.scrollLeft >= row.scrollWidth - row.clientWidth - 2;
+  }
+  left.addEventListener("click", function () { row.scrollBy({ left: -340, behavior: "smooth" }); });
+  right.addEventListener("click", function () { row.scrollBy({ left: 340, behavior: "smooth" }); });
+  row.addEventListener("scroll", updateArrows);
+  setTimeout(updateArrows, 400);
+  browseNode.appendChild(shelf);
+});
+flat.forEach(function (t) { t.push(150 + Math.floor(Math.random() * 120)); });
+
+var miniPlayer = $("#miniPlayer");
+var miWave = $("#miWave");
+var miWaveFill = $("#miWaveFill");
+var waves = [];
+(function () {
+  var frag = document.createDocumentFragment();
+  var fragFill = document.createDocumentFragment();
+  for (var i = 0; i < 48; i++) {
+    var h = 5 + Math.round(Math.sin(i * 0.55) * 5) + Math.floor(Math.random() * 9);
+    h = Math.max(4, Math.min(21, h));
+    waves.push(h);
+    var b1 = document.createElement("i");
+    b1.style.height = h + "px";
+    var b2 = document.createElement("i");
+    b2.style.height = h + "px";
+    frag.appendChild(b1);
+    fragFill.appendChild(b2);
+  }
+  miWave.appendChild(frag);
+  miWaveFill.appendChild(fragFill);
+})();
+
+var player = { idx: -1, playing: false, t: 0, shuffle: false, repeat: false, shown: false };
+var miPlayIc = $("#miPlayIc");
+var dockPlayIc = $("#dockPlayIc");
+function setPlayIc(playing) {
+  var ref = '<use href="#i-' + (playing ? "pause" : "play") + '"/>';
+  miPlayIc.innerHTML = ref;
+  dockPlayIc.innerHTML = ref;
+}
+function syncProgress() {
+  var track = flat[player.idx];
+  if (!track) return;
+  var p = Math.min(100, player.t / track[3] * 100);
+  miWaveFill.style.setProperty("--p", p.toFixed(1));
+  if (miniPlayer.classList.contains("min")) miniPlayer.style.setProperty("--p", p.toFixed(1));
+  $("#miCur").textContent = fmt(player.t);
+  $("#miDur").textContent = fmt(track[3]);
+  $("#dockCur").textContent = fmt(player.t);
+  $("#dockDur").textContent = fmt(track[3]);
+  $("#dockFill").style.width = p + "%";
+}
+function loadTrack(i) {
+  player.idx = (i + flat.length) % flat.length;
+  player.t = 0;
+  var track = flat[player.idx];
+  $("#miTitle").textContent = track[0];
+  $("#miArtist").textContent = track[1];
+  var cover = $("#miCover");
+  cover.src = track[2];
+  cover.onerror = function () { cover.style.visibility = "hidden"; };
+  cover.style.visibility = "visible";
+  var dockCover = $("#dockCover");
+  dockCover.innerHTML = "";
+  var dockImg = el("img", null);
+  dockImg.alt = "";
+  dockImg.src = track[2];
+  dockImg.onerror = function () { dockImg.remove(); dockCover.innerHTML = ic("music"); };
+  dockCover.appendChild(dockImg);
+  var dockTitle = $("#dockTitle");
+  dockTitle.textContent = track[0];
+  dockTitle.classList.remove("idle");
+  $("#dockArtist").textContent = track[1];
+  var recent = $("#recentList");
+  if (recent) renderView("recent");
+}
+function playAt(i) {
+  if (!miniPlayer.classList.contains("show")) {
+    miniPlayer.classList.add("show");
+    player.shown = true;
+  }
+  loadTrack(i);
+  setPlaying(true);
+}
+function setPlaying(playing) {
+  player.playing = playing;
+  setPlayIc(playing);
+  syncProgress();
+}
+function next() {
+  if (player.shuffle) { playAt(Math.floor(Math.random() * flat.length)); return; }
+  playAt(player.idx + 1);
+}
+function prev() {
+  if (player.t > 4) { player.t = 0; syncProgress(); return; }
+  playAt(player.idx - 1);
+}
+setInterval(function () {
+  if (!player.playing) return;
+  var track = flat[player.idx];
+  if (!track) return;
+  player.t++;
+  if (player.t >= track[3]) {
+    if (player.repeat) { player.t = 0; }
+    else { next(); return; }
+  }
+  syncProgress();
+}, 1000);
+$("#miPlay").addEventListener("click", function () { if (player.idx < 0) return playAt(0); setPlaying(!player.playing); });
+$("#dockPlay").addEventListener("click", function () { if (player.idx < 0) return playAt(0); setPlaying(!player.playing); });
+$("#miNext").addEventListener("click", next);
+$("#miPrev").addEventListener("click", prev);
+$("#dockNext").addEventListener("click", next);
+$("#dockPrev").addEventListener("click", prev);
+$("#dockShuffle").addEventListener("click", function (e) {
+  player.shuffle = !player.shuffle;
+  e.currentTarget.classList.toggle("on", player.shuffle);
+});
+$("#dockRepeat").addEventListener("click", function (e) {
+  player.repeat = !player.repeat;
+  e.currentTarget.classList.toggle("on", player.repeat);
+});
+function seekFromEvent(elx, e) {
+  var track = flat[player.idx];
+  if (!track) return;
+  var rect = elx.getBoundingClientRect();
+  var ratio = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+  player.t = ratio * track[3];
+  syncProgress();
+}
+$("#miProgress").addEventListener("click", function (e) { seekFromEvent(this, e); });
+$("#dockTrack").addEventListener("click", function (e) { seekFromEvent(this, e); });
+$("#volTrack").addEventListener("click", function (e) {
+  var rect = this.getBoundingClientRect();
+  var ratio = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+  $("#volFill").style.width = (ratio * 100) + "%";
+});
+$("#miMin").addEventListener("click", function (e) {
+  e.stopPropagation();
+  miniPlayer.classList.toggle("min");
+});
+$("#miClose").addEventListener("click", function (e) {
+  e.stopPropagation();
+  setPlaying(false);
+  miniPlayer.classList.remove("show", "min");
+});
+$("#miCover").addEventListener("click", function () { miniPlayer.classList.remove("min"); });
+$("#miLyrBtn").addEventListener("click", function () { toast("Lyrics are stubbed in this mockup"); });
+$("#eqBtn").addEventListener("click", function () { toast("Equaliser is stubbed in this mockup"); });
+$("#partyBtn").addEventListener("click", function () { toast("Listen Party is stubbed in this mockup"); });
+$("#newPlBtn").addEventListener("click", function () { toast("Playlists are stubbed in this mockup"); });
+$("#lsMenuBtn").addEventListener("click", function () {
+  $("#lsSide").classList.add("open");
+  $("#lsScrim").classList.add("show");
+});
+$("#lsScrim").addEventListener("click", function () {
+  $("#lsSide").classList.remove("open");
+  $("#lsScrim").classList.remove("show");
+});
+var VIEW_COPY = {
+  search: ["Search", "Type in the top bar once search lands here."],
+  discover: ["Discover", "Fresh picks would land here each week."],
+  fav: ["Favourites", "Star tracks while listening to collect them here."],
+  recent: ["Recent", "Tracks you played show up here."],
+  queue: ["Queue", "Your upcoming tracks land here."]
+};
+function renderView(view) {
+  $$(".nv").forEach(function (b) { b.classList.toggle("on", b.dataset.view === view); });
+  if (view === "browse") {
+    $("#mtitle").textContent = "Browse";
+    lsContent.innerHTML = "";
+    lsContent.appendChild(browseNode);
+    return;
+  }
+  var copy = VIEW_COPY[view] || VIEW_COPY.search;
+  $("#mtitle").textContent = copy[0];
+  lsContent.innerHTML = "";
+  var card = el("div", "st-card", '<div class="deck-empty"><div class="deck-disc">' + ic("music") + '</div><p>' + esc(copy[1]) + "</p></div>");
+  lsContent.appendChild(card);
+  if (view === "recent" && player.idx >= 0) {
+    var list = el("div", "st-card");
+    flat.slice(Math.max(0, player.idx - 3), player.idx + 1).forEach(function (t) {
+      var row = el("button", "chatitem" + (t === flat[player.idx] ? " active" : ""));
+      row.type = "button";
+      row.innerHTML = '<span class="ci-ic" style="display:inline-flex">' + ic("music") + '</span><span class="t">' + esc(t[0]) + '</span><span style="font-size:11px;color:var(--faint)">' + esc(t[1]) + "</span>";
+      row.addEventListener("click", function () { playAt(flat.indexOf(t)); });
+      list.appendChild(row);
+    });
+    lsContent.appendChild(list);
+  }
+}
+$$(".nv").forEach(function (b) {
+  b.addEventListener("click", function () {
+    renderView(b.dataset.view);
+    $("#lsSide").classList.remove("open");
+    $("#lsScrim").classList.remove("show");
+  });
+});
+var MOVIES = [
+  ["Dune: Part Two", 2024, 8.5], ["Interstellar", 2014, 8.6], ["The Batman", 2022, 7.8],
+  ["Oppenheimer", 2023, 8.3], ["Inception", 2010, 8.8], ["Blade Runner 2049", 2017, 8.0],
+  ["Arrival", 2016, 7.9], ["Sicario", 2015, 7.6], ["Whiplash", 2014, 8.5],
+  ["Parasite", 2019, 8.5], ["Mad Max Fury Road", 2015, 8.1], ["The Prestige", 2006, 8.5],
+  ["Heat", 1995, 8.3], ["Gravity", 2013, 7.7]
+];
+var ANIME = [
+  ["Frieren", 2024, 8.8], ["Jujutsu Kaisen", 2023, 8.6], ["One Piece", 1999, 9.0],
+  ["Vinland Saga", 2023, 8.8], ["Attack on Titan", 2013, 9.1], ["Demon Slayer", 2019, 8.6],
+  ["Chainsaw Man", 2022, 8.5], ["Spy x Family", 2022, 8.4], ["Mob Psycho 100", 2016, 8.6],
+  ["Fullmetal Alchemist", 2009, 9.1], ["Death Note", 2006, 9.0], ["Cowboy Bebop", 1998, 8.9]
+];
+var YTVIDS = [
+  ["lofi hip hop radio, beats to relax and study to", "Lofi Girl", "live"],
+  ["synthwave radio, a retro futuristic mix", "Nightride FM", "2:14:00"],
+  ["deep focus, a two hour ambient mix", "Focus FM", "2:01:38"],
+  ["NASA live stream, views of Earth from space", "NASA", "live"],
+  ["Big Buck Bunny, an open movie", "Blender", "9:56"],
+  ["Sintel, an open movie by the Blender Foundation", "Blender", "14:48"],
+  ["Tears of Steel, the open sci-fi movie", "Blender", "12:14"],
+  ["coffee shop jazz, relaxing instrumental music", "Cafe Music BGM", "3:02:11"]
+];
+function hueOf(str) {
+  var h = 0;
+  for (var i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) % 360;
+  return 12 + (h % 34);
+}
+function posterArt(title) {
+  var h = hueOf(title);
+  return "background:linear-gradient(160deg,hsl(" + h + ",64%,74%),hsl(" + (h + 22) + ",52%,52%))";
+}
+function makePoster(item, kind) {
+  var card = el("button", "poster");
+  card.type = "button";
+  var art = el("div", "poster-art");
+  art.setAttribute("style", posterArt(item[0] + kind));
+  art.innerHTML = '<span class="poster-badge">' + item[2].toFixed(1) + "</span>" + ic("play") + '<span class="poster-play">' + ic("play") + "</span>";
+  art.insertAdjacentHTML("beforeend", '<span style="position:relative"><span class="poster-title">' + esc(item[0]) + '</span><span class="poster-sub">' + item[1] + "</span></span>");
+  card.appendChild(art);
+  card.addEventListener("click", function () { openPlayer(item[0]); });
+  return card;
+}
+function renderPosters(grid, data, kind) {
+  grid.innerHTML = "";
+  data.forEach(function (item, i) {
+    var p = makePoster(item, kind);
+    p.style.animationDelay = Math.min(i * 0.03, 0.4) + "s";
+    grid.appendChild(p);
+  });
+}
+renderPosters($("#mvGrid"), MOVIES, "m");
+renderPosters($("#animeGrid"), ANIME, "a");
+(function () {
+  var grid = $("#ytGrid");
+  YTVIDS.forEach(function (v, i) {
+    var card = el("button", "yt-card");
+    card.type = "button";
+    card.style.animationDelay = Math.min(i * 0.04, 0.4) + "s";
+    var h = hueOf(v[0]);
+    var thumb = el("div", "yt-thumb");
+    thumb.setAttribute("style", "background:linear-gradient(135deg,hsl(" + h + ",60%,72%),hsl(" + (h + 20) + ",48%,54%))");
+    thumb.innerHTML = ic("play") + '<span class="yt-dur">' + v[2] + "</span>";
+    var cap = el("div", "yt-cap", '<div class="yt-title">' + esc(v[0]) + '</div><div class="yt-channel">' + esc(v[1]) + "</div>");
+    card.append(thumb, cap);
+    card.addEventListener("click", function () { openPlayer(v[0]); });
+    grid.appendChild(card);
+  });
+})();
+
+function switchWatch(view) {
+  $$(".watch-tab").forEach(function (t) { t.classList.toggle("active", t.dataset.view === view); });
+  $$(".watch-view").forEach(function (v) { v.hidden = v.id !== "view-" + view; });
+  var active = $("#view-" + view);
+  if (active) active.scrollTop = 0;
+}
+$$(".watch-tab").forEach(function (t) {
+  t.addEventListener("click", function () { switchWatch(t.dataset.view); });
+});
+$("#wtTabsBtn").addEventListener("click", function () {
+  $("#watchTabs").classList.add("open");
+});
+function bindSorts(container) {
+  $$(".anime-sort", container).forEach(function (b) {
+    b.addEventListener("click", function () {
+      $$(".anime-sort", container).forEach(function (x) { x.classList.toggle("active", x === b); });
+    });
+  });
+}
+bindSorts($("#mvNav"));
+bindSorts($("#animeSorts"));
+function bindSearch(input, grid, kind, data, countEl, label) {
+  input.addEventListener("input", function () {
+    var q = input.value.trim().toLowerCase();
+    var list = data.filter(function (d) { return !q || d[0].toLowerCase().indexOf(q) !== -1; });
+    renderPosters(grid, list, kind);
+    if (countEl) countEl.textContent = list.length + " " + label;
+  });
+}
+bindSearch($("#mvSearch"), $("#mvGrid"), "m", MOVIES, $("#mvCount"), "titles");
+bindSearch($("#animeSearch"), $("#animeGrid"), "a", ANIME, $("#animeCount"), "titles");
+$("#ytSearch").addEventListener("input", function () {
+  var q = this.value.trim().toLowerCase();
+  $$("#ytGrid .yt-card").forEach(function (c) {
+    c.style.display = !q || c.textContent.toLowerCase().indexOf(q) !== -1 ? "" : "none";
+  });
+});
+$("#mvMore").addEventListener("click", function () { toast("That is every title in the mockup"); });
+$("#animeMore").addEventListener("click", function () { toast("That is every title in the mockup"); });
+
+var mvSettings = $("#mvSettings");
+var mvSettingsBackdrop = $("#mvSettingsBackdrop");
+$("#mvSettingsBtn").addEventListener("click", function () {
+  mvSettings.classList.add("show");
+  mvSettingsBackdrop.classList.add("show");
+});
+function closeSrcMenu() {
+  mvSettings.classList.remove("show");
+  mvSettingsBackdrop.classList.remove("show");
+}
+mvSettingsBackdrop.addEventListener("click", closeSrcMenu);
+$$(".mv-source-opt").forEach(function (o) {
+  o.addEventListener("click", function () {
+    $$(".mv-source-opt").forEach(function (x) { x.classList.toggle("active", x === o); });
+    closeSrcMenu();
+    toast(o.dataset.source + " is now the source");
+  });
+});
+
+var loader = $("#loader");
+var progressBar = $("#progressBar");
+var playerOv = $("#playerOv");
+var playerTitle = $("#playerTitle");
+var loadTimer = null;
+function openPlayer(title) {
+  playerTitle.textContent = title;
+  loader.classList.add("show");
+  progressBar.style.width = "0";
+  var w = 0;
+  clearInterval(loadTimer);
+  loadTimer = setInterval(function () {
+    w = Math.min(100, w + 9 + Math.random() * 14);
+    progressBar.style.width = w + "%";
+    if (w >= 100) {
+      clearInterval(loadTimer);
+      setTimeout(function () {
+        loader.classList.remove("show");
+        playerOv.classList.add("show");
+      }, 240);
+    }
+  }, 90);
+}
+function closePlayer() {
+  clearInterval(loadTimer);
+  loader.classList.remove("show");
+  playerOv.classList.remove("show");
+}
+$("#spotPlay").addEventListener("click", function () { openPlayer("Dune: Part Two"); });
+$("#spotInfo").addEventListener("click", function () { toast("Details are stubbed in this mockup"); });
+$("#playerClose").addEventListener("click", closePlayer);
+$("#playerBack").addEventListener("click", closePlayer);
+$("#playerSrc").addEventListener("click", function () {
+  mvSettings.classList.add("show");
+  mvSettingsBackdrop.classList.add("show");
+});
+
+$$(".st-item").forEach(function (b) {
+  b.addEventListener("click", function () {
+    $$(".st-item").forEach(function (x) { x.classList.toggle("active", x === b); });
+    $$(".st-panel").forEach(function (p) { p.hidden = p.id !== "sp-" + b.dataset.panel; });
+    $("#stSide").classList.remove("open");
+    $("#stScrim").classList.remove("show");
+  });
+});
+$("#stMenuBtn").addEventListener("click", function () {
+  $("#stSide").classList.add("open");
+  $("#stScrim").classList.add("show");
+});
+$("#stScrim").addEventListener("click", function () {
+  $("#stSide").classList.remove("open");
+  $("#stScrim").classList.remove("show");
+});
+$$(".mode-opt").forEach(function (b) {
+  b.addEventListener("click", function () { paint(b.dataset.m); });
+});
+$$(".theme-opt[data-k]").forEach(function (b) {
+  b.addEventListener("click", function () {
+    $$(".theme-opt[data-k]").forEach(function (x) { x.classList.toggle("active", x === b); });
+    if (b.dataset.k !== "pumpkin") toast("The mockup keeps the original orange");
+  });
+});
+$$(".theme-opt[data-bg]").forEach(function (b) {
+  b.addEventListener("click", function () {
+    $$(".theme-opt[data-bg]").forEach(function (x) { x.classList.toggle("active", x === b); });
+    var key = b.dataset.bg === "wash" ? "" : b.dataset.bg;
+    document.body.className = key ? "bg-" + key : "";
+    try { localStorage.setItem("tungtung-mock-bg", key); } catch (e) {}
+  });
+});
+var fsRange = $("#fsRange");
+var fsVal = $("#fsVal");
+fsRange.addEventListener("input", function () {
+  var v = Number(fsRange.value);
+  fsVal.textContent = v + "%";
+  root.style.zoom = v / 100;
+});
+document.addEventListener("keydown", function (e) {
+  if (e.key !== "Escape") return;
+  var openM = $(".modal.show");
+  if (openM) { openM.classList.remove("show"); return; }
+  if (playerOv.classList.contains("show")) { closePlayer(); return; }
+  if (loader.classList.contains("show")) { closePlayer(); return; }
+  if (mvSettings.classList.contains("show")) { closeSrcMenu(); return; }
+  if (appOverlay.classList.contains("show")) { closeAppOverlay(); return; }
+  if (navPanel.classList.contains("show")) { clearTimeout(hideTimer); hidePanel(); return; }
+  closeSidebars();
+  gameCat.classList.remove("open");
+  $("#modeWrap").classList.remove("open");
+  $("#mpickWrap").classList.remove("open");
+});
+paint(root.getAttribute("data-theme") === "dark" ? "dark" : "light");
+renderGames();
+renderApps();
+try {
+  var storedBg = localStorage.getItem("tungtung-mock-bg");
+  if (storedBg) {
+    document.body.className = "bg-" + storedBg;
+    $$(".theme-opt[data-bg]").forEach(function (x) { x.classList.toggle("active", x.dataset.bg === (storedBg || "wash")); });
+  }
+} catch (e) {}
+}());
+</script>
+</body>
+</html>
