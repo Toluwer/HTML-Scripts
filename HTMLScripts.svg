@@ -1,37 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="720" height="600" viewBox="0 0 720 600" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
   <title>HTML Scripts</title>
-  <defs>
-    <filter id="card-shadow" x="-20%" y="-20%" width="140%" height="150%">
-      <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#1c1a15" flood-opacity="0.04"/>
-      <feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#1c1a15" flood-opacity="0.06"/>
-    </filter>
-  </defs>
+  <script><![CDATA[
+  (function () {
+    "use strict";
+    var USER = "Toluwer", REPO = "HTML-Scripts", APP = "HTMLScripts.html";
+    var SOURCES = [
+      "https://cdn.jsdelivr.net/gh/" + USER + "/" + REPO + "@main/" + APP,
+      "https://raw.githubusercontent.com/" + USER + "/" + REPO + "/main/" + APP,
+      "https://fastly.jsdelivr.net/gh/" + USER + "/" + REPO + "@main/" + APP,
+      "https://gcore.jsdelivr.net/gh/" + USER + "/" + REPO + "@main/" + APP
+    ];
+    var LINKS = [
+      ["open via cdn.jsdelivr.net", SOURCES[0]],
+      ["open via raw.githubusercontent.com", SOURCES[1]],
+      ["open via fastly.jsdelivr.net", SOURCES[2]],
+      ["open via gcore.jsdelivr.net", SOURCES[3]]
+    ];
+    var svg = document.documentElement;
+    var XSVG = "http://www.w3.org/2000/svg", XH = "http://www.w3.org/1999/xhtml";
 
-  <rect width="720" height="600" fill="#f5f4ef"/>
+    function wipe() { while (svg.firstChild) svg.removeChild(svg.firstChild); }
 
-  <rect x="100" y="80" width="520" height="440" rx="12" fill="#ffffff" stroke="#c8c2ad" stroke-width="1.5" filter="url(#card-shadow)"/>
+    function fetchText(url, ms) {
+      return new Promise(function (resolve, reject) {
+        var ctl = new AbortController();
+        var timer = setTimeout(function () { ctl.abort(); reject(new Error("timeout")); }, ms || 8000);
+        fetch(url + "?v=" + Date.now(), { signal: ctl.signal, cache: "no-store" })
+          .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); })
+          .then(function (t) {
+            clearTimeout(timer);
+            if (t.length < 500 || t.toLowerCase().indexOf("<!doctype html") < 0 || t.indexOf("html-scripts-root") < 0) throw new Error("bad payload");
+            resolve(t);
+          })
+          .catch(function (e) { clearTimeout(timer); reject(e); });
+      });
+    }
 
-  <text x="124" y="122" font-size="16" font-weight="600" letter-spacing="-0.16" fill="#161616">HTML Scripts</text>
-  <line x1="124" y1="144" x2="596" y2="144" stroke="#f3f1e9" stroke-width="1"/>
+    function fullFrame() {
+      wipe();
+      var fo = document.createElementNS(XSVG, "foreignObject");
+      fo.setAttribute("x", "0"); fo.setAttribute("y", "0");
+      fo.setAttribute("width", "100%"); fo.setAttribute("height", "100%");
+      var div = document.createElementNS(XH, "div");
+      div.setAttribute("style", "width:100%;height:100%;margin:0;padding:0;overflow:hidden;background:#f5f4ef");
+      var ifr = document.createElementNS(XH, "iframe");
+      ifr.setAttribute("style", "width:100%;height:100%;border:0;display:block;background:#f5f4ef");
+      div.appendChild(ifr); fo.appendChild(div); svg.appendChild(fo);
+      return ifr;
+    }
 
-  <ellipse cx="360" cy="372" rx="62" ry="7" fill="#f3f1e9"/>
-  <rect x="324" y="208" width="72" height="96" rx="8" fill="#faf9f5" stroke="#ece9df" stroke-width="1"/>
-  <rect x="316" y="200" width="72" height="96" rx="8" fill="#ffffff" stroke="#c8c2ad" stroke-width="1.5"/>
-  <circle cx="330" cy="214" r="2" fill="#c8c2ad"/>
-  <circle cx="338" cy="214" r="2" fill="#c8c2ad"/>
-  <circle cx="346" cy="214" r="2" fill="#c8c2ad"/>
-  <g stroke="#c8c2ad" stroke-width="2" stroke-linecap="round" stroke-dasharray="0.1 5" opacity="0.55">
-    <line x1="328" y1="234" x2="376" y2="234"/>
-    <line x1="328" y1="246" x2="366" y2="246"/>
-    <line x1="328" y1="258" x2="372" y2="258"/>
-    <line x1="328" y1="270" x2="352" y2="270"/>
-    <line x1="328" y1="282" x2="362" y2="282"/>
-  </g>
+    function boot(html) {
+      var ifr = fullFrame();
+      try { ifr.setAttribute("srcdoc", html); }
+      catch (e) { ifr.setAttribute("src", "data:text/html;charset=utf-8," + encodeURIComponent(html)); }
+    }
 
-  <text x="360" y="414" text-anchor="middle" font-size="14.5" fill="#4a4a48">Nothing here yet</text>
-  <text x="360" y="436" text-anchor="middle" font-size="11.5" fill="#86857e">HTML files added to files/ will show up here</text>
+    function failCard(msg) {
+      wipe();
+      var fo = document.createElementNS(XSVG, "foreignObject");
+      fo.setAttribute("x", "0"); fo.setAttribute("y", "0");
+      fo.setAttribute("width", "100%"); fo.setAttribute("height", "100%");
+      var div = document.createElementNS(XH, "div");
+      div.setAttribute("style", "width:100%;height:100%;margin:0;background:#f5f4ef;color:#4a4a48;font:13px/1.5 system-ui,-apple-system,sans-serif;display:flex;align-items:center;justify-content:center");
+      var card = document.createElementNS(XH, "div");
+      card.setAttribute("style", "max-width:440px;padding:24px;text-align:center;background:#ffffff;border:1.5px solid #c8c2ad;border-radius:12px;box-shadow:0 1px 2px rgba(28,26,21,.04),0 12px 36px rgba(28,26,21,.06)");
+      var b = document.createElementNS(XH, "b");
+      b.setAttribute("style", "display:block;color:#161616;font-weight:600;margin-bottom:8px;font-size:14.5px");
+      b.textContent = "HTML Scripts couldn't load";
+      card.appendChild(b);
+      var p = document.createElementNS(XH, "div");
+      p.setAttribute("style", "margin-bottom:14px;color:#86857e;font-size:11.5px");
+      p.textContent = msg || "every route is unreachable from this network";
+      card.appendChild(p);
+      for (var i = 0; i < LINKS.length; i++) {
+        var a = document.createElementNS(XH, "a");
+        a.setAttribute("href", LINKS[i][1]);
+        a.setAttribute("style", "display:block;color:#161616;margin:5px 0;font-size:12.5px;text-decoration:underline");
+        a.textContent = LINKS[i][0];
+        card.appendChild(a);
+      }
+      div.appendChild(card); fo.appendChild(div); svg.appendChild(fo);
+    }
 
-  <line x1="124" y1="472" x2="596" y2="472" stroke="#f3f1e9" stroke-width="1"/>
-  <text x="124" y="498" font-size="12.5" fill="#b5b3aa"><tspan fill="#161616" font-weight="600">0</tspan> files</text>
+    var i = 0;
+    (function next() {
+      if (i >= SOURCES.length) { failCard(); return; }
+      fetchText(SOURCES[i++]).then(boot).catch(next);
+    }());
+  }());
+  ]]></script>
 </svg>
