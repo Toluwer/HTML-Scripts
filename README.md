@@ -56,5 +56,5 @@ Netlify, Cloudflare Pages, or any object storage behind a CDN.
 The repository starts with a single commit on `main`. When you are ready
 to host it, add your remote and push:
 
-    git remote add origin git@github.com:<you>/html-scripts.git
+    git remote add origin https://github.com/Toluwer/HTML-Scripts.git
     git push -u origin main

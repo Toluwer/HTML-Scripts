@@ -1,5 +1,5 @@
 /* ==========================================================================
-   HTML Scripts · CDN — app.js
+   HTML Scripts CDN — app.js
    -------------------------------------------------------------------------
    Today : theme persistence and the header toggle, nothing more.
    Later : the file listing (files/) and the full-page viewer with a back
