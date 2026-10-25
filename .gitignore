@@ -1,0 +1,17 @@
+# OS artifacts
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors
+*.swp
+.vscode/
+.idea/
+
+# Local env & logs
+.env
+.env.*
+*.log
+
+# Dependencies (only if tooling is added later)
+node_modules/

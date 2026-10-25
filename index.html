@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f6f5f1">
+  <meta name="description" content="HTML Scripts — a calm CDN home for our HTML files. Blank for now; the library arrives later.">
+  <title>HTML Scripts · CDN</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='3' y='1.5' width='10' height='13' rx='2.5' fill='%23ffffff' stroke='%23c8c2ad' stroke-width='1.5'/%3E%3C/svg%3E">
+
+  <!-- Apply the stored theme before first paint (UI Style Guide §17a) -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem("html-scripts-theme");
+        var theme = stored === "light" || stored === "dark"
+          ? stored
+          : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        document.documentElement.setAttribute("data-theme", theme);
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute("content", theme === "dark" ? "#141311" : "#f6f5f1");
+      } catch (e) { /* stay with the default light theme */ }
+    })();
+  </script>
+
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="assets/app.js" defer></script>
+</head>
+
+<body>
+  <main class="page">
+    <!-- Container card · 520px column (UI Style Guide §4) -->
+    <section class="container" aria-labelledby="page-title">
+
+      <header class="header">
+        <div class="header-titles">
+          <h1 class="header-title" id="page-title">HTML Scripts</h1>
+          <p class="header-sub">CDN Library</p>
+        </div>
+
+        <button class="icon-button" id="theme-toggle" type="button"
+                aria-label="Switch to dark theme" aria-pressed="false" title="Switch theme">
+          <svg class="icon-moon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M13.6 9.7A6.1 6.1 0 0 1 6.3 2.4a6.1 6.1 0 1 0 7.3 7.3Z"
+                  stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+          <svg class="icon-sun" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <circle cx="8" cy="8" r="3.1" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M8 1.3v1.5M8 13.2v1.5M1.3 8h1.5M13.2 8h1.5M3.4 3.4l1 1M11.6 11.6l1 1M12.6 3.4l-1 1M4.4 11.6l-1 1"
+                  stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </header>
+
+      <div class="divider" role="presentation"></div>
+
+      <!-- The blank canvas, wrapped in an SVG -->
+      <section class="empty" aria-label="No HTML files yet">
+        <svg class="blank-illustration" width="176" height="132" viewBox="0 0 176 132"
+             role="img" aria-labelledby="blank-label">
+          <title id="blank-label">A blank page waiting for content</title>
+          <ellipse class="ground" cx="88" cy="118" rx="62" ry="7"/>
+          <rect class="sheet-back" x="60" y="16" width="72" height="96" rx="8"/>
+          <rect class="sheet" x="52" y="8" width="72" height="96" rx="8"/>
+          <circle class="dot" cx="66" cy="22" r="2"/>
+          <circle class="dot" cx="74" cy="22" r="2"/>
+          <circle class="dot" cx="82" cy="22" r="2"/>
+          <line class="ph-line" x1="64" y1="42" x2="112" y2="42"/>
+          <line class="ph-line" x1="64" y1="54" x2="102" y2="54"/>
+          <line class="ph-line" x1="64" y1="66" x2="108" y2="66"/>
+          <line class="ph-line" x1="64" y1="78" x2="88" y2="78"/>
+          <line class="ph-line" x1="64" y1="90" x2="98" y2="90"/>
+        </svg>
+
+        <h2 class="empty-title">Nothing here yet</h2>
+        <p class="empty-note">
+          This CDN is up and quietly waiting. HTML files dropped into
+          <code>files/</code> will be listed here.
+        </p>
+      </section>
+
+      <div class="divider" role="presentation"></div>
+
+      <footer class="footer">
+        <p class="count"><span class="count-number">0</span> files</p>
+        <p class="status">
+          <span class="status-dot" aria-hidden="true"></span>
+          Ready for content
+        </p>
+      </footer>
+
+    </section>
+  </main>
+</body>
+</html>
