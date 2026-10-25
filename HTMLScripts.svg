@@ -6,8 +6,8 @@
     "use strict";
     var USER = "Toluwer", REPO = "HTML-Scripts", APP = "HTMLScripts.html";
     var SOURCES = [
+      "https://cdn.jsdelivr.net/gh/" + USER + "/" + REPO + "@004ae80/" + APP,
       "https://cdn.jsdelivr.net/gh/" + USER + "/" + REPO + "@main/" + APP,
-      "https://cdn.jsdelivr.net/gh/" + USER + "/" + REPO + "@a0e1ec4/" + APP,
       "https://raw.githubusercontent.com/" + USER + "/" + REPO + "/main/" + APP,
       "https://fastly.jsdelivr.net/gh/" + USER + "/" + REPO + "@main/" + APP
     ];
