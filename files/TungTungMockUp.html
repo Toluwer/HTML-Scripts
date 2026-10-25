@@ -54,6 +54,7 @@
   --shadow-deep: 0 1px 2px rgba(0,0,0,.35), 0 12px 34px rgba(0,0,0,.5);
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html, body { margin: 0; padding: 0; height: 100%; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
@@ -915,7 +916,7 @@ button { font-family: inherit; }
 .ai-feed { flex: 1; overflow-y: auto; padding: 24px 20px 30px; }
 .ai-empty { height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; }
 .ai-empty h2 { margin: 0; font-size: 26px; font-weight: 600; letter-spacing: -.01em; color: var(--ink); }
-.ai-empty .ew { display: inline-block; animation: rise-in .42s cubic-bezier(.21,.8,.35,1) both; }
+.ai-empty .ew { display: inline-block; animation: rise-in .42s cubic-bezier(.21,.8,.35,1) both; will-change: transform, opacity; }
 .ai-thread { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
 .bubble-row { display: flex; }
 .bubble-row.user { justify-content: flex-end; }
@@ -1944,6 +1945,647 @@ button { font-family: inherit; }
   .auth-wrap { padding: 20px 14px 84px; }
   .ai-feed { padding: 56px 14px 20px; }
 }
+.mpick-sep { height: 1px; margin: 5px 8px; background: var(--line-soft); }
+.mpick-menu { min-width: 236px; }
+.mpick-item .mi-ic { display: grid; place-items: center; width: 18px; height: 18px; flex: none; }
+.mpick-item .mi-ic .icon { font-size: 12px; width: 15px; }
+.mpick-item .mi-t { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mpick-item .mi-end { display: inline-flex; align-items: center; gap: 4px; flex: none; }
+.mpick-item .mi-end .icon { font-size: 10.5px; width: 12px; }
+.mpick-item.locked { color: var(--muted); }
+.mpick-item.locked .mi-end .gem { color: var(--accent); }
+.mpick-item.locked .mi-end .lock { color: var(--faint); }
+.uring {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  color: var(--accent);
+}
+.uring svg { transform: rotate(-90deg); }
+.ur-track { fill: none; stroke: var(--line-strong); stroke-width: 2.6; }
+.ur-fill { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linecap: round; transition: stroke-dashoffset .6s cubic-bezier(.21,.8,.35,1); }
+.ur-tip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+  white-space: nowrap;
+  padding: 5px 9px;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  box-shadow: var(--shadow-deep);
+  color: var(--ink-soft);
+  font-size: 11.5px;
+  font-weight: 500;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(3px);
+  transition: opacity .15s ease, transform .15s ease;
+  z-index: 60;
+}
+.uring:hover .ur-tip, .uring:focus-visible .ur-tip { opacity: 1; transform: translateY(0); }
+.uu-shell { height: 100%; display: flex; flex-direction: column; padding: 16px 18px 18px; gap: 10px; }
+.uu-tabs { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.uu-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 8px 0 12px;
+  max-width: 220px;
+  min-width: 132px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-small);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  overflow: hidden;
+  transition: background-color .12s ease, color .12s ease, border-color .12s ease;
+  animation: rise-in .25s cubic-bezier(.21,.8,.35,1) both;
+}
+.uu-tab .tab-ico { display: grid; place-items: center; width: 15px; color: var(--accent); flex: none; }
+.uu-tab .tab-ico .icon { font-size: 12px; }
+.uu-tab .tab-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
+.uu-tab:hover { background: var(--surface-secondary); color: var(--ink); }
+.uu-tab.active { border-color: var(--accent-line); background: var(--accent-soft); color: var(--ink); }
+.uu-tab .tab-close {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  flex: none;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+}
+.uu-tab .tab-close:hover { background: var(--surface); color: var(--ink); }
+.uu-newtab {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 36px;
+  flex: none;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-small);
+  background: transparent;
+  color: var(--muted);
+  font-size: 15px;
+  cursor: pointer;
+  transition: color .12s ease, border-color .12s ease, background-color .12s ease;
+}
+.uu-newtab:hover { color: var(--accent); border-color: var(--accent-line); background: var(--accent-soft); }
+.uu-nav { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.uu-btn {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-small);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color .12s ease, color .12s ease;
+}
+.uu-btn:hover { background: var(--surface-secondary); color: var(--ink); }
+.uu-btn:disabled { opacity: .45; cursor: default; }
+.uu-btn:disabled:hover { background: var(--surface); color: var(--ink-soft); }
+.uu-btn.accent { color: var(--accent); }
+.uu-address { position: relative; flex: 1; min-width: 0; }
+.uu-bar {
+  width: 100%;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-small);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 12.5px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.uu-bar::placeholder { color: var(--faint); }
+.uu-bar:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.uu-suggest {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  padding: 5px;
+  background: var(--surface);
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-deep);
+  z-index: 50;
+  display: none;
+  animation: menu-in .16s ease both;
+}
+.uu-suggest.show { display: block; }
+.uu-sug {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  text-align: left;
+  cursor: pointer;
+}
+.uu-sug .icon { font-size: 12px; color: var(--muted); flex: none; }
+.uu-sug:hover { background: var(--surface-secondary); color: var(--ink); }
+.uu-sug b { color: var(--ink); font-weight: 600; }
+.uu-content {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+.uu-frame { position: absolute; inset: 0; overflow-y: auto; }
+.uu-nt { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100%; padding: 40px 22px; gap: 26px; }
+.uu-nt-title { margin: 0; font-size: calc(34px * var(--fs)); font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--ink); }
+.uu-nt-title em { font-style: normal; color: var(--accent); }
+.uu-nt-form { width: min(460px, 100%); }
+.uu-nt-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  height: 46px;
+  border: 1px solid var(--line-strong);
+  border-radius: 23px;
+  background: var(--surface);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.uu-nt-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+.uu-nt-box .icon { font-size: 15px; color: var(--muted); flex: none; }
+.uu-nt-input { flex: 1; min-width: 0; border: 0; background: transparent; color: var(--ink); font-size: 13.5px; font-family: inherit; outline: none; }
+.uu-nt-input::placeholder { color: var(--faint); }
+.uu-shortcuts { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 10px; width: min(560px, 100%); }
+.uu-sc {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  padding: 15px 8px 13px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-small);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 11.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color .12s ease, color .12s ease, border-color .12s ease, transform .15s cubic-bezier(.21,.8,.35,1);
+}
+.uu-sc:hover { background: var(--surface-secondary); color: var(--ink); border-color: var(--line-strong); transform: translateY(-1px); }
+.uu-sc-ic {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-small);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 16px;
+}
+.uu-sc-ic .icon { font-size: 17px; }
+.uu-loading {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: var(--surface);
+  z-index: 5;
+}
+.uu-loading.show { display: flex; }
+.uu-loading .spin { width: 26px; height: 26px; border-radius: 50%; border: 2.5px solid var(--line-soft); border-top-color: var(--accent); animation: spin .8s linear infinite; }
+.uu-loading span { color: var(--muted); font-size: 12.5px; font-weight: 500; }
+.uu-ext { padding: 22px; }
+.uu-ext-list { display: flex; flex-direction: column; gap: 8px; margin: 14px 0; }
+.uu-ext-note { padding: 12px 14px; border: 1px dashed var(--line-strong); border-radius: var(--radius-small); color: var(--muted); font-size: 12.5px; }
+.uu-ext-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-small);
+  background: var(--surface);
+  animation: rise-in .22s ease both;
+}
+.uu-ext-row .icon { color: var(--accent); font-size: 13px; flex: none; }
+.uu-ext-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12.5px; font-weight: 600; color: var(--ink); }
+.uu-ext-match { color: var(--muted); font-size: 11px; }
+.uu-ext-del { width: 26px; height: 26px; display: grid; place-items: center; border: 0; border-radius: 7px; background: transparent; color: var(--muted); cursor: pointer; }
+.uu-ext-del:hover { background: var(--surface-secondary); color: var(--ink); }
+.uu-ext-form { display: flex; flex-direction: column; gap: 9px; margin-top: 14px; padding: 14px; border: 1px solid var(--line); border-radius: var(--radius-small); background: var(--background-wash); }
+.uu-ext-form input, .uu-ext-form textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 12px;
+  font-family: inherit;
+  outline: none;
+}
+.uu-ext-form input:focus, .uu-ext-form textarea:focus { border-color: var(--accent); }
+.uu-ext-form textarea { min-height: 64px; resize: vertical; }
+.uu-ext-btns { display: flex; gap: 8px; }
+.cs-shell { height: 100%; display: flex; flex-direction: column; }
+.cs-ibtn.cs-channels { display: none; }
+.avt-1 { background: #e9e0cc; color: #6b614a; }
+.avt-2 { background: #e4d6bd; color: #6f6244; }
+.avt-3 { background: #ded4c6; color: #635c50; }
+.avt-4 { background: #e7ddda; color: #6e5a52; }
+.avt-5 { background: #e0d8cc; color: #665f4f; }
+.avt-6 { background: #e8e2d2; color: #6a6553; }
+[data-theme="dark"] .avt-1 { background: #3a352a; color: #d8cfb4; }
+[data-theme="dark"] .avt-2 { background: #42392a; color: #ded2b0; }
+[data-theme="dark"] .avt-3 { background: #39362e; color: #cfc8b8; }
+[data-theme="dark"] .avt-4 { background: #3f342f; color: #d8c4bd; }
+[data-theme="dark"] .avt-5 { background: #3b372c; color: #cfc9b6; }
+[data-theme="dark"] .avt-6 { background: #383527; color: #d5cfba; }
+.cs-topbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 54px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+  flex: none;
+}
+.cs-logo { font-size: 15px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ink); white-space: nowrap; }
+.cs-logo em { font-style: normal; color: var(--accent); }
+.cs-sep { width: 1px; height: 22px; background: var(--line); }
+.cs-ch-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 30px;
+  padding: 0 11px;
+  border: 1px solid var(--line-strong);
+  border-radius: 15px;
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.cs-ch-pill .icon { font-size: 11.5px; color: var(--muted); }
+.cs-top-right { margin-left: auto; display: flex; align-items: center; gap: 5px; }
+.cs-clock { font-size: 12px; font-variant-numeric: tabular-nums; color: var(--muted); margin-right: 4px; white-space: nowrap; }
+.cs-user-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 11px 0 5px;
+  margin-right: 4px;
+  border: 1px solid var(--line-strong);
+  border-radius: 17px;
+  background: var(--surface);
+  cursor: pointer;
+  transition: background-color .12s ease;
+}
+.cs-user-pill:hover { background: var(--surface-secondary); }
+.cs-av {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent-soft-2);
+  color: var(--accent);
+  font-size: 10.5px;
+  font-weight: 700;
+}
+.cs-uname { font-size: 12px; font-weight: 600; color: var(--ink); white-space: nowrap; }
+.cs-ibtn {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color .12s ease, color .12s ease;
+}
+.cs-ibtn:hover { background: var(--surface-secondary); color: var(--ink); }
+.cs-ibtn.on { color: var(--accent); }
+.cs-ibtn .icon { font-size: 14px; }
+.cs-badge {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  min-width: 14px;
+  height: 14px;
+  padding: 0 3px;
+  border-radius: 7px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 14px;
+  text-align: center;
+}
+.cs-layout { flex: 1; min-height: 0; display: flex; }
+.cs-side {
+  width: 216px;
+  flex: none;
+  border-right: 1px solid var(--line);
+  background: var(--surface);
+  overflow-y: auto;
+  padding: 10px 8px;
+}
+.cs-cat-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 9px 6px;
+  color: var(--faint);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  width: 100%;
+  font-family: inherit;
+}
+.cs-cat-title .icon { font-size: 10px; transition: transform .18s ease; }
+.cs-cat.collapsed .cs-cat-title .icon { transform: rotate(-90deg); }
+.cs-cat.collapsed .cs-ch { display: none; }
+.cs-ch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 31px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12.5px;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color .12s ease, color .12s ease;
+}
+.cs-ch .icon { font-size: 12px; flex: none; opacity: .75; }
+.cs-ch span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cs-ch:hover { background: var(--surface-secondary); color: var(--ink); }
+.cs-ch.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.cs-ch.active .icon { opacity: 1; }
+.cs-ch .lock { font-size: 10.5px; color: var(--faint); flex: none; }
+.cs-private-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 14px 9px 4px;
+  color: var(--faint);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.cs-private-head button { border: 0; background: transparent; color: var(--muted); font-size: 11px; cursor: pointer; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 6px; }
+.cs-private-head button:hover { background: var(--surface-secondary); color: var(--accent); }
+.cs-mid { flex: 1; min-width: 0; display: flex; flex-direction: column; background: var(--background); }
+.cs-msgs { flex: 1; min-height: 0; overflow-y: auto; padding: 16px 18px 8px; }
+.cs-day { display: flex; align-items: center; gap: 12px; margin: 6px 0 14px; color: var(--faint); font-size: 10.5px; font-weight: 700; letter-spacing: .09em; }
+.cs-day::before, .cs-day::after { content: ""; flex: 1; height: 1px; background: var(--line-soft); }
+.cs-older { display: block; margin: 0 auto 14px; }
+.cs-row { display: flex; gap: 11px; padding: 5px 8px; margin: 0 -8px; border-radius: 10px; position: relative; }
+.cs-row + .cs-row { margin-top: 2px; }
+.cs-row:hover { background: var(--surface); }
+.cs-row.first { margin-top: 12px; }
+.cs-row .cs-tools {
+  position: absolute;
+  top: -14px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: 9px;
+  box-shadow: var(--shadow);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(2px);
+  transition: opacity .14s ease, transform .14s ease;
+  z-index: 5;
+}
+.cs-row:hover .cs-tools, .cs-row .cs-tools:focus-within { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.cs-tool {
+  display: grid;
+  place-items: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 3px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11.5px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.cs-tool:hover { background: var(--surface-secondary); color: var(--ink); }
+.cs-tool.react:hover { background: var(--accent-soft); color: var(--accent); }
+.cs-tool .icon { font-size: 12px; }
+.cs-tool-sep { width: 1px; height: 14px; background: var(--line); margin: 0 2px; }
+.cs-mav {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: 50%;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--accent-ink);
+  margin-top: 2px;
+  cursor: pointer;
+}
+.cs-mhead { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.cs-mbody { flex: 1; min-width: 0; }
+.cs-author { font-size: 13px; font-weight: 700; cursor: pointer; }
+.cs-tag {
+  display: inline-block;
+  padding: 1.5px 7px;
+  border-radius: 6px;
+  background: var(--accent-soft-2);
+  color: var(--accent-strong);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+.cs-tag.cool { background: #e8e4d8; color: #6d675a; }
+[data-theme="dark"] .cs-tag.cool { background: #33322c; color: #b6b4ab; }
+.cs-time { color: var(--faint); font-size: 10.5px; font-variant-numeric: tabular-nums; }
+.cs-text { margin-top: 1px; font-size: 13.5px; line-height: 1.5; color: var(--ink); word-wrap: break-word; }
+.cs-text .mention { color: var(--accent); font-weight: 600; cursor: pointer; }
+.cs-reacts { display: flex; gap: 5px; margin-top: 5px; flex-wrap: wrap; }
+.cs-react {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2.5px 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: var(--surface);
+  font-size: 11px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: border-color .12s ease, background-color .12s ease;
+}
+.cs-react:hover { border-color: var(--accent-line); }
+.cs-react.mine { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent); }
+.cs-typing { display: flex; align-items: center; gap: 8px; padding: 4px 19px 6px; color: var(--muted); font-size: 11.5px; min-height: 24px; }
+.cs-typing .dots { display: inline-flex; gap: 3px; }
+.cs-typing .dots i { width: 4.5px; height: 4.5px; border-radius: 50%; background: var(--muted); animation: dot-pulse 1.2s ease infinite; }
+.cs-typing .dots i:nth-child(2) { animation-delay: .15s; }
+.cs-typing .dots i:nth-child(3) { animation-delay: .3s; }
+.cs-input { padding: 0 18px 16px; flex: none; }
+.cs-composer {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  padding: 8px 8px 8px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.cs-composer:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.cs-msg-input {
+  flex: 1;
+  min-width: 0;
+  max-height: 120px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: 13.5px;
+  font-family: inherit;
+  line-height: 1.45;
+  outline: none;
+  resize: none;
+  padding: 6px 0;
+}
+.cs-msg-input::placeholder { color: var(--faint); }
+.cs-cbtn {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color .12s ease, color .12s ease;
+}
+.cs-cbtn:hover { background: var(--surface-secondary); color: var(--ink); }
+.cs-cbtn .icon { font-size: 14.5px; }
+.cs-cbtn.send { background: var(--accent); color: var(--accent-ink); }
+.cs-cbtn.send:hover { background: var(--accent-strong); color: var(--accent-ink); }
+.cs-right {
+  width: 218px;
+  flex: none;
+  border-left: 1px solid var(--line);
+  background: var(--surface);
+  overflow-y: auto;
+  padding: 12px 10px;
+}
+.cs-rail-resizer { display: none; }
+.cs-online-title { padding: 2px 9px 8px; color: var(--faint); font-size: 10.5px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+.cs-onl { display: flex; align-items: center; gap: 10px; padding: 6px 9px; border-radius: 9px; cursor: pointer; transition: background-color .12s ease; }
+.cs-onl:hover { background: var(--surface-secondary); }
+.cs-onl-av {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-ink);
+}
+.cs-dot {
+  position: absolute;
+  right: -1.5px;
+  bottom: -1.5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #6db56d;
+  border: 2px solid var(--surface);
+}
+.cs-dot.away { background: #d9a840; }
+.cs-dot.offline { background: var(--faint); }
+.cs-onl-main { flex: 1; min-width: 0; }
+.cs-onl-name { display: flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 600; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cs-onl-name .icon { font-size: 10px; color: #d9a840; flex: none; }
+.cs-onl-sub { color: var(--muted); font-size: 10.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 760px) {
+  .cs-side { position: fixed; top: 0; bottom: 0; left: 0; z-index: 45; transform: translateX(-105%); transition: transform .45s cubic-bezier(.21,.8,.35,1); box-shadow: var(--shadow-deep); }
+  .cs-side.open { transform: translateX(0); }
+  .cs-right { position: fixed; top: 0; bottom: 0; right: 0; z-index: 45; transform: translateX(105%); transition: transform .45s cubic-bezier(.21,.8,.35,1); box-shadow: var(--shadow-deep); width: 232px; }
+  .cs-right.open { transform: translateX(0); }
+  .cs-topbar { gap: 7px; padding: 0 10px; height: 50px; }
+  .cs-ibtn.cs-channels { display: grid; }
+  .cs-logo, .cs-sep, .cs-clock { display: none; }
+  .cs-ibtn.hide-m { display: none; }
+  .cs-msgs { padding: 12px 12px 6px; }
+  .cs-input { padding: 0 12px 12px; }
+  .uu-shell { padding: 12px 12px 14px; }
+  .uu-tab { min-width: 96px; max-width: 150px; }
+}
+@media (max-width: 560px) {
+  .cs-ch-pill { max-width: 130px; overflow: hidden; }
+  .uu-nt-title { font-size: calc(28px * var(--fs)); }
+  .uu-shortcuts { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); }
+}
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: .01ms !important;
@@ -2019,6 +2661,21 @@ button { font-family: inherit; }
 <symbol id="i-bullhorn" viewBox="0 0 24 24"><path d="m3 11 17.5-6v14L3 13v-2Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" fill="none"/><path d="M11.5 16.7a3 3 0 1 1-5.8-1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
 <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" fill="none"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7" fill="none"/></symbol>
 <symbol id="i-infinity" viewBox="0 0 24 24"><path d="M12 12c-2-2.7-4-4-6-4a4 4 0 0 0 0 8c2 0 4-1.3 6-4Zm0 0c2 2.7 4 4 6 4a4 4 0 0 0 0-8c-2 0-4 1.3-6 4Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-envelope" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.4" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="m3.5 7 8.5 6 8.5-6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.5" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M2.8 20c.7-3.1 3.1-4.9 6.2-4.9s5.5 1.8 6.2 4.9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/><path d="M15.5 5.2a3.5 3.5 0 0 1 0 6.6M17.5 15.4c1.9.5 3.3 1.9 3.8 4.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-trophy" viewBox="0 0 24 24"><path d="M7 4h10v5a5 5 0 0 1-10 0Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" fill="none"/><path d="M7 5.5H4a3 3 0 0 0 3 4.9M17 5.5h3a3 3 0 0 1-3 4.9M12 14v3.5M8.5 20.5h7M9.5 17.5h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-reply" viewBox="0 0 24 24"><path d="M9.5 6 4 11.5 9.5 17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M4.5 11.5H14a6 6 0 0 1 6 6v1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/><path d="M5 4.5c4.5-2 9.5 2 14 0v9c-4.5 2-9.5-2-14 0" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-maximize" viewBox="0 0 24 24"><path d="M9 3.5H4.5A1 1 0 0 0 3.5 4.5V9M15 3.5h4.5a1 1 0 0 1 1 1V9M9 20.5H4.5a1 1 0 0 1-1-1V15M15 20.5h4.5a1 1 0 0 0 1-1V15" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-puzzle" viewBox="0 0 24 24"><path d="M10 3.5a1.9 1.9 0 0 1 1.9 1.9c0 .5-.2.9-.5 1.3h3.4a1.2 1.2 0 0 1 1.2 1.2v3.4c.4-.3.8-.5 1.3-.5a1.9 1.9 0 0 1 0 3.8c-.5 0-.9-.2-1.3-.5v3.4a1.2 1.2 0 0 1-1.2 1.2h-3.4c.3-.4.5-.8.5-1.3a1.9 1.9 0 0 0-3.8 0c0 .5.2.9.5 1.3H6.9a1.2 1.2 0 0 1-1.2-1.2v-3.4c-.4.3-.8.5-1.3.5a1.9 1.9 0 0 1 0-3.8c.5 0 .9.2 1.3.5V7.9A1.2 1.2 0 0 1 6.9 6.7h3.4c-.3-.4-.5-.8-.5-1.3A1.9 1.9 0 0 1 10 3.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 5v5h-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M19.4 10A8 8 0 1 0 12 20a8 8 0 0 0 6.9-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 9.5a6 6 0 0 1 12 0c0 5 2 6.5 2 6.5H4s2-1.5 2-6.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M10 19.5a2.2 2.2 0 0 0 4 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-logout" viewBox="0 0 24 24"><path d="M14 4.5H6.5A1.5 1.5 0 0 0 5 6v12a1.5 1.5 0 0 0 1.5 1.5H14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/><path d="M10 12h11M17.5 8l3.5 4-3.5 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-smile" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.8" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M8.3 14c.9 1.4 2.2 2.1 3.7 2.1s2.8-.7 3.7-2.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/><path d="M9.2 9.6h.01M14.8 9.6h.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-hash" viewBox="0 0 24 24"><path d="M9 3.5 7 20.5M17 3.5l-2 17M4.5 8.5h15M3.5 15.5h15" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-crown" viewBox="0 0 24 24"><path d="m3.5 8 3.7 3.2L12 4.5l4.8 6.7L20.5 8l-1.6 11H5.1Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5.5A2 2 0 0 1 6 3.5h14v15H6a2 2 0 0 0-2 2Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" fill="none"/><path d="M4 18.5a2 2 0 0 1 2-2h14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M8 7.5h8M8 10.5h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i-code" viewBox="0 0 24 24"><path d="m8.5 8-5 4 5 4M15.5 8l5 4-5 4M13.5 4.5l-3 15" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
 </svg>
 <div class="nav-wrapper" id="navWrapper">
   <button class="nav-active-btn" id="activePageBtn" type="button" aria-label="Open menu">
@@ -2145,7 +2802,168 @@ button { font-family: inherit; }
   <div class="app-grid" id="appGrid"></div>
 </section>
 <section class="page" id="page-chat" hidden>
-  <div class="auth-wrap">
+  <div class="cs-shell" id="chatShell">
+    <header class="cs-topbar">
+      <button class="cs-ibtn cs-channels" id="csChannelsBtn" type="button" title="Channels" aria-label="Channels"><svg class="icon"><use href="#i-bars"/></svg></button>
+      <div class="cs-logo">tung <em>chat</em></div>
+      <div class="cs-sep"></div>
+      <div class="cs-ch-pill" id="csChPill"><svg class="icon"><use href="#i-hash"/></svg><span id="csChLabel">general</span></div>
+      <div class="cs-top-right">
+        <div class="cs-clock" id="csClock"></div>
+        <button class="cs-user-pill" id="csUserPill" type="button" title="Account">
+          <span class="cs-av avt-2">TO</span>
+          <span class="cs-uname">toluwaoyerin</span>
+        </button>
+        <button class="cs-ibtn" type="button" title="Direct messages" aria-label="Direct messages"><svg class="icon"><use href="#i-envelope"/></svg><span class="cs-badge">3</span></button>
+        <button class="cs-ibtn hide-m" type="button" title="Friends" aria-label="Friends"><svg class="icon"><use href="#i-users"/></svg></button>
+        <button class="cs-ibtn hide-m" type="button" title="Daily streak" aria-label="Daily streak"><svg class="icon"><use href="#i-flame"/></svg></button>
+        <button class="cs-ibtn hide-m" type="button" title="Rewards" aria-label="Rewards"><svg class="icon"><use href="#i-coins"/></svg></button>
+        <button class="cs-ibtn hide-m" type="button" title="Leaderboard" aria-label="Leaderboard"><svg class="icon"><use href="#i-trophy"/></svg></button>
+        <button class="cs-ibtn hide-m" type="button" title="Shop" aria-label="Shop"><svg class="icon"><use href="#i-heart"/></svg></button>
+        <button class="cs-ibtn" id="csMembersBtn" type="button" title="Members" aria-label="Members"><svg class="icon"><use href="#i-users"/></svg></button>
+        <button class="cs-ibtn hide-m on" id="csSoundBtn" type="button" title="Sound" aria-label="Sound"><svg class="icon"><use href="#i-volume"/></svg></button>
+        <button class="cs-ibtn hide-m" type="button" title="Effects" aria-label="Effects"><svg class="icon"><use href="#i-wand"/></svg></button>
+        <button class="cs-ibtn hide-m" type="button" title="Notifications" aria-label="Notifications"><svg class="icon"><use href="#i-bell"/></svg></button>
+        <button class="cs-ibtn" id="csLogout" type="button" title="Log out" aria-label="Log out"><svg class="icon"><use href="#i-logout"/></svg></button>
+      </div>
+    </header>
+    <div class="cs-layout">
+      <aside class="cs-side" id="csSide">
+        <button class="cs-cat-title" type="button" aria-expanded="true"><svg class="icon"><use href="#i-chd"/></svg>Channels</button>
+        <div class="cs-cat" id="csCatMain">
+          <button class="cs-ch" data-ch="rules" type="button"><svg class="icon"><use href="#i-hash"/></svg><span>rules</span></button>
+          <button class="cs-ch" data-ch="announcements" type="button"><svg class="icon"><use href="#i-hash"/></svg><span>announcements</span></button>
+          <button class="cs-ch active" data-ch="general" type="button"><svg class="icon"><use href="#i-hash"/></svg><span>general</span></button>
+          <button class="cs-ch" data-ch="counting" type="button"><svg class="icon"><use href="#i-hash"/></svg><span>counting</span></button>
+          <button class="cs-ch" data-ch="casino" type="button"><svg class="icon"><use href="#i-dice"/></svg><span>casino</span></button>
+          <button class="cs-ch" data-ch="suggestions" type="button"><svg class="icon"><use href="#i-hash"/></svg><span>suggestions</span></button>
+        </div>
+        <button class="cs-cat-title" type="button" aria-expanded="true"><svg class="icon"><use href="#i-chd"/></svg>More</button>
+        <div class="cs-cat">
+          <button class="cs-ch" data-ch="links" type="button"><svg class="icon"><use href="#i-hash"/></svg><span>links</span><svg class="icon lock"><use href="#i-lock"/></svg></button>
+          <button class="cs-ch" data-ch="share-links" type="button"><svg class="icon"><use href="#i-hash"/></svg><span>share-links</span></button>
+        </div>
+        <div class="cs-private-head"><span>Private</span><button type="button" title="New private channel" aria-label="New private channel"><svg class="icon"><use href="#i-plus"/></svg></button></div>
+        <button class="cs-ch" type="button"><svg class="icon"><use href="#i-lock"/></svg><span>study-squad</span></button>
+      </aside>
+      <div class="cs-mid">
+        <div class="cs-msgs" id="csMsgs">
+          <button class="ghost-btn cs-older" id="csOlder" type="button">Load older messages</button>
+          <div class="cs-day">Today</div>
+          <div class="cs-row first">
+            <div class="cs-tools">
+              <button class="cs-tool react" type="button" title="React" aria-label="React skull">💀</button>
+              <button class="cs-tool react" type="button" title="React" aria-label="React heart">❤️</button>
+              <button class="cs-tool react" type="button" title="React" aria-label="React check">✅</button>
+              <button class="cs-tool react" type="button" title="React" aria-label="React cross">❌</button>
+              <button class="cs-tool react" type="button" title="React" aria-label="React cry">😭</button>
+              <span class="cs-tool-sep"></span>
+              <button class="cs-tool" type="button" title="Reply" aria-label="Reply"><svg class="icon"><use href="#i-reply"/></svg></button>
+              <button class="cs-tool" type="button" title="Report" aria-label="Report"><svg class="icon"><use href="#i-flag"/></svg></button>
+            </div>
+            <span class="cs-mav avt-1">TT</span>
+            <div class="cs-mbody">
+              <div class="cs-mhead"><span class="cs-author">tungy</span><span class="cs-tag">Owner</span><span class="cs-time">9:47 pm</span></div>
+              <div class="cs-text">welcome to general. read the rules before posting and keep it friendly</div>
+            </div>
+          </div>
+          <div class="cs-row">
+            <span class="cs-mav avt-3">JB</span>
+            <div class="cs-mbody">
+              <div class="cs-mhead"><span class="cs-author">baluga_jr</span><span class="cs-tag">Pumpkin</span><span class="cs-time">9:52 pm</span></div>
+              <div class="cs-text">anyone else on spring break next week or is it just my school</div>
+              <div class="cs-reacts"><button class="cs-react" type="button">🙋 4</button><button class="cs-react mine" type="button">💀 9</button></div>
+            </div>
+          </div>
+          <div class="cs-row">
+            <span class="cs-mav avt-4">JL</span>
+            <div class="cs-mbody">
+              <div class="cs-mhead"><span class="cs-author">juli</span><span class="cs-time">9:53 pm</span></div>
+              <div class="cs-text">same here <span class="mention">@baluga_jr</span> we should do a listen party</div>
+            </div>
+          </div>
+          <div class="cs-row">
+            <span class="cs-mav avt-5">EV</span>
+            <div class="cs-mbody">
+              <div class="cs-mhead"><span class="cs-author">evo</span><span class="cs-tag cool">Car Guy</span><span class="cs-time">9:55 pm</span></div>
+              <div class="cs-text">im down. someone queue the playlist</div>
+            </div>
+          </div>
+          <div class="cs-row">
+            <span class="cs-mav avt-6">KA</span>
+            <div class="cs-mbody">
+              <div class="cs-mhead"><span class="cs-author">kay</span><span class="cs-tag cool">Vampire</span><span class="cs-time">9:58 pm</span></div>
+              <div class="cs-text">adding it now. no skipping or im kicking you all</div>
+              <div class="cs-reacts"><button class="cs-react" type="button">❤️ 6</button></div>
+            </div>
+          </div>
+          <div class="cs-row">
+            <span class="cs-mav avt-2">TO</span>
+            <div class="cs-mbody">
+              <div class="cs-mhead"><span class="cs-author">toluwaoyerin</span><span class="cs-time">10:01 pm</span></div>
+              <div class="cs-text">finally a chat that looks calm at night. my eyes thank you</div>
+            </div>
+          </div>
+        </div>
+        <div class="cs-typing" id="csTyping"><span class="dots"><i></i><i></i><i></i></span><span id="csTypingText">juli is typing</span></div>
+        <div class="cs-input">
+          <div class="cs-composer">
+            <textarea class="cs-msg-input" id="csMsgInput" rows="1" placeholder="message" maxlength="2000"></textarea>
+            <button class="cs-cbtn" type="button" title="Emoji" aria-label="Emoji"><svg class="icon"><use href="#i-smile"/></svg></button>
+            <button class="cs-cbtn" type="button" title="Send an image" aria-label="Send an image"><svg class="icon"><use href="#i-image"/></svg></button>
+            <button class="cs-cbtn" type="button" title="GIF" aria-label="GIF" style="font-size:10.5px;font-weight:700;letter-spacing:.04em">GIF</button>
+            <button class="cs-cbtn send" id="csSend" type="button" title="Send" aria-label="Send"><svg class="icon"><use href="#i-aru"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <aside class="cs-right" id="csRight">
+        <div class="cs-online-title">Online - <span id="csOnlineCount">101</span></div>
+        <div class="cs-onl">
+          <span class="cs-onl-av avt-1">TT<span class="cs-dot"></span></span>
+          <div class="cs-onl-main">
+            <div class="cs-onl-name"><svg class="icon"><use href="#i-crown"/></svg>tungy</div>
+            <div class="cs-onl-sub">owner</div>
+          </div>
+        </div>
+        <div class="cs-onl">
+          <span class="cs-onl-av avt-3">JB<span class="cs-dot"></span></span>
+          <div class="cs-onl-main">
+            <div class="cs-onl-name">baluga_jr</div>
+            <div class="cs-onl-sub">pumpkin</div>
+          </div>
+        </div>
+        <div class="cs-onl">
+          <span class="cs-onl-av avt-4">JL<span class="cs-dot away"></span></span>
+          <div class="cs-onl-main">
+            <div class="cs-onl-name">juli</div>
+            <div class="cs-onl-sub">typing</div>
+          </div>
+        </div>
+        <div class="cs-onl">
+          <span class="cs-onl-av avt-5">EV<span class="cs-dot"></span></span>
+          <div class="cs-onl-main">
+            <div class="cs-onl-name">evo</div>
+            <div class="cs-onl-sub">car guy</div>
+          </div>
+        </div>
+        <div class="cs-onl">
+          <span class="cs-onl-av avt-6">KA<span class="cs-dot"></span></span>
+          <div class="cs-onl-main">
+            <div class="cs-onl-name">kay</div>
+            <div class="cs-onl-sub">vampire</div>
+          </div>
+        </div>
+        <div class="cs-onl">
+          <span class="cs-onl-av avt-2">NL<span class="cs-dot"></span></span>
+          <div class="cs-onl-main">
+            <div class="cs-onl-name">nilou</div>
+            <div class="cs-onl-sub">tsundere</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+  <div class="auth-wrap" id="authScreen" hidden>
     <div class="auth-card">
       <img class="auth-logo" src="https://cdn.jsdelivr.net/gh/paperpine/assets@deb56965fcb7fd42d67be7cfb4a52a988a3ff700/t/334f9c5b988a.png" alt="logo" width="48" height="48">
       <p class="auth-sub">Log In or Register to Continue</p>
@@ -2228,8 +3046,6 @@ button { font-family: inherit; }
               <button class="attach" id="attachBtn" type="button" title="Attach" aria-label="Attach"><svg class="icon"><use href="#i-paperclip"/></svg></button>
               <button class="attach" id="shotBtn" type="button" title="Share screen" aria-label="Share screen"><svg class="icon"><use href="#i-display"/></svg></button>
               <button class="attach" id="micBtn" type="button" title="Speak" aria-label="Speak"><svg class="icon"><use href="#i-mic"/></svg></button>
-            </div>
-            <div class="composer-right">
               <div class="mode" id="modeWrap">
                 <button class="mode-btn" id="modeBtn" type="button" title="Mode">
                   <svg class="icon" id="modeIc"><use href="#i-comment"/></svg>
@@ -2241,17 +3057,32 @@ button { font-family: inherit; }
                   <button class="mode-item" data-mode="Image" type="button"><svg class="icon"><use href="#i-image"/></svg>Image</button>
                 </div>
               </div>
+            </div>
+            <div class="composer-right">
               <div class="mpick" id="mpickWrap">
                 <button class="mpick-btn" id="mpickBtn" type="button" title="Model">
-                  <span id="mpickLabel">Default</span>
+                  <span id="mpickLabel">Claude Haiku 5.5</span>
                   <svg class="icon"><use href="#i-chd"/></svg>
                 </button>
                 <div class="mpick-menu" id="mpickMenu">
-                  <button class="mpick-item active" data-model="Default" type="button"><svg class="icon"><use href="#i-bolt"/></svg>Default</button>
-                  <button class="mpick-item" data-model="Fast" type="button"><svg class="icon"><use href="#i-bolt"/></svg>Fast</button>
-                  <button class="mpick-item" data-model="Creative" type="button"><svg class="icon"><use href="#i-wand"/></svg>Creative</button>
+                  <button class="mpick-item active" data-model="Default" type="button"><span class="mi-ic bolt"><svg class="icon"><use href="#i-bolt"/></svg></span><span class="mi-t">Default</span></button>
+                  <div class="mpick-sep"></div>
+                  <button class="mpick-item" data-model="Claude Haiku 5.5" type="button"><span class="mi-ic bolt"><svg class="icon"><use href="#i-bolt"/></svg></span><span class="mi-t">Claude Haiku 5.5</span></button>
+                  <button class="mpick-item" data-model="GPT-6 Luna" type="button"><span class="mi-ic bolt"><svg class="icon"><use href="#i-bolt"/></svg></span><span class="mi-t">GPT-6 Luna</span></button>
+                  <button class="mpick-item" data-model="Llama 3.3 70B" type="button"><span class="mi-ic bolt"><svg class="icon"><use href="#i-bolt"/></svg></span><span class="mi-t">Llama 3.3 70B</span></button>
+                  <button class="mpick-item locked" data-model="Claude Sonnet 5.5" type="button"><span class="mi-ic bolt"><svg class="icon"><use href="#i-bolt"/></svg></span><span class="mi-t">Claude Sonnet 5.5</span><span class="mi-end"><svg class="icon gem"><use href="#i-gem"/></svg><svg class="icon lock"><use href="#i-lock"/></svg></span></button>
+                  <button class="mpick-item locked" data-model="Claude Opus 5.5" type="button"><span class="mi-ic bolt"><svg class="icon"><use href="#i-bolt"/></svg></span><span class="mi-t">Claude Opus 5.5</span><span class="mi-end"><svg class="icon gem"><use href="#i-gem"/></svg><svg class="icon lock"><use href="#i-lock"/></svg></span></button>
+                  <button class="mpick-item locked" data-model="Gemini 3.1 Pro" type="button"><span class="mi-ic bolt"><svg class="icon"><use href="#i-bolt"/></svg></span><span class="mi-t">Gemini 3.1 Pro</span><span class="mi-end"><svg class="icon gem"><use href="#i-gem"/></svg><svg class="icon lock"><use href="#i-lock"/></svg></span></button>
+                  <button class="mpick-item locked" data-model="GPT-6 Astra" type="button"><span class="mi-ic bolt"><svg class="icon"><use href="#i-bolt"/></svg></span><span class="mi-t">GPT-6 Astra</span><span class="mi-end"><svg class="icon gem"><use href="#i-gem"/></svg><svg class="icon lock"><use href="#i-lock"/></svg></span></button>
                 </div>
               </div>
+              <button class="uring" id="usageRing" type="button" title="Usage" aria-label="Usage">
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                  <circle class="ur-track" cx="12" cy="12" r="9.5"></circle>
+                  <circle class="ur-fill" id="urFill" cx="12" cy="12" r="9.5"></circle>
+                </svg>
+                <span class="ur-tip" id="urTip">847 / 20k tokens today</span>
+              </button>
               <button class="send" id="aiSend" type="button" title="Send" aria-label="Send"><svg class="icon"><use href="#i-aru"/></svg></button>
             </div>
           </div>
@@ -2405,6 +3236,44 @@ button { font-family: inherit; }
         </div>
       </div>
       <div class="yt-grid" id="ytGrid"></div>
+    </div>
+  </div>
+</section>
+<section class="page" id="page-browse" hidden>
+  <div class="uu-shell">
+    <div class="uu-tabs-row" style="display:flex;align-items:center;gap:6px;min-width:0">
+      <div class="uu-tabs" id="uuTabs" role="tablist" aria-label="Browser tabs" style="flex:1;min-width:0"></div>
+      <button class="uu-newtab" id="uuNewTab" type="button" title="New tab" aria-label="New tab">+</button>
+    </div>
+    <div class="uu-nav" aria-label="Browser controls">
+      <button class="uu-btn" id="uuBack" type="button" title="Back" aria-label="Back" disabled><svg class="icon"><use href="#i-chl"/></svg></button>
+      <button class="uu-btn" id="uuFwd" type="button" title="Forward" aria-label="Forward" disabled><svg class="icon"><use href="#i-chr"/></svg></button>
+      <button class="uu-btn" id="uuReload" type="button" title="Reload" aria-label="Reload"><svg class="icon"><use href="#i-refresh"/></svg></button>
+      <button class="uu-btn" id="uuHome" type="button" title="Home" aria-label="Home"><svg class="icon"><use href="#i-house"/></svg></button>
+      <div class="uu-address">
+        <input class="uu-bar" id="uuBar" type="text" placeholder="Search or enter URL" autocomplete="off" spellcheck="false" aria-label="Address bar">
+        <div class="uu-suggest" id="uuSuggest"></div>
+      </div>
+      <button class="uu-btn" id="uuFull" type="button" title="Fullscreen" aria-label="Fullscreen"><svg class="icon"><use href="#i-maximize"/></svg></button>
+      <button class="uu-btn accent" id="uuExt" type="button" title="Extensions" aria-label="Extensions"><svg class="icon"><use href="#i-puzzle"/></svg></button>
+    </div>
+    <div class="uu-content" id="uuContent">
+      <div class="uu-frame" id="uuFrame">
+        <div class="uu-nt">
+          <h2 class="uu-nt-title">tung <em>tung</em></h2>
+          <form class="uu-nt-form" id="uuNtForm">
+            <div class="uu-nt-box">
+              <svg class="icon"><use href="#i-search"/></svg>
+              <input class="uu-nt-input" id="uuNtInput" type="text" placeholder="Search or enter URL" autocomplete="off" spellcheck="false">
+            </div>
+          </form>
+          <div class="uu-shortcuts" id="uuShortcuts"></div>
+        </div>
+      </div>
+      <div class="uu-loading" id="uuLoading">
+        <div class="spin"></div>
+        <span id="uuLoadingText">connecting</span>
+      </div>
     </div>
   </div>
 </section>
@@ -2590,6 +3459,30 @@ button { font-family: inherit; }
     </div>
   </div>
 </div>
+<div class="modal" id="uuExtModal" aria-label="Extensions">
+  <div class="modal-box">
+    <div class="modal-top">
+      <span>Extensions</span>
+      <button class="sideact" data-close type="button" title="Close" aria-label="Close"><svg class="icon"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="modal-body uu-ext">
+      <div class="side-lbl" style="padding:0"><span>My scripts</span></div>
+      <div class="uu-ext-list" id="uuExtList">
+        <div class="uu-ext-note">No scripts yet.</div>
+      </div>
+      <button class="ghost-btn" id="uuExtAdd" type="button" style="width:100%"><svg class="icon"><use href="#i-plus"/></svg>New userscript</button>
+      <form class="uu-ext-form" id="uuExtForm" hidden>
+        <input id="uuExtName" type="text" placeholder="Script name" spellcheck="false" maxlength="40">
+        <input id="uuExtMatch" type="text" placeholder="Match URL, or * for all sites" spellcheck="false" maxlength="120">
+        <textarea id="uuExtCode" placeholder="JavaScript" spellcheck="false"></textarea>
+        <div class="uu-ext-btns">
+          <button class="primary-btn" type="submit" style="flex:1;padding:8px 10px"><svg class="icon"><use href="#i-check"/></svg>Save</button>
+          <button class="ghost-btn" type="button" id="uuExtCancel" style="flex:1;padding:8px 10px">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 <div class="modal" id="cmdk" aria-label="Search chats">
   <div class="modal-box">
     <div class="cmdk-top">
@@ -2694,10 +3587,10 @@ var PAGES = [
 ];
 var current = "home";
 function goTo(src) {
-  var target = src === "browse" ? "watch" : src;
+  var target = src;
   current = src;
   $$(".page").forEach(function (p) { p.hidden = p.id !== "page-" + target; });
-  var page = $("#" + target + (target === "browse" ? "" : ""));
+  var page = $("#page-" + target);
   var match = PAGES[0];
   for (var i = 0; i < PAGES.length; i++) if (PAGES[i].src === src) match = PAGES[i];
   $("#activePageBtn").innerHTML = ic(match.icon);
@@ -2736,19 +3629,253 @@ $("#settingsBtn").addEventListener("click", function () { goTo("settings"); });
 $("#skinBtn").addEventListener("click", function () { toast("Ads are retired in this mockup"); });
 
 function closeSidebars() {
-  ["aiSide", "lsSide", "stSide", "watchTabs"].forEach(function (id) {
+  ["aiSide", "lsSide", "stSide", "watchTabs", "csSide", "csRight"].forEach(function (id) {
     var n = $("#" + id);
     if (n) n.classList.remove("open");
   });
   $$(".ai-scrim").forEach(function (s) { s.classList.remove("show"); });
+  var uus = $("#uuSuggest");
+  if (uus) uus.classList.remove("show");
 }
 
 var clockEl = $("#clock");
+var csClockEl = $("#csClock");
 function tickClock() {
-  try { clockEl.textContent = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit", hour12: true }); } catch (e) {}
+  var t = "";
+  try { t = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit", hour12: true }); } catch (e) {}
+  if (clockEl) clockEl.textContent = t;
+  if (csClockEl) csClockEl.textContent = t;
 }
 tickClock();
 setInterval(tickClock, 1000);
+
+$$(".cs-cat-title").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    var cat = btn.nextElementSibling;
+    if (!cat || !cat.classList.contains("cs-cat")) return;
+    var collapsed = cat.classList.toggle("collapsed");
+    btn.setAttribute("aria-expanded", String(!collapsed));
+  });
+});
+$$(".cs-ch[data-ch]").forEach(function (ch) {
+  ch.addEventListener("click", function () {
+    $$(".cs-ch[data-ch]").forEach(function (x) { x.classList.toggle("active", x === ch); });
+    $("#csChLabel").textContent = ch.dataset.ch;
+    $("#csSide").classList.remove("open");
+  });
+});
+$("#csChannelsBtn").addEventListener("click", function () { $("#csSide").classList.toggle("open"); });
+$("#csMembersBtn").addEventListener("click", function () { $("#csRight").classList.toggle("open"); });
+$("#csSoundBtn").addEventListener("click", function () {
+  var on = $("#csSoundBtn").classList.toggle("on");
+  $("#csSoundBtn").title = on ? "Sound on" : "Sound off";
+  toast(on ? "Sound on" : "Sound off");
+});
+$("#csOlder").addEventListener("click", function () {
+  $("#csOlder").remove();
+  toast("That is the whole history in this mockup");
+});
+$$(".cs-react").forEach(function (r) {
+  r.addEventListener("click", function () {
+    var m = r.textContent.match(/^(.*?)\s*(\d+)$/);
+    if (!m) return;
+    var mine = r.classList.toggle("mine");
+    r.textContent = m[1] + " " + (Number(m[2]) + (mine ? 1 : -1));
+  });
+});
+$$(".cs-tool").forEach(function (t) {
+  t.addEventListener("click", function () { toast("Message actions are stubbed in this mockup"); });
+});
+$$("#csRight .cs-onl, .cs-mav, .cs-author").forEach(function (n) {
+  n.addEventListener("click", function () { toast("Profiles are stubbed in this mockup"); });
+});
+var csMsgInput = $("#csMsgInput");
+function csPush() {
+  var text = csMsgInput.value.trim();
+  if (!text) return;
+  var row = el("div", "cs-row");
+  var now = "";
+  try { now = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", hour12: true }); } catch (e) {}
+  row.innerHTML = '<span class="cs-mav avt-2">TO</span><div class="cs-mbody"><div class="cs-mhead"><span class="cs-author">toluwaoyerin</span><span class="cs-time">' + esc(now) + '</span></div><div class="cs-text">' + esc(text).replace(/@(\w+)/g, '<span class="mention">@$1</span>') + "</div></div>";
+  $("#csMsgs").appendChild(row);
+  csMsgInput.value = "";
+  csMsgInput.style.height = "auto";
+  $("#csMsgs").scrollTop = $("#csMsgs").scrollHeight;
+}
+$("#csSend").addEventListener("click", csPush);
+csMsgInput.addEventListener("keydown", function (e) {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); csPush(); }
+});
+csMsgInput.addEventListener("input", function () {
+  csMsgInput.style.height = "auto";
+  csMsgInput.style.height = Math.min(csMsgInput.scrollHeight, 120) + "px";
+});
+var TYPERS = ["juli is typing", "kay is typing", "evo is typing", ""];
+var typIdx = 0;
+setInterval(function () {
+  typIdx = (typIdx + 1) % TYPERS.length;
+  var t = TYPERS[typIdx];
+  $("#csTypingText").textContent = t;
+  $("#csTyping").style.opacity = t ? "1" : "0";
+}, 5200);
+
+var UU_SITES = [
+  ["Search", "search", "i-search"],
+  ["YouTube", "youtube.com", "i-youtube"],
+  ["Wikipedia", "wikipedia.org", "i-book"],
+  ["Reddit", "reddit.com", "i-comments"],
+  ["GitHub", "github.com", "i-code"],
+  ["Discord", "discord.com", "i-discord"],
+  ["Spotify", "spotify.com", "i-music"],
+  ["Twitch", "twitch.tv", "i-tv"]
+];
+var uuTabs = $("#uuTabs");
+var uuBar = $("#uuBar");
+var uuSuggest = $("#uuSuggest");
+var uuFrame = $("#uuFrame");
+var uuLoading = $("#uuLoading");
+var uuLoadingText = $("#uuLoadingText");
+var uuBack = $("#uuBack");
+var uuFwd = $("#uuFwd");
+var uuTabSeq = 0;
+var uuActive = null;
+var UU_SUGGEST_TPL = '<button class="uu-sug" type="button"><svg class="icon"><use href="#i-search"/></svg><span>Search for <b>{q}</b></span></button><button class="uu-sug" type="button"><svg class="icon"><use href="#i-globe"/></svg><span>Go to <b>{host}</b></span></button>';
+function uuAddTab(title, icon, activate) {
+  uuTabSeq++;
+  var tab = el("button", "uu-tab" + (activate ? " active" : ""));
+  tab.type = "button";
+  tab.setAttribute("role", "tab");
+  tab.dataset.tid = String(uuTabSeq);
+  tab.innerHTML = '<span class="tab-ico">' + ic(icon) + '</span><span class="tab-title">' + esc(title) + '</span><span class="tab-close" title="Close tab" role="button">&times;</span>';
+  tab.addEventListener("click", function (e) {
+    if (e.target.classList && e.target.classList.contains("tab-close")) { uuCloseTab(tab); return; }
+    uuActivateTab(tab);
+  });
+  uuTabs.appendChild(tab);
+  if (activate) uuActivateTab(tab);
+  return tab;
+}
+function uuActivateTab(tab) {
+  $$(".uu-tab").forEach(function (t) { t.classList.toggle("active", t === tab); });
+  uuActive = tab;
+  uuBar.value = tab.dataset.url || "";
+}
+function uuCloseTab(tab) {
+  var wasActive = tab.classList.contains("active");
+  tab.remove();
+  var rest = $$(".uu-tab");
+  if (wasActive && rest.length) uuActivateTab(rest[rest.length - 1]);
+  if (!rest.length) { uuAddTab("New Tab", "globe", true); }
+}
+function uuRenderSuggest(q) {
+  if (!q) { uuSuggest.classList.remove("show"); uuSuggest.innerHTML = ""; return; }
+  var host = /^[a-z]+:\/\//i.test(q) ? q : "https://" + q.replace(/^www\./, "");
+  var rows = UU_SUGGEST_TPL.replace(/\{q\}/g, esc(q)).replace(/\{host\}/g, esc(host.split("/")[0]));
+  UU_SITES.forEach(function (s) {
+    if (s[0].toLowerCase().indexOf(q.toLowerCase()) === -1 && s[1].indexOf(q.toLowerCase()) === -1) return;
+    rows += '<button class="uu-sug" data-site="' + esc(s[1]) + '" type="button"><svg class="icon"><use href="#' + s[2] + '"/></svg><span>' + esc(s[0]) + " <b>" + esc(s[1]) + "</b></span></button>";
+  });
+  uuSuggest.innerHTML = rows;
+  uuSuggest.classList.add("show");
+  $$(".uu-sug", uuSuggest).forEach(function (b) {
+    b.addEventListener("mousedown", function (e) {
+      e.preventDefault();
+      if (b.dataset.site) uuGo(b.dataset.site);
+      else uuGo(b.textContent.indexOf("Go to") === 0 ? host : q);
+    });
+  });
+}
+function uuGo(url) {
+  uuSuggest.classList.remove("show");
+  uuLoadingText.textContent = "connecting to " + url.split("/")[0];
+  uuLoading.classList.add("show");
+  uuBack.disabled = false;
+  if (uuActive) {
+    uuActive.dataset.url = url;
+    uuActive.querySelector(".tab-title").textContent = url.replace(/^https?:\/\//, "").split("/")[0] || "New Tab";
+  }
+  setTimeout(function () {
+    uuLoading.classList.remove("show");
+    uuFrame.scrollTop = 0;
+    toast("Sites are stubbed in this mockup");
+    uuBar.value = url;
+  }, 1400);
+}
+uuBar.addEventListener("input", function () { uuRenderSuggest(uuBar.value.trim()); });
+uuBar.addEventListener("focus", function () { uuRenderSuggest(uuBar.value.trim()); });
+uuBar.addEventListener("blur", function () { setTimeout(function () { uuSuggest.classList.remove("show"); }, 160); });
+uuBar.addEventListener("keydown", function (e) {
+  if (e.key === "Enter") { e.preventDefault(); uuGo(uuBar.value.trim() || "tung.tung"); }
+  if (e.key === "Escape") { uuSuggest.classList.remove("show"); uuBar.blur(); }
+});
+$("#uuNtForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+  var v = $("#uuNtInput").value.trim();
+  if (v) uuGo(v);
+  $("#uuNtInput").value = "";
+});
+$("#uuReload").addEventListener("click", function () {
+  if (!uuActive || !uuActive.dataset.url) return;
+  uuGo(uuActive.dataset.url);
+});
+$("#uuHome").addEventListener("click", function () {
+  if (uuActive) { uuActive.dataset.url = ""; uuActive.querySelector(".tab-title").textContent = "New Tab"; }
+  uuBar.value = "";
+  uuLoading.classList.remove("show");
+  uuFrame.scrollTop = 0;
+});
+$("#uuBack").addEventListener("click", function () { toast("History is stubbed in this mockup"); });
+$("#uuFwd").addEventListener("click", function () { toast("History is stubbed in this mockup"); });
+$("#uuFull").addEventListener("click", function () {
+  var shell = $("#page-browse");
+  if (!document.fullscreenElement) {
+    if (shell.requestFullscreen) shell.requestFullscreen().catch(function () { toast("Fullscreen was blocked"); });
+  } else if (document.exitFullscreen) {
+    document.exitFullscreen();
+  }
+});
+$("#uuExt").addEventListener("click", function () { openModal("uuExtModal"); });
+var uuExtList = $("#uuExtList");
+var uuScripts = [];
+function uuRenderScripts() {
+  uuExtList.innerHTML = "";
+  if (!uuScripts.length) {
+    uuExtList.innerHTML = '<div class="uu-ext-note">No scripts yet.</div>';
+    return;
+  }
+  uuScripts.forEach(function (s, i) {
+    var row = el("div", "uu-ext-row");
+    row.innerHTML = ic("puzzle") + '<span class="uu-ext-name">' + esc(s[0]) + '</span><span class="uu-ext-match">' + esc(s[1]) + '</span><button class="uu-ext-del" title="Remove" aria-label="Remove">' + ic("x") + "</button>";
+    row.querySelector(".uu-ext-del").addEventListener("click", function () { uuScripts.splice(i, 1); uuRenderScripts(); });
+    uuExtList.appendChild(row);
+  });
+}
+$("#uuExtAdd").addEventListener("click", function () { $("#uuExtForm").hidden = false; $("#uuExtName").focus(); });
+$("#uuExtCancel").addEventListener("click", function () { $("#uuExtForm").hidden = true; });
+$("#uuExtForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+  var name = $("#uuExtName").value.trim() || "Untitled";
+  var match = $("#uuExtMatch").value.trim() || "*";
+  uuScripts.push([name, match]);
+  uuRenderScripts();
+  $("#uuExtForm").hidden = true;
+  $("#uuExtName").value = "";
+  $("#uuExtMatch").value = "";
+  $("#uuExtCode").value = "";
+  toast("Script saved locally");
+});
+(function () {
+  var sc = $("#uuShortcuts");
+  UU_SITES.forEach(function (s) {
+    var b = el("button", "uu-sc");
+    b.type = "button";
+    b.innerHTML = '<span class="uu-sc-ic">' + ic(s[2]) + "</span><span>" + esc(s[0]) + "</span>";
+    b.addEventListener("click", function () { uuGo(s[1]); });
+    sc.appendChild(b);
+  });
+  uuAddTab("New Tab", "globe", true);
+  $("#uuNewTab").addEventListener("click", function () { uuAddTab("New Tab", "globe", true); });
+})();
 
 var SPLASHES = [
   "100% legit, 0% chill",
@@ -2900,12 +4027,31 @@ $$(".toggle-pw").forEach(function (b) {
 });
 $("#formLogin").addEventListener("submit", function (e) {
   e.preventDefault();
-  toast("Accounts are stubbed in this mockup");
+  var u = $("#loginUser").value.trim();
+  if (!u) { toast("Enter a username or email first"); return; }
+  enterChat(u);
 });
 $("#formRegister").addEventListener("submit", function (e) {
   e.preventDefault();
-  toast("Accounts are stubbed in this mockup");
+  var u = $("#regUser").value.trim();
+  if (!u) { toast("Pick a username first"); return; }
+  enterChat(u);
 });
+function enterChat(name) {
+  var display = name.indexOf("@") === -1 ? name : "toluwaoyerin";
+  $("#csUserPill").querySelector(".cs-uname").textContent = display.slice(0, 14);
+  $("#authScreen").hidden = true;
+  $("#chatShell").hidden = false;
+  toast("Signed in as " + display);
+}
+$("#csLogout").addEventListener("click", function () {
+  $("#chatShell").hidden = true;
+  $("#authScreen").hidden = false;
+  $("#loginUser").value = "";
+  $("#loginPass").value = "";
+  toast("Signed out");
+});
+$("#csUserPill").addEventListener("click", function () { toast("Account settings are stubbed in this mockup"); });
 $("#forgotLink").addEventListener("click", function () { toast("Password reset is stubbed in this mockup"); });
 $("#magicLink").addEventListener("click", function () { toast("Login codes are stubbed in this mockup"); });
 var aiFeed = $("#aiFeed");
@@ -2913,9 +4059,10 @@ var aiEmpty = $("#aiEmpty");
 var aiInput = $("#aiInput");
 var aiHello = $("#aiHello");
 "How can I help today?".split(" ").forEach(function (w, i) {
-  var s = el("span", "ew", esc(w) + " ");
+  var s = el("span", "ew", esc(w));
   s.style.animationDelay = (i * 0.09).toFixed(2) + "s";
   aiHello.appendChild(s);
+  aiHello.appendChild(document.createTextNode(" "));
 });
 var REPLIES = [
   "Sure. Tell me the topic and I will break it down step by step.",
@@ -3006,11 +4153,23 @@ $$(".mode-item").forEach(function (m) {
 });
 $$(".mpick-item").forEach(function (m) {
   m.addEventListener("click", function () {
+    if (m.classList.contains("locked")) {
+      toast("That model needs Premium in this mockup");
+      $("#mpickWrap").classList.remove("open");
+      return;
+    }
     $$(".mpick-item").forEach(function (x) { x.classList.toggle("active", x === m); });
     $("#mpickLabel").textContent = m.dataset.model;
     $("#mpickWrap").classList.remove("open");
   });
 });
+var urFill = $("#urFill");
+if (urFill) {
+  var circ = 2 * Math.PI * 9.5;
+  urFill.style.strokeDasharray = circ;
+  urFill.style.strokeDashoffset = (circ * (1 - 847 / 20000)).toFixed(2);
+}
+$("#usageRing").addEventListener("click", function () { openModal("premiumModal"); });
 document.addEventListener("click", function (e) {
   if (!$("#modeWrap").contains(e.target)) $("#modeWrap").classList.remove("open");
   if (!$("#mpickWrap").contains(e.target)) $("#mpickWrap").classList.remove("open");
