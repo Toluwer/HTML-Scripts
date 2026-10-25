@@ -424,7 +424,8 @@ body {
 (function () {
   "use strict";
   var FILES = [
-    { name: "Nuclear Bomb Model", meta: "3D model", file: "files/NuclearBomb.html", pin: "d1ac5d8" }
+    { name: "Nuclear Bomb Model", meta: "3D model", file: "files/NuclearBomb.html", pin: "d1ac5d8", icon: "bomb" },
+    { name: "TungTungMockUp", meta: "UI mockup", file: "files/TungTungMockUp.html", pin: "d45b455", icon: "mockup" }
   ];
   function mirrors(f) {
     return [
@@ -435,6 +436,8 @@ body {
     ];
   }
   var BOMB_ICON = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="9.5" rx="6" ry="6.8"/><path d="M8.7 15.6 7 21M15.3 15.6 17 21M12 16.3v4.7"/></svg>';
+  var MOCKUP_ICON = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2.2"/><path d="M3.5 9h17M8.5 9v10.5"/><path d="M12 12.5h5M12 15.5h3"/></svg>';
+  var ICONS = { bomb: BOMB_ICON, mockup: MOCKUP_ICON };
   var CHEVRON = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
   var root = document.documentElement;
@@ -474,7 +477,7 @@ body {
     btn.style.animationDelay = (0.05 + i * 0.06).toFixed(2) + "s";
     var icon = document.createElement("span");
     icon.className = "file-icon";
-    icon.innerHTML = BOMB_ICON;
+    icon.innerHTML = ICONS[f.icon] || MOCKUP_ICON;
     var titles = document.createElement("span");
     titles.className = "file-titles";
     var name = document.createElement("span");
